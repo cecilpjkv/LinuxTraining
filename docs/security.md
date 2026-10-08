@@ -4,7 +4,7 @@ Spec §17, requirement by requirement.
 
 | Requirement | How |
 |---|---|
-| No Docker socket exposed to the frontend | Only the backend container mounts a Docker socket, and it is the **lab** daemon's (`/run/docker-labs.sock`), not the one running the application. The browser talks to `/api` and `/ws` only. |
+| No Docker socket exposed to the frontend | Only the backend container mounts a Docker socket, and it is the **lab** daemon's (`/run/lt-labs/docker.sock`), not the one running the application. The browser talks to `/api` and `/ws` only. |
 | Containers run with resource limits | Per lab: CPU (`lab_cpu`), memory without swap (`lab_memory_mb`), PIDs (`lab_pids_limit`), `nofile` 65536, logs 1 MB x 2. Admin-configurable. |
 | Scenario scripts execute only inside containers | `setup.sh` and `verify.sh` are streamed to `bash -s` over `docker exec` stdin; the backend never runs them, and no copy is left in the lab for the technician to read. |
 | Validate uploaded scenario files | Size limits, YAML parsing, closed lists (categories, difficulties, extra capabilities), image names restricted to `linux-training-*`, tmpfs paths from an allow-list, score names and regexes checked. |

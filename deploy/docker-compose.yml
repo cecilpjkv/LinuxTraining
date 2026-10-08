@@ -29,11 +29,13 @@ services:
       LT_COOKIE_SECURE: ${LT_COOKIE_SECURE:-false}
       LT_ALLOW_REGISTRATION: ${LT_ALLOW_REGISTRATION:-true}
       LT_SCENARIOS_DIR: /srv/scenarios
+      DOCKER_HOST: unix:///run/lt-labs/docker.sock
     volumes:
       - ../scenarios:/srv/scenarios:ro
       # the backend (and only the backend) creates the labs through the LAB Docker daemon (deploy/docker-labs:
       # user-namespace remapped); it has no access to the daemon running this application. The browser never sees it.
-      - /run/docker-labs.sock:/var/run/docker.sock
+      # The directory, not the socket file: a restarted daemon creates a new socket, which a file mount would miss.
+      - /run/lt-labs:/run/lt-labs
     networks: [app]
 
   web:

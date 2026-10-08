@@ -7,9 +7,16 @@ Compose; the training labs run on a **separate** Docker daemon (`docker-labs`) w
 Browser ──HTTPS──> reverse proxy (host nginx or Caddy, :443)
                      └──> web container (nginx: React app, /api and /ws proxy, 127.0.0.1:8080)
                             └──> backend container (FastAPI, scheduler, Lab Manager) ──> PostgreSQL container
-                                     └── /run/docker-labs.sock ──> docker-labs daemon ──> lab containers
+                                     └── /run/lt-labs/docker.sock ──> docker-labs daemon ──> lab containers
                                                                     (internal network, no internet, uid 200000+)
 ```
+
+## 0. One-step installation
+
+`deploy/install-almalinux.sh` does sections 1-4, 6, the firewall and the backup job below in one run (tested with
+SELinux enforcing). Options: `LT_HTTP_PORT`, `LT_ADMIN_USER`, `LT_ADMIN_PASSWORD`, `LT_SKIP_IMAGES=1`,
+`LT_OPEN_FIREWALL=0`. Running it again updates the application and keeps data, secrets and passwords; the lab
+daemon is restarted only when its configuration changed (a restart stops running labs).
 
 ## 1. Docker Engine
 
@@ -170,4 +177,4 @@ Also keep `deploy/.env` (secret key and database password). Labs hold nothing wo
   the backend also removes lab containers that no running attempt owns.
 - Container logs are capped: 10 MB x 3 per application container, 1 MB x 2 per lab.
 - Old layers after rebuilding images: `docker image prune -f` and
-  `docker -H unix:///run/docker-labs.sock image prune -f`; build cache: `docker builder prune -f`.
+  `docker -H unix:///run/lt-labs/docker.sock image prune -f`; build cache: `docker builder prune -f`.

@@ -11,6 +11,7 @@ Type=notify
 # docker0, the main daemon's bridge (found on the test host). nsenter switches only the network namespace:
 # PrivateNetwork= would also give dockerd a private mount namespace, and runc (started via containerd in the host's)
 # would see empty container root filesystems. The backend uses the Unix socket; docker exec needs no network.
+ExecStartPre=/usr/bin/install -d -m 0750 /run/lt-labs
 ExecStartPre=/bin/sh -c 'ip netns list | grep -qw ltlabs || ip netns add ltlabs; ip -n ltlabs link set lo up'
 ExecStart=/usr/bin/nsenter --net=/run/netns/ltlabs /usr/bin/dockerd --config-file /etc/docker-labs/daemon.json
 ExecReload=/bin/kill -s HUP $MAINPID

@@ -4,7 +4,7 @@
   "exec-root": "/run/docker-labs",
   "pidfile": "/run/docker-labs.pid",
   "hosts": [
-    "unix:///run/docker-labs.sock"
+    "unix:///run/lt-labs/docker.sock"
   ],
   "containerd-namespace": "moby-labs",
   "containerd-plugins-namespace": "plugins-labs",

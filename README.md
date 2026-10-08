@@ -34,6 +34,15 @@ Docker Compose (the application itself).
 - `docs/scenarios.md`: writing scenarios (format, verify helpers, scoring, pitfalls)
 - `docs/security.md`: the security model
 
+## Install on AlmaLinux 9/10
+
+    git clone git@github.com:cecilpjkv/LinuxTraining.git /opt/linuxtraining
+    /opt/linuxtraining/deploy/install-almalinux.sh
+
+Installs Docker, the lab daemon, the lab images and the application, creates the administrator (password printed
+once and kept in /root/.lt-admin-password), opens the port in firewalld and schedules daily database backups.
+Run it again to update (`git pull` first). Details: `docs/deployment.md`.
+
 ## Quick start (development host)
 
     cd deploy
