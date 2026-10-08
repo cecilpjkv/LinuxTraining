@@ -63,7 +63,7 @@ def main():
             await drain(2)
             for cmd in ["systemctl status nginx --no-pager | head -5", "nginx -t",
                         "sed -i 's|add_header X-Shop-Version \"2.4\"$|add_header X-Shop-Version \"2.4\";|' /etc/nginx/conf.d/shop.conf",
-                        "nginx -t && systemctl restart nginx", "curl -s -H 'Host: shop.example.test' localhost | grep -o 'Shop OK'"]:
+                        "nginx -t && systemctl restart nginx", "curl -s -H 'Host: shop.example.test' 127.0.0.1 | grep -o 'Shop OK'"]:
                 await ws.send(json.dumps({"type": "input", "data": cmd + "\r"}))
                 await drain(2.5)
             return screen
@@ -85,8 +85,13 @@ def main():
     ok(res["status"] == "completed", f"graded in {time.time() - t0:.0f}s")
     ok(res["passed"] and res["percent"] == 100, f"score {res['score']}/{res['max_score']} ({res['percent']}%)")
     print("     " + "; ".join(f"{b['label']}: {b['points']}/{b['max']}" for b in res["breakdown"]))
-    review = admin.get(f"/api/attempts/{a['id']}").json()
-    ok(review["status"] == "completed", "admin can open the attempt")
+    review = admin.get(f"/api/admin/attempts/{a['id']}").json()
+    ok(review["status"] == "completed" and review["technician"]["username"] == user, "admin can open the attempt review")
+    cmds = [(c["command"], c["exit_code"], c["output"]) for c in review["commands"]]
+    ok(len(cmds) == 5 and cmds[1][1] == 1 and "add_header" in cmds[1][2], "command history: 5 commands, nginx -t failed with the error shown")
+    ok(cmds[4][1] == 0 and cmds[4][2] == "Shop OK", "the recorded output of the last command is the shop page (not the screen echo)")
+    ok(all(v["passed"] for v in review["verification"]) and len(review["verification"]) == 4, "4 verification checks PASS")
+    ok("syntax is ok" in review["final_state"], "final state collected (nginx -t, status, config)")
     labs = admin.get("/api/admin/labs").json()
     ok(labs["active"] == 0, "lab slot freed")
     return a["id"]

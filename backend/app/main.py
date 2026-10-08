@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from .api import admin, attempts, auth, scenarios, terminal_ws, users
+from .api import admin, attempts, auth, review, scenarios, terminal_ws, users
 from .services.scheduler import scheduler
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="LinuxTraining", docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url=None, lifespan=lifespan)
-for r in (auth.router, users.router, scenarios.router, scenarios.admin, attempts.router, admin.router, terminal_ws.router):
+for r in (auth.router, users.router, scenarios.router, scenarios.admin, attempts.router, admin.router, review.router, terminal_ws.router):
     app.include_router(r)
 
 

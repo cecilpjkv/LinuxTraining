@@ -8,6 +8,10 @@ import AdminUsers from './pages/AdminUsers.jsx'
 import Attempt from './pages/Attempt.jsx'
 import AdminScenarios from './pages/AdminScenarios.jsx'
 import ScenarioEditor from './pages/ScenarioEditor.jsx'
+import AdminAttempts from './pages/AdminAttempts.jsx'
+import AttemptReview from './pages/AttemptReview.jsx'
+import AdminTechnicians from './pages/AdminTechnicians.jsx'
+import AdminSettings from './pages/AdminSettings.jsx'
 
 function Shell({ children }) {
   const { user, logout } = useAuth()
@@ -19,9 +23,12 @@ function Shell({ children }) {
           <nav>
             {user.role === 'admin' ? (
               <>
-                <NavLink to="/admin">Dashboard</NavLink>
+                <NavLink to="/admin" end>Dashboard</NavLink>
+                <NavLink to="/admin/attempts">Attempts</NavLink>
                 <NavLink to="/admin/scenarios">Scenarios</NavLink>
+                <NavLink to="/admin/technicians">Technicians</NavLink>
                 <NavLink to="/admin/users">Users</NavLink>
+                <NavLink to="/admin/settings">Settings</NavLink>
               </>
             ) : (
               <NavLink to="/">Scenarios</NavLink>
@@ -64,6 +71,10 @@ export default function App() {
           <Route path="/admin/scenarios" element={<Guard role="admin"><AdminScenarios /></Guard>} />
           <Route path="/admin/scenarios/new" element={<Guard role="admin"><ScenarioEditor /></Guard>} />
           <Route path="/admin/scenarios/:id" element={<Guard role="admin"><ScenarioEditor /></Guard>} />
+          <Route path="/admin/attempts" element={<Guard role="admin"><AdminAttempts /></Guard>} />
+          <Route path="/admin/attempts/:id" element={<Guard role="admin"><AttemptReview /></Guard>} />
+          <Route path="/admin/technicians" element={<Guard role="admin"><AdminTechnicians /></Guard>} />
+          <Route path="/admin/settings" element={<Guard role="admin"><AdminSettings /></Guard>} />
           <Route path="/admin/users" element={<Guard role="admin"><AdminUsers /></Guard>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
