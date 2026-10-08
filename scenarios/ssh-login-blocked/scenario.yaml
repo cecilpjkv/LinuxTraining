@@ -1,0 +1,13 @@
+name: One account cannot log in after the audit
+description: |
+  Since last week's security audit the "support" account cannot log in over SSH ("Permission denied"), while the
+  "deploy" account still can. The support engineers connect from this server itself for the test (127.0.0.1).
+  Give "support" its key login back; the rest of the audit's hardening must stay in place.
+category: SSH
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 1
+collect:
+  - sshd -T | grep -Ei 'allowusers|denyusers|permitrootlogin'
+  - cat /home/support/.ssh/authorized_keys

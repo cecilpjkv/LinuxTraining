@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  home_page: {points: 50, label: "The home page loads"}
+  logo: {points: 30, label: "Static files (logo) load"}
+  config_valid: {points: 20, label: "The configuration is valid"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}

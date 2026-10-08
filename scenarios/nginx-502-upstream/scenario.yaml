@@ -1,0 +1,12 @@
+name: API returns 502 Bad Gateway
+description: |
+  The shop API (api.example.test, nginx in front of the shop-api service) returns "502 Bad Gateway" since the API
+  team changed some settings yesterday. Its health URL is /health. Bring the API back.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - cat /etc/nginx/conf.d/api.conf /etc/shop-api.env
+  - ss -ltnp

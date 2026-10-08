@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  support_login: {points: 45, label: "support can log in with the key"}
+  deploy_login: {points: 15, label: "deploy can still log in"}
+  root_login_disabled: {points: 20, label: "Root login stays disabled"}
+  allowlist_kept: {points: 20, label: "The AllowUsers list stays (support added, not removed)"}
+process:
+  read_logs: {points: 5, label: "Read sshd's log", any_of: ['journalctl', '/var/log/secure']}
+  effective_config: {points: 5, label: "Checked the effective sshd configuration", any_of: ['sshd\s+-T', 'sshd_config\.d']}

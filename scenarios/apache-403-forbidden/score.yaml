@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  portal_works: {points: 50, label: "portal.example.test loads"}
+  root_still_denied: {points: 25, label: "The filesystem root stays denied (access granted only where needed)"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+  httpd_running: {points: 10, label: "Apache runs"}
+process:
+  read_error_log: {points: 5, label: "Read Apache's error log", any_of: ['/var/log/httpd', 'journalctl']}

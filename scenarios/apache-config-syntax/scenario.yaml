@@ -1,0 +1,12 @@
+name: Portal down after a configuration edit
+description: |
+  The customer portal (portal.example.test, Apache) went down right after a colleague edited its configuration.
+  Bring the portal back.
+category: Apache
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - apachectl configtest
+  - cat /etc/httpd/conf.d/portal.conf

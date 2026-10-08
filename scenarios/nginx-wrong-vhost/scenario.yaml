@@ -1,0 +1,11 @@
+name: Blog shows the shop
+description: |
+  The company blog (blog.example.test) shows the shop's home page instead of the blog since it was moved to this
+  server. The shop (shop.example.test) on the same server works. Fix the blog.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - nginx -T 2>/dev/null | grep -n server_name

@@ -1,0 +1,11 @@
+name: Shop website down
+description: |
+  The shop website (shop.example.test, served by nginx on this server) does not respond: browsers show "Unable to
+  connect". Bring the website back, also after a reboot.
+category: Nginx
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - systemctl status nginx --no-pager

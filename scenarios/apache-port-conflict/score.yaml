@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  portal_works: {points: 30, label: "Apache serves the portal"}
+  port_owner: {points: 20, label: "Apache owns port 80"}
+  httpd_running: {points: 15, label: "Apache runs"}
+  httpd_enabled: {points: 15, label: "Apache starts at boot"}
+  no_conflict_at_boot: {points: 20, label: "nginx will not take port 80 at boot"}
+process:
+  checked_ports: {points: 5, label: "Found out what holds the port", any_of: ['\bss\s+-\w*p', 'netstat\s+-\w*p', 'lsof\s+-i', 'fuser']}
+  read_logs: {points: 5, label: "Read Apache's error output", any_of: ['journalctl', 'systemctl\s+status', '/var/log/httpd']}

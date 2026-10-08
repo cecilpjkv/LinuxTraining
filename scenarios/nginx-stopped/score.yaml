@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  site_works: {points: 45, label: "shop.example.test serves the shop page"}
+  nginx_running: {points: 20, label: "nginx runs"}
+  nginx_enabled: {points: 25, label: "nginx starts at boot"}
+  config_valid: {points: 10, label: "The configuration is valid"}
+process:
+  checked_service: {points: 5, label: "Checked the service state", any_of: ['systemctl\s+status', 'systemctl\s+is-', 'journalctl']}

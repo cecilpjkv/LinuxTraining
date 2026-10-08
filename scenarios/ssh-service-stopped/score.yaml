@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  key_login: {points: 40, label: "support can log in with the SSH key"}
+  sshd_running: {points: 20, label: "sshd runs"}
+  listening: {points: 15, label: "Port 22 is open"}
+  sshd_enabled: {points: 25, label: "sshd starts at boot"}
+process:
+  checked_service: {points: 5, label: "Checked the service state", any_of: ['systemctl\s+status', 'systemctl\s+is-', 'journalctl']}

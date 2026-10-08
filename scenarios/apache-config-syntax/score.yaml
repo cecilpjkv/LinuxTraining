@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  portal_works: {points: 45, label: "portal.example.test loads"}
+  config_valid: {points: 25, label: "The Apache configuration is valid"}
+  httpd_running: {points: 20, label: "Apache runs"}
+  httpd_enabled: {points: 10, label: "Apache starts at boot"}
+process:
+  tested_config: {points: 5, label: "Tested the configuration", any_of: ['apachectl\s+(configtest|-t)', 'httpd\s+-t']}

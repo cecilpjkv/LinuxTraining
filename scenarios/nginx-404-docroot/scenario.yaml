@@ -1,0 +1,12 @@
+name: Every page returns 404
+description: |
+  After the shop was deployed with the new release structure (/srv/www/shop/current), every page of
+  shop.example.test returns "404 Not Found", including the logo at /img/logo.png. Fix the site.
+category: Nginx
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - cat /etc/nginx/conf.d/shop.conf
+  - ls -R /srv/www/shop | head -20

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  home_page: {points: 45, label: "The home page loads"}
+  images: {points: 25, label: "Images load"}
+  not_world_writable: {points: 30, label: "No file or directory is writable by everybody"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}
+  checked_perms: {points: 5, label: "Inspected permissions along the path", any_of: ['namei', 'ls\s+-\w*l', '\bstat\b']}

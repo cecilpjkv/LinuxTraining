@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  portal_works: {points: 60, label: "portal.example.test shows the portal"}
+  config_valid: {points: 20, label: "The configuration is valid"}
+  httpd_running: {points: 20, label: "Apache runs"}
+process:
+  read_error_log: {points: 5, label: "Read Apache's logs", any_of: ['/var/log/httpd', 'journalctl', 'apachectl\s+-S']}

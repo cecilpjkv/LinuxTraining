@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  blog_works: {points: 55, label: "blog.example.test serves the blog"}
+  shop_works: {points: 30, label: "The shop still works"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+process:
+  dumped_config: {points: 5, label: "Inspected the effective configuration", any_of: ['nginx\s+-T', 'conf\.d']}

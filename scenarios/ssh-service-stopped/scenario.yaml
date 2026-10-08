@@ -1,0 +1,12 @@
+name: SSH connection refused
+description: |
+  The support team cannot connect to this server over SSH: "Connection refused". The server is otherwise up.
+  Restore SSH access (also after a reboot). The support engineers log in as "support" with their SSH key.
+category: SSH
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 1
+collect:
+  - systemctl status sshd --no-pager
+  - ss -ltnp

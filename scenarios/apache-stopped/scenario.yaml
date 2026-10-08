@@ -1,0 +1,11 @@
+name: Customer portal unreachable
+description: |
+  The customer portal (portal.example.test, Apache on this server) does not respond: "Unable to connect".
+  Bring it back, also after a reboot.
+category: Apache
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - systemctl status httpd --no-pager

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  api_works: {points: 60, label: "api.example.test/health answers through nginx"}
+  api_running: {points: 25, label: "shop-api runs"}
+  config_valid: {points: 15, label: "The nginx configuration is valid"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}
+  checked_ports: {points: 5, label: "Checked which ports are listening", any_of: ['\bss\s+-\w*l', 'netstat', 'lsof\s+-i']}

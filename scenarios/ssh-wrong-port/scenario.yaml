@@ -1,0 +1,12 @@
+name: SSH unreachable after a change
+description: |
+  Since yesterday's change the support team cannot connect over SSH ("Connection refused" on port 22). The company
+  firewall only allows SSH on the standard port. Restore access for the support engineers ("support", key login).
+category: SSH
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 1
+collect:
+  - grep -ri '^ *port' /etc/ssh/sshd_config /etc/ssh/sshd_config.d/
+  - ss -ltnp

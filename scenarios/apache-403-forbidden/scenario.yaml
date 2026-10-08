@@ -1,0 +1,12 @@
+name: Portal answers 403 after moving it
+description: |
+  The customer portal (portal.example.test) was moved from /var/www/html to /srv/www/portal this morning. Since then
+  it answers "403 Forbidden". Make it work without opening up the rest of the server's filesystem.
+category: Apache
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - cat /etc/httpd/conf.d/portal.conf
+  - tail -3 /var/log/httpd/portal_error.log

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  port_22: {points: 30, label: "sshd listens on port 22"}
+  key_login: {points: 40, label: "support can log in on port 22"}
+  sshd_running: {points: 15, label: "sshd runs"}
+  config_valid: {points: 15, label: "The sshd configuration is valid"}
+process:
+  checked_ports: {points: 5, label: "Checked listening ports", any_of: ['\bss\s+-\w*l', 'netstat', 'lsof\s+-i']}

@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  config_valid: {points: 25, label: "The sshd configuration is valid"}
+  sshd_running: {points: 20, label: "sshd runs"}
+  key_login: {points: 40, label: "support can log in with the key"}
+  root_login_disabled: {points: 15, label: "Root login stays disabled (company setting kept)"}
+process:
+  tested_config: {points: 5, label: "Tested the configuration (sshd -t)", any_of: ['sshd\s+-[tT]']}
+  read_logs: {points: 5, label: "Read the service status or logs", any_of: ['systemctl\s+status', 'journalctl']}

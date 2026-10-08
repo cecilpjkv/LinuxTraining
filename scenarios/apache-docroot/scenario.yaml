@@ -1,0 +1,11 @@
+name: Portal shows the Apache test page
+description: |
+  The customer portal (portal.example.test) shows the Apache test page / "Not Found" instead of the portal since the
+  configuration was rewritten during a migration. The portal's files are on the server. Fix it.
+category: Apache
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - grep -n DocumentRoot /etc/httpd/conf.d/portal.conf

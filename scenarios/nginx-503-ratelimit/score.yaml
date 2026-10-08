@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  browsing_works: {points: 55, label: "20 quick requests all succeed"}
+  protection_kept: {points: 30, label: "Rate limiting stays in place"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log (it names the limit)", any_of: ['/var/log/nginx', 'journalctl']}

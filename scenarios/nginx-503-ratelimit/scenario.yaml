@@ -1,0 +1,13 @@
+name: Random 503 errors
+description: |
+  Customers see "503 Service Temporarily Unavailable" on shop.example.test, mostly when they click quickly; the first
+  page load usually works. The security team added protection against request floods last week, and it must stay in
+  place. Make normal browsing work again.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - nginx -T 2>/dev/null | grep -n limit_req
+  - grep -c ' 503 ' /var/log/nginx/access.log

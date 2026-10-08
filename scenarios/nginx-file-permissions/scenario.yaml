@@ -1,0 +1,13 @@
+name: 403 Forbidden after a restore
+description: |
+  After the shop files were restored from a backup this morning, shop.example.test returns "403 Forbidden" for every
+  page, including images. The nginx configuration was not changed. Fix the site without making files writable for
+  everybody.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - namei -l /srv/www/shop/index.html
+  - tail -5 /var/log/nginx/error.log

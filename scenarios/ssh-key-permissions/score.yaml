@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  key_login: {points: 45, label: "support can log in with the key"}
+  safe_permissions: {points: 35, label: "Home, .ssh and authorized_keys are owned by support and not writable by others"}
+  strict_modes_kept: {points: 20, label: "The SSH server's StrictModes check stays on"}
+process:
+  read_logs: {points: 5, label: "Read sshd's log (the reason is logged there)", any_of: ['journalctl', '/var/log/secure']}

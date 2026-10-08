@@ -1,0 +1,13 @@
+name: Apache cannot start
+description: |
+  Apache refuses to start on this server, so the customer portal (portal.example.test) is down. The server used to
+  run nginx, which is no longer needed: the portal must be served by Apache on port 80, also after a reboot.
+category: Apache
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - ss -ltnp | grep ':80 '
+  - grep -rn '^ *Listen' /etc/httpd/
+  - systemctl is-enabled nginx httpd

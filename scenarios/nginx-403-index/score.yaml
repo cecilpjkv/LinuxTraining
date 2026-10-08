@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  home_page: {points: 60, label: "The home page loads"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+  no_listing: {points: 25, label: "No directory listing exposed"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}

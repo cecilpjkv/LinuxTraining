@@ -1,0 +1,13 @@
+name: SSH down after a configuration change
+description: |
+  A colleague rolled out the company SSH settings this morning. Since then the server cannot be reached over SSH at
+  all. Restore SSH access for the support engineers ("support", key login) while keeping the company settings.
+category: SSH
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - sshd -t
+  - cat /etc/ssh/sshd_config.d/40-company.conf
+  - systemctl status sshd --no-pager
