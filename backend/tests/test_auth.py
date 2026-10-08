@@ -62,3 +62,9 @@ def test_login_throttle(client):
         assert client.post("/api/auth/login", json={"username": "victim", "password": "x"}).status_code == 401
     assert client.post("/api/auth/login", json={"username": "victim", "password": "x"}).status_code == 429
     auth._FAILS.clear()
+
+
+def test_session_endpoint(client):
+    assert client.get("/api/auth/session").json() == {"user": None}
+    client.post("/api/auth/login", json={"username": "admin", "password": ADMIN_PW})
+    assert client.get("/api/auth/session").json()["user"]["username"] == "admin"

@@ -3,7 +3,7 @@ import time
 from collections import defaultdict, deque
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
@@ -12,7 +12,7 @@ from ..db import get_db
 from ..deps import current_user
 from ..models import User
 from ..schemas import LoginIn, RegisterIn, UserOut
-from ..security import COOKIE, check_password_policy, hash_password, make_token, verify_password
+from ..security import COOKIE, check_password_policy, hash_password, make_token, read_token, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -94,3 +94,11 @@ def logout(resp: Response) -> None:
 @router.get("/me", response_model=UserOut)
 def me(user: User = Depends(current_user)) -> User:
     return user
+
+
+@router.get("/session")
+def session(db: Session = Depends(get_db), token: str | None = Cookie(default=None, alias=COOKIE)) -> dict:
+    """Who is logged in, without an error status for "nobody" (the app asks before the login page)."""
+    uid = read_token(token) if token else None
+    user = db.get(User, uid) if uid else None
+    return {"user": UserOut.model_validate(user).model_dump(mode="json") if user and user.active else None}
