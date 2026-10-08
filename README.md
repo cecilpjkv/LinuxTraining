@@ -23,8 +23,8 @@ Docker Compose (the application itself).
 - [x] Phase 2: scenario management, Docker labs, resource weights, concurrency limit
 - [x] Phase 3: browser terminal (WebSocket + PTY), command logging
 - [x] Phase 4: setup/verify scripts, scoring (MVP flow verified end to end: scripts/e2e_mvp.py)
-- [ ] Phase 5: attempt history, admin review, dashboard
-- [ ] Phase 6: cleanup, queue, timeouts, security hardening
+- [x] Phase 5: attempt history, admin review, dashboard
+- [x] Phase 6: cleanup, queue, timeouts, security hardening (docs/security.md)
 
 ## Quick start (development host)
 

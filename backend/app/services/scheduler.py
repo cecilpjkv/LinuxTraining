@@ -63,6 +63,9 @@ class Scheduler:
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
         self.tick_seconds = 5.0
+        self._busy: set[int] = set()  # attempts being provisioned by this process
+        self._verifying_seen: dict[int, datetime] = {}
+        self._last_orphans = datetime.min.replace(tzinfo=timezone.utc)
 
     def start(self) -> None:
         if self._thread and self._thread.is_alive():
@@ -88,7 +91,12 @@ class Scheduler:
             self._wake.clear()
 
     def tick(self) -> list[int]:
-        """One round: start what fits (and, from phase 6, time out and clean up). Returns the attempts started."""
+        """One round: housekeeping (time limits, idle labs, stuck states, orphans), then start what fits. Returns
+        the attempts started."""
+        try:
+            self.maintain()
+        except Exception:
+            log.error("maintenance failed:\n%s", traceback.format_exc())
         started = []
         with SessionLocal() as db:
             db.execute(text("SELECT pg_advisory_xact_lock(:k)"), {"k": LOCK_ID})
@@ -104,7 +112,84 @@ class Scheduler:
             threading.Thread(target=self.provision, args=(aid,), name=f"provision-{aid}", daemon=True).start()
         return started
 
+    # --- phase 6: lifecycle housekeeping ---
+
+    STUCK_PROVISIONING = timedelta(minutes=10)
+    QUEUE_EXPIRY = timedelta(hours=6)
+    ORPHAN_EVERY = timedelta(minutes=5)
+
+    def maintain(self) -> None:
+        from .grading import begin, grade
+        from .lifecycle import end_attempt
+        from .terminal import terminals
+        t = now()
+        with SessionLocal() as db:
+            cfg = settings_store.get_all(db)
+            for a in db.execute(select(TrainingAttempt).where(TrainingAttempt.status.in_((*ACTIVE, "queued")))).scalars().all():
+                if a.status == "ready":
+                    if terminals.attached(a.id):
+                        a.last_seen_at = t
+                        db.commit()
+                    if a.deadline_at and t >= a.deadline_at:
+                        log.info("attempt %s: time limit reached, grading", a.id)
+                        begin(a.id, "timed_out", "time limit reached: graded as it stood")
+                    elif t - (a.last_seen_at or a.started_at or t) > timedelta(minutes=cfg["idle_abandon_minutes"]):
+                        log.info("attempt %s: no terminal for %s min, abandoned", a.id, cfg["idle_abandon_minutes"])
+                        end_attempt(db, a, "abandoned", f"no terminal connected for {cfg['idle_abandon_minutes']} minutes")
+                elif a.status == "provisioning" and a.started_at and t - a.started_at > self.STUCK_PROVISIONING and a.id not in self._busy:
+                    # the backend restarted while preparing it: start over from the queue
+                    log.warning("attempt %s: provisioning interrupted, queued again", a.id)
+                    labs.destroy(a.id)
+                    db.query(LabContainer).filter_by(attempt_id=a.id).delete()
+                    a.status, a.started_at = "queued", None
+                    db.commit()
+                elif a.status == "verifying" and not self._grading_alive(a.id) and \
+                        t - self._verifying_seen.setdefault(a.id, t) > timedelta(minutes=1):
+                    # no grading thread in this process for over a minute: it was interrupted (backend restart)
+                    self._verifying_seen.pop(a.id, None)
+                    log.warning("attempt %s: grading interrupted, grading again", a.id)
+                    if labs.running(a.id):
+                        threading.Thread(target=grade, args=(a.id, "completed", "completed (graded after a restart)"), daemon=True).start()
+                    else:
+                        end_attempt(db, a, "failed", "the lab was lost before grading")
+                elif a.status == "queued" and t - a.created_at > self.QUEUE_EXPIRY:
+                    end_attempt(db, a, "abandoned", "waited in the queue for more than 6 hours")
+        if t - self._last_orphans > self.ORPHAN_EVERY:
+            self._last_orphans = t
+            self.remove_orphans()
+
+    def _grading_alive(self, aid: int) -> bool:
+        return any(th.name == f"grade-{aid}" and th.is_alive() for th in threading.enumerate())
+
+    def remove_orphans(self) -> int:
+        """Lab containers whose attempt is no longer running (crash, manual edits) are destroyed; a lab record whose
+        container vanished is marked destroyed."""
+        n = 0
+        with SessionLocal() as db:
+            live = set(db.execute(select(TrainingAttempt.id).where(TrainingAttempt.status.in_(ACTIVE))).scalars())
+            for c in labs.managed():
+                try:
+                    aid = int(c["attempt"])
+                except (TypeError, ValueError):
+                    aid = None
+                if aid not in live:
+                    log.warning("removing orphan lab container %s", c["name"])
+                    labs.destroy(aid) if aid is not None else None
+                    n += 1
+            for lab in db.query(LabContainer).filter(LabContainer.status != "destroyed").all():
+                if lab.attempt_id not in live:
+                    lab.status, lab.destroyed_at = "destroyed", now()
+            db.commit()
+        return n
+
     def provision(self, attempt_id: int) -> None:
+        self._busy.add(attempt_id)
+        try:
+            self._provision(attempt_id)
+        finally:
+            self._busy.discard(attempt_id)
+
+    def _provision(self, attempt_id: int) -> None:
         """Creates the lab, waits for systemd, runs setup.sh, confirms the scenario is broken, then opens it."""
         with SessionLocal() as db:
             a = db.get(TrainingAttempt, attempt_id)

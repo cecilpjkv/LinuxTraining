@@ -1,0 +1,26 @@
+{
+  "userns-remap": "dockremap",
+  "data-root": "/var/lib/docker-labs",
+  "exec-root": "/run/docker-labs",
+  "pidfile": "/run/docker-labs.pid",
+  "hosts": [
+    "unix:///run/docker-labs.sock"
+  ],
+  "containerd-namespace": "moby-labs",
+  "containerd-plugins-namespace": "plugins-labs",
+  "bridge": "none",
+  "log-driver": "local",
+  "log-opts": {
+    "max-size": "1m",
+    "max-file": "2"
+  },
+  "iptables": false,
+  "ip6tables": false,
+  "ip-forward": false,
+  "default-address-pools": [
+    {
+      "base": "10.213.0.0/16",
+      "size": 28
+    }
+  ]
+}

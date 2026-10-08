@@ -1,6 +1,9 @@
+import threading
+import time
+from collections import defaultdict, deque
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
@@ -22,12 +25,42 @@ def _set_cookie(resp: Response, user: User) -> None:
                     max_age=settings.token_hours * 3600, path="/")
 
 
+# brute-force brake: 10 failures per username or per client address within 15 minutes -> 429 until they age out
+_FAILS: dict[str, deque] = defaultdict(deque)
+_FAILS_LOCK = threading.Lock()
+WINDOW, LIMIT = 15 * 60, 10
+
+
+def _throttled(keys: list[str]) -> bool:
+    cut = time.monotonic() - WINDOW
+    with _FAILS_LOCK:
+        for k in keys:
+            q = _FAILS[k]
+            while q and q[0] < cut:
+                q.popleft()
+            if len(q) >= LIMIT:
+                return True
+    return False
+
+
+def _failed(keys: list[str]) -> None:
+    with _FAILS_LOCK:
+        for k in keys:
+            _FAILS[k].append(time.monotonic())
+        if len(_FAILS) > 50000:
+            _FAILS.clear()
+
+
 @router.post("/login", response_model=UserOut)
-def login(body: LoginIn, resp: Response, db: Session = Depends(get_db)) -> User:
+def login(body: LoginIn, req: Request, resp: Response, db: Session = Depends(get_db)) -> User:
     name = body.username.strip()
+    keys = [f"u:{name.lower()}", f"ip:{req.client.host if req.client else '-'}"]
+    if _throttled(keys):
+        raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "too many failed logins; wait 15 minutes")
     user = db.scalar(select(User).where(or_(User.username == name, User.email == name.lower())))
     ok = verify_password(body.password, user.password_hash if user else _DUMMY)
     if not user or not ok or not user.active:
+        _failed(keys)
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "wrong username or password")
     user.last_login_at = datetime.now(timezone.utc)
     db.commit()

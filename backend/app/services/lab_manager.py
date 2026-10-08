@@ -1,6 +1,7 @@
-"""Lab Manager (spec §5): the only code that talks to Docker. Each attempt gets one container, named
-training-attempt-<id>, on an internal network (no internet, no traffic between labs), with CPU/memory/PID limits and
-no host mounts. Scenario scripts are streamed to bash over stdin: they run only inside the container and leave no
+"""Lab Manager (spec §5): the only code that talks to Docker (the lab daemon, deploy/docker-labs). Each attempt gets
+one container, named training-attempt-<id>, on its own internal network whose bridge is lt-<id> (the host's
+lt-labs-firewall drops everything from and to lt-* bridges: no internet, no other lab, not the host), with
+CPU/memory/PID limits and no host mounts. Scenario scripts are streamed to bash over stdin: they run only inside the container and leave no
 copy there for the technician to read."""
 import logging
 import socket
@@ -13,7 +14,6 @@ from docker.errors import APIError, NotFound
 
 log = logging.getLogger("lab")
 
-NETWORK = "lt-labs"
 LABEL = "lt.managed"
 PREFIX = "training-attempt-"
 
@@ -48,12 +48,25 @@ class LabManager:
 
     # --- network ---
 
-    def ensure_network(self) -> None:
+    @staticmethod
+    def network_name(attempt_id: int) -> str:
+        return f"lt-lab-{attempt_id}"
+
+    def create_network(self, attempt_id: int) -> str:
+        name = self.network_name(attempt_id)
         try:
-            self.client.networks.get(NETWORK)
+            self.client.networks.get(name).remove()
         except NotFound:
-            self.client.networks.create(NETWORK, driver="bridge", internal=True, labels={LABEL: "1"},
-                                        options={"com.docker.network.bridge.enable_icc": "false"})
+            pass
+        self.client.networks.create(name, driver="bridge", internal=True, labels={LABEL: "1", "lt.attempt": str(attempt_id)},
+                                    options={"com.docker.network.bridge.name": f"lt-{attempt_id}"[:15]})
+        return name
+
+    def remove_network(self, attempt_id: int) -> None:
+        try:
+            self.client.networks.get(self.network_name(attempt_id)).remove()
+        except (NotFound, APIError):
+            pass
 
     # --- lifecycle ---
 
@@ -62,13 +75,13 @@ class LabManager:
         return f"{PREFIX}{attempt_id}"
 
     def create(self, spec: LabSpec) -> str:
-        self.ensure_network()
+        network = self.create_network(spec.attempt_id)
         tmpfs = {"/run": "rw,nosuid,nodev,size=64m", "/run/lock": "rw,nosuid,nodev,size=8m"}
         for path, mb in spec.tmpfs.items():
             tmpfs[path] = f"rw,size={mb}m"
         c = self.client.containers.run(
             spec.image, name=self.name(spec.attempt_id), hostname="training", detach=True,
-            network=NETWORK, cgroupns="private",
+            network=network, cgroupns="private",
             cap_add=["SYS_ADMIN", *spec.capabilities],  # SYS_ADMIN: systemd's cgroups (see images/base/lab-init)
             tmpfs=tmpfs,
             nano_cpus=int(spec.cpu * 1e9), mem_limit=f"{spec.memory_mb}m", memswap_limit=f"{spec.memory_mb}m",
@@ -95,9 +108,11 @@ class LabManager:
     def destroy(self, attempt_id: int) -> bool:
         try:
             self.client.containers.get(self.name(attempt_id)).remove(force=True, v=True)
-            return True
+            found = True
         except NotFound:
-            return False
+            found = False
+        self.remove_network(attempt_id)
+        return found
 
     def running(self, attempt_id: int) -> bool:
         try:
@@ -110,6 +125,10 @@ class LabManager:
         out = []
         for c in self.client.containers.list(all=True, filters={"label": LABEL}):
             out.append({"name": c.name, "status": c.status, "attempt": c.labels.get("lt.attempt")})
+        seen = {o["attempt"] for o in out}
+        for n in self.client.networks.list(filters={"label": LABEL}):  # a network left without its container
+            if n.attrs.get("Labels", {}).get("lt.attempt") not in seen:
+                out.append({"name": n.name, "status": "network", "attempt": n.attrs.get("Labels", {}).get("lt.attempt")})
         return out
 
     # --- running things inside ---

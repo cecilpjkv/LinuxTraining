@@ -81,6 +81,7 @@ class TrainingAttempt(Base):
     deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     end_reason: Mapped[str] = mapped_column(String(200), default="")
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)  # a terminal was attached
     final_state: Mapped[str] = mapped_column(Text, default="")  # relevant configuration/state collected at the end
     error: Mapped[str] = mapped_column(Text, default="")
 

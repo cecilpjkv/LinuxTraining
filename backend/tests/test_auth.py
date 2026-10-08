@@ -53,3 +53,12 @@ def test_disabled_user_cannot_login(admin, client):
 def test_tampered_token(client):
     client.cookies.set("lt_session", "eyJhbGciOiJub25lIn0.eyJzdWIiOiIxIn0.")
     assert client.get("/api/auth/me").status_code == 401
+
+
+def test_login_throttle(client):
+    import app.api.auth as auth
+    auth._FAILS.clear()
+    for _ in range(10):
+        assert client.post("/api/auth/login", json={"username": "victim", "password": "x"}).status_code == 401
+    assert client.post("/api/auth/login", json={"username": "victim", "password": "x"}).status_code == 429
+    auth._FAILS.clear()

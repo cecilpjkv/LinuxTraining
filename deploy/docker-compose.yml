@@ -31,8 +31,9 @@ services:
       LT_SCENARIOS_DIR: /srv/scenarios
     volumes:
       - ../scenarios:/srv/scenarios:ro
-      # the backend (and only the backend) creates the labs through the host's Docker Engine; the browser never sees it
-      - /var/run/docker.sock:/var/run/docker.sock
+      # the backend (and only the backend) creates the labs through the LAB Docker daemon (deploy/docker-labs:
+      # user-namespace remapped); it has no access to the daemon running this application. The browser never sees it.
+      - /run/docker-labs.sock:/var/run/docker.sock
     networks: [app]
 
   web:

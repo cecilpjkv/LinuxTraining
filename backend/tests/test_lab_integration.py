@@ -51,8 +51,9 @@ def test_nginx_scenario_end_to_end(mgr, monkeypatch):
         # the technician's shell has no CAP_SYS_ADMIN
         bnd = mgr.exec(aid, ["/usr/local/sbin/lab-shell", "-c", "grep CapBnd /proc/self/status"]).output
         assert int(bnd.split()[-1], 16) & (1 << 21) == 0, bnd
-        # no internet from a lab
+        # no internet from a lab, and its own network (bridge lt-<id>)
         assert mgr.exec(aid, ["curl", "-s", "-m", "5", "-o", "/dev/null", "http://1.1.1.1/"]).exit_code != 0
+        assert list(c.attrs["NetworkSettings"]["Networks"]) == [mgr.network_name(aid)]
         # the fix a technician would make
         fix = "sed -i 's|add_header X-Shop-Version \"2.4\"$|add_header X-Shop-Version \"2.4\";|' /etc/nginx/conf.d/shop.conf && nginx -t && systemctl restart nginx"
         assert mgr.exec(aid, ["bash", "-c", fix]).exit_code == 0
@@ -61,3 +62,4 @@ def test_nginx_scenario_end_to_end(mgr, monkeypatch):
     finally:
         mgr.destroy(aid)
     assert not mgr.running(aid)
+    assert not mgr.client.networks.list(names=[mgr.network_name(aid)])
