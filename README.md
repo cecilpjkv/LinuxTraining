@@ -25,23 +25,31 @@ Docker Compose (the application itself).
 - [x] Phase 4: setup/verify scripts, scoring (MVP flow verified end to end: scripts/e2e_mvp.py)
 - [x] Phase 5: attempt history, admin review, dashboard
 - [x] Phase 6: cleanup, queue, timeouts, security hardening (docs/security.md)
+- [x] 100 seeded scenarios: the 50 of spec 25 plus 50 more (system/security, web/TLS; easy to extra hard)
 - [x] 50 seeded scenarios (spec 25): 15 easy / 25 intermediate / 10 advanced, each proven in a real lab by
       `scripts/check-scenarios.sh` (setup breaks it, the reference fix scores full marks)
 
 ## Documentation
 
-- `docs/deployment.md`: installation (Docker, lab daemon, images, Compose, reverse proxy, HTTPS, admin, backups)
+- `docs/INSTALL.md`: step-by-step installation on a new server (start here)
+- `docs/deployment.md`: installation details (Docker, lab daemon, images, Compose, reverse proxy, HTTPS, admin, backups)
 - `docs/scenarios.md`: writing scenarios (format, verify helpers, scoring, pitfalls)
 - `docs/security.md`: the security model
 
-## Install on AlmaLinux 9/10
+## Install on a server (AlmaLinux 9/10)
 
+**Step-by-step guide for any server: [docs/INSTALL.md](docs/INSTALL.md)** (from an empty server to a running
+platform, plus updates, backups, HTTPS and troubleshooting).
+
+The short version, as root on AlmaLinux / Rocky / RHEL 9 or 10 with access to this repository:
+
+    dnf -y install git
     git clone git@github.com:cecilpjkv/LinuxTraining.git /opt/linuxtraining
     /opt/linuxtraining/deploy/install-almalinux.sh
 
-Installs Docker, the lab daemon, the lab images and the application, creates the administrator (password printed
-once and kept in /root/.lt-admin-password), opens the port in firewalld and schedules daily database backups.
-Run it again to update (`git pull` first). Details: `docs/deployment.md`.
+Then open `http://SERVER-IP/` — technicians enter their name and e-mail; the administrator uses
+*Administrator login* (user `admin`, password printed by the installer and kept in `/root/.lt-admin-password`).
+Update later with `git -C /opt/linuxtraining pull && /opt/linuxtraining/deploy/install-almalinux.sh`.
 
 ## Quick start (development host)
 
