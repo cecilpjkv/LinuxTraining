@@ -90,6 +90,19 @@ def test_login_throttle(client):
 
 
 def test_session_endpoint(client):
-    assert client.get("/api/auth/session").json() == {"user": None}
+    assert client.get("/api/auth/session").json()["user"] is None
     client.post("/api/auth/login", json={"username": "admin", "password": ADMIN_PW})
     assert client.get("/api/auth/session").json()["user"]["username"] == "admin"
+
+
+def test_technician_test_password(client, monkeypatch):
+    from app.config import settings
+    monkeypatch.setattr(settings, "test_password", "Lab-Pass-42")
+    assert client.get("/api/auth/session").json()["test_password"] is True
+    body = {"full_name": "Pat Test", "email": "pat@example.com"}
+    assert client.post("/api/auth/technician", json=body).status_code == 401
+    assert client.post("/api/auth/technician", json={**body, "password": "wrong"}).status_code == 401
+    r = client.post("/api/auth/technician", json={**body, "password": "Lab-Pass-42"})
+    assert r.status_code == 200 and r.json()["email"] == "pat@example.com"
+    monkeypatch.setattr(settings, "test_password", "")
+    assert client.get("/api/auth/session").json()["test_password"] is False

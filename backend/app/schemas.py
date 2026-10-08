@@ -11,6 +11,7 @@ class LoginIn(BaseModel):
 class TechnicianIn(BaseModel):
     full_name: str = Field(min_length=2, max_length=128)
     email: str = Field(max_length=255, pattern=r"^\s*[^@\s]+@[^@\s]+\.[^@\s]+\s*$")
+    password: str = Field(default="", max_length=256)
 
 
 class UserOut(BaseModel):

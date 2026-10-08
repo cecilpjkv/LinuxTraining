@@ -28,6 +28,7 @@ services:
       LT_SECRET_KEY: ${LT_SECRET_KEY:?set LT_SECRET_KEY in deploy/.env}
       LT_COOKIE_SECURE: ${LT_COOKIE_SECURE:-false}
       LT_ALLOW_REGISTRATION: ${LT_ALLOW_REGISTRATION:-true}
+      LT_TEST_PASSWORD: ${LT_TEST_PASSWORD:-}
       LT_SCENARIOS_DIR: /srv/scenarios
       DOCKER_HOST: unix:///run/lt-labs/docker.sock
     volumes:

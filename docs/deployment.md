@@ -85,6 +85,7 @@ docker compose up -d --build
 | `LT_DB_PASSWORD` | PostgreSQL password (also used by the backend) |
 | `LT_SECRET_KEY` | signs the session tokens; changing it logs everybody out |
 | `LT_COOKIE_SECURE` | `true` once HTTPS is in front (section 5) |
+| `LT_TEST_PASSWORD` | shared password technicians enter with their name and e-mail address (empty: no password asked) |
 | `LT_ALLOW_REGISTRATION` | technicians start with their name and e-mail address (no password); `false` turns that off |
 | `LT_HTTP_PORT` | where the web container listens; `127.0.0.1:8080` behind a reverse proxy |
 

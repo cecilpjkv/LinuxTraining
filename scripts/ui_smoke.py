@@ -10,6 +10,7 @@ import sys
 from playwright.sync_api import expect, sync_playwright
 
 BASE, ADMIN_PW, OUT = sys.argv[1].rstrip("/"), sys.argv[2], sys.argv[3]
+TEST_PW = sys.argv[4] if len(sys.argv) > 4 else ""  # the shared technician test password, if one is set
 errors = []
 
 
@@ -52,9 +53,15 @@ with sync_playwright() as p:
     watch(t)
     user = "ui" + secrets.token_hex(3)
     t.goto(f"{BASE}/")
-    ok(t.get_by_label("Password").count() == 0, "technician start page asks for no password")
+    ok(t.get_by_label("Password", exact=True).count() == 0, "technician start page asks for no personal password")
     t.get_by_label("Full name").fill("UI Smoke " + user)
     t.get_by_label("E-mail address").fill(f"{user}@example.test")
+    if TEST_PW:
+        t.get_by_label("Test password").fill("wrong-password")
+        t.get_by_role("button", name="Continue").click()
+        expect(t.locator(".error")).to_contain_text("wrong test password")
+        ok(True, "a wrong test password is refused")
+        t.get_by_label("Test password").fill(TEST_PW)
     t.get_by_role("button", name="Continue").click()
     expect(t.get_by_role("heading", name="Scenarios")).to_be_visible()
     expect(t.locator("article.scenario")).to_have_count(112)  # loaded after the heading appears
@@ -101,5 +108,7 @@ with sync_playwright() as p:
     ok(True, "admin review shows the 3 commands and the verification")
     browser.close()
 
+if TEST_PW:  # the deliberately wrong test password answers 401
+    errors = [e for e in errors if "401" not in e]
 ok(not errors, f"no browser console errors{': ' + '; '.join(errors[:3]) if errors else ''}")
 print("attempt user:", user)

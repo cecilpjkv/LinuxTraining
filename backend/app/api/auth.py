@@ -1,3 +1,4 @@
+import hmac
 import re
 import threading
 import time
@@ -82,11 +83,18 @@ def _username_for(db: Session, email: str) -> str:
 
 
 @router.post("/technician", response_model=UserOut)
-def technician(body: TechnicianIn, resp: Response, db: Session = Depends(get_db)) -> User:
+def technician(body: TechnicianIn, req: Request, resp: Response, db: Session = Depends(get_db)) -> User:
     """Technicians start with their name and e-mail address, no password: a new address creates the technician,
     a known one continues as that technician (with their previous attempts). Administrators use /login."""
     if not settings.allow_registration:
         raise HTTPException(status.HTTP_403_FORBIDDEN, "technician access is disabled; ask an administrator")
+    if settings.test_password:
+        keys = [f"t-ip:{req.client.host if req.client else '-'}"]
+        if _throttled(keys):
+            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "too many wrong passwords; wait 15 minutes")
+        if not hmac.compare_digest(body.password.encode(), settings.test_password.encode()):
+            _failed(keys)
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED, "wrong test password")
     email = body.email.strip().lower()
     name = " ".join(body.full_name.split())
     user = db.scalar(select(User).where(User.email == email))
@@ -120,4 +128,5 @@ def session(db: Session = Depends(get_db), token: str | None = Cookie(default=No
     """Who is logged in, without an error status for "nobody" (the app asks before the login page)."""
     uid = read_token(token) if token else None
     user = db.get(User, uid) if uid else None
-    return {"user": UserOut.model_validate(user).model_dump(mode="json") if user and user.active else None}
+    return {"user": UserOut.model_validate(user).model_dump(mode="json") if user and user.active else None,
+            "test_password": bool(settings.test_password)}

@@ -153,10 +153,13 @@ At the end you see something like:
 ==> Done
   Web interface : http://203.0.113.25/   (technicians: name + e-mail; administrators: 'admin' via 'Administrator login')
   Admin password: Xy7pQ2...              (also in /root/.lt-admin-password, mode 0600)
+  Test password : k3Rt9bQx               (technicians enter it with name + e-mail)
   Scenarios     : 112
 ```
 
-**Write down the admin password** (or look it up later with `cat /root/.lt-admin-password`).
+**Write down the admin password** (or look it up later with `cat /root/.lt-admin-password`) and the **test
+password** — give the test password to your technicians (look it up later with
+`grep LT_TEST_PASSWORD /opt/linuxtraining/deploy/.env`).
 
 > Want a different web port, e.g. 8080? Run instead:
 > `LT_HTTP_PORT=8080 /opt/linuxtraining/deploy/install-almalinux.sh`
@@ -167,7 +170,7 @@ At the end you see something like:
 
 In your web browser go to the address from step 7, for example **http://203.0.113.25/**
 
-- **Technicians**: enter full name and e-mail address → *Continue* → choose a scenario → *Start test*.
+- **Technicians**: enter full name, e-mail address and the test password → *Continue* → choose a scenario → *Start test*.
 - **Administrator**: click **Administrator login** (under the form) → user `admin` + the password from step 7.
 
 Check as administrator: *Dashboard* shows **Scenarios: 112**.
@@ -242,6 +245,11 @@ docker compose ps                         # db, backend and web should be "Up"
 systemctl is-active docker docker-labs    # both "active"
 curl -s http://127.0.0.1/api/health       # {"status":"ok"}
 ```
+
+### Change the test password
+
+Edit `/opt/linuxtraining/deploy/.env`, change the `LT_TEST_PASSWORD=` line (empty = no password asked), then
+`cd /opt/linuxtraining/deploy && docker compose up -d`. Technicians already logged in stay logged in.
 
 ### Turn off self-service for technicians
 

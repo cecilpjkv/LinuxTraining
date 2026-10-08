@@ -1,3 +1,4 @@
+import os
 """End-to-end check of the first deliverable (spec §24) against a running deployment, as a browser would:
 admin creates a scenario -> technician starts the nginx scenario -> lab + setup -> terminal over WebSocket ->
 commands recorded -> complete -> verify -> score -> lab destroyed.
@@ -35,7 +36,7 @@ def main():
 
     tech = httpx.Client(base_url=BASE, timeout=30)
     user = "tech" + secrets.token_hex(3)
-    ok(tech.post("/api/auth/technician", json={"full_name": "E2E Tech", "email": f"{user}@example.test"}).status_code == 200, "technician entered with name and e-mail (no password)")
+    ok(tech.post("/api/auth/technician", json={"full_name": "E2E Tech", "email": f"{user}@example.test", "password": os.environ.get("LT_TEST_PASSWORD", "")}).status_code == 200, "technician entered with name and e-mail ")
     ok(any(s["id"] == sc["id"] for s in tech.get("/api/scenarios").json()), "technician sees the scenario")
     a = tech.post("/api/attempts", json={"scenario_id": sc["id"]}).json()
     t0 = time.time()
@@ -72,7 +73,7 @@ def main():
     ok("Shop OK" in screen and "777;lt" not in screen, "commands ran interactively; no hook markers on screen")
     # someone else's attempt is not reachable
     other = httpx.Client(base_url=BASE, timeout=30)
-    other.post("/api/auth/technician", json={"full_name": "Other Tech", "email": f"x{user}@example.test"})
+    other.post("/api/auth/technician", json={"full_name": "Other Tech", "email": f"x{user}@example.test", "password": os.environ.get("LT_TEST_PASSWORD", "")})
     ok(other.get(f"/api/attempts/{a['id']}").status_code == 404, "another technician cannot see the attempt")
 
     ok(tech.post(f"/api/attempts/{a['id']}/complete").status_code == 200, "Complete Test accepted")

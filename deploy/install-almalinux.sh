@@ -11,6 +11,8 @@
 #   LT_ADMIN_PASSWORD=...      its password (default: generated, printed once, kept in /root/.lt-admin-password)
 #   LT_SKIP_IMAGES=1           do not rebuild the lab images (faster re-runs when images/ did not change)
 #   LT_OPEN_FIREWALL=0         do not open the web port in firewalld
+#   LT_TEST_PASSWORD=...       shared password technicians enter to start (default: generated on the first run;
+#                              change it in deploy/.env, then: docker compose up -d)
 set -euo pipefail
 
 say() { printf '\n\033[1m==> %s\033[0m\n' "$*"; }
@@ -76,7 +78,9 @@ else
   grep -q '^LT_HTTP_PORT=' .env || echo "LT_HTTP_PORT=$PORT" >> .env
   echo "keeping the existing $APP/deploy/.env"
 fi
+grep -q '^LT_TEST_PASSWORD=' .env || echo "LT_TEST_PASSWORD=${LT_TEST_PASSWORD:-$(openssl rand -base64 9 | tr -d '/+=' | cut -c1-10)}" >> .env
 chmod 600 .env
+TEST_PW=$(sed -n 's/^LT_TEST_PASSWORD=//p' .env)
 
 say "Application (PostgreSQL, backend, web) — migrations and scenario import run at start"
 docker compose up -d --build --remove-orphans
@@ -112,6 +116,7 @@ p=${PORT##*:}; [ "$p" = 80 ] && URL="http://$IP/" || URL="http://$IP:$p/"
 say "Done"
 echo "  Web interface : $URL   (technicians: name + e-mail; administrators: '$ADMIN_USER' via 'Administrator login')"
 [ -n "${NEW_PW:-}" ] && echo "  Admin password: $NEW_PW   (also in /root/.lt-admin-password, mode 0600)"
+[ -n "$TEST_PW" ] && echo "  Test password : $TEST_PW   (technicians enter it with name + e-mail; set LT_TEST_PASSWORD in $APP/deploy/.env)"
 echo "  Scenarios     : $(docker compose exec -T db psql -U linuxtraining -d linuxtraining -Atc 'SELECT count(*) FROM scenarios' 2>/dev/null)"
 echo "  Update later  : git -C $APP pull && $0"
 echo "  HTTPS, backups and more: $APP/docs/deployment.md"

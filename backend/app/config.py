@@ -20,6 +20,8 @@ class Settings:
         self.cookie_secure = _env("LT_COOKIE_SECURE", "false").lower() == "true"
         self.scenarios_dir = _env("LT_SCENARIOS_DIR", "/srv/scenarios")
         self.allow_registration = _env("LT_ALLOW_REGISTRATION", "true").lower() == "true"
+        # shared password technicians enter with their name and e-mail address (empty: none asked)
+        self.test_password = os.environ.get("LT_TEST_PASSWORD", "")
 
 
 settings = Settings()
