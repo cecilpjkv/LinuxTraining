@@ -1,7 +1,7 @@
 import { Link, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import { AuthProvider, useAuth } from './auth.jsx'
 import Login from './pages/Login.jsx'
-import Register from './pages/Register.jsx'
+import AdminLogin from './pages/AdminLogin.jsx'
 import TechHome from './pages/TechHome.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import AdminUsers from './pages/AdminUsers.jsx'
@@ -33,7 +33,7 @@ function Shell({ children }) {
             ) : (
               <NavLink to="/">Scenarios</NavLink>
             )}
-            <span className="who">{user.username} ({user.role})</span>
+            <span className="who">{user.full_name || user.username}{user.role === 'admin' ? ' (admin)' : ''}</span>
             <button className="link" onClick={logout}>Log out</button>
           </nav>
         )}
@@ -46,7 +46,7 @@ function Shell({ children }) {
 function Guard({ role, children }) {
   const { user } = useAuth()
   if (user === undefined) return <p className="muted">Loading…</p>
-  if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to={role === 'admin' ? '/admin/login' : '/login'} replace />
   if (role && user.role !== role) return <Navigate to="/" replace />
   return children
 }
@@ -64,7 +64,7 @@ export default function App() {
       <Shell>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/" element={<Home />} />
           <Route path="/attempts/:id" element={<Guard><Attempt /></Guard>} />
           <Route path="/admin" element={<Guard role="admin"><AdminDashboard /></Guard>} />

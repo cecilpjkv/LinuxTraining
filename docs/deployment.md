@@ -78,7 +78,7 @@ docker compose up -d --build
 | `LT_DB_PASSWORD` | PostgreSQL password (also used by the backend) |
 | `LT_SECRET_KEY` | signs the session tokens; changing it logs everybody out |
 | `LT_COOKIE_SECURE` | `true` once HTTPS is in front (section 5) |
-| `LT_ALLOW_REGISTRATION` | `false`: technicians cannot register themselves |
+| `LT_ALLOW_REGISTRATION` | technicians start with their name and e-mail address (no password); `false` turns that off |
 | `LT_HTTP_PORT` | where the web container listens; `127.0.0.1:8080` behind a reverse proxy |
 
 The backend runs the database migrations (`alembic upgrade head`) and imports new scenario packages at every start.
@@ -126,7 +126,9 @@ docker compose exec backend python -m app.cli create-admin admin --email admin@e
 ```
 
 It asks for the password (or reads `LT_ADMIN_PASSWORD`; never pass it as an argument). The same command resets an
-existing administrator's password.
+existing administrator's password. Only administrators have passwords: technicians enter their name and e-mail
+address on the start page; the same address returns them to their account and earlier results. The administrator
+login is linked from the start page (`/admin/login`).
 
 ## 7. Scenarios
 

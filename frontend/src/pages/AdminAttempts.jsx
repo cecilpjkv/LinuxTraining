@@ -27,7 +27,7 @@ export default function AdminAttempts() {
         <select value={f.status || ''} onChange={set('status')}><option value="">All statuses</option>
           {Object.entries(statusLabel).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
         <select value={f.user_id || ''} onChange={set('user_id')}><option value="">All technicians</option>
-          {users.map(u => <option key={u.id} value={u.id}>{u.username}</option>)}</select>
+          {users.map(u => <option key={u.id} value={u.id}>{u.full_name || u.username}</option>)}</select>
         <select value={f.scenario_id || ''} onChange={set('scenario_id')}><option value="">All scenarios</option>
           {scen.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select>
       </div>
@@ -35,7 +35,7 @@ export default function AdminAttempts() {
         <thead><tr><th>#</th><th>Technician</th><th>Scenario</th><th>Status</th><th>Started</th><th>Commands</th><th>Score</th></tr></thead>
         <tbody>
           {data.items.map(a => (
-            <tr key={a.id}><td><Link to={`/admin/attempts/${a.id}`}>{a.id}</Link></td><td>{a.username}</td><td>{a.scenario_name}</td>
+            <tr key={a.id}><td><Link to={`/admin/attempts/${a.id}`}>{a.id}</Link></td><td>{a.technician}<div className="muted small">{a.email}</div></td><td>{a.scenario_name}</td>
               <td>{statusLabel[a.status]}</td><td>{fmtDate(a.started_at || a.created_at)}</td><td>{a.commands}</td><td><ScoreCell a={a} /></td></tr>
           ))}
           {!data.items.length && <tr><td colSpan={7} className="muted">No attempts.</td></tr>}

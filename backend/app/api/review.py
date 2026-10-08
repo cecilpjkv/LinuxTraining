@@ -39,7 +39,7 @@ def dashboard(db: Session = Depends(get_db)):
 def attempts(db: Session = Depends(get_db), status: str | None = None, user_id: int | None = None,
              scenario_id: int | None = None, result: str | None = Query(None, pattern="^(passed|not_passed|failed)$"),
              limit: int = Query(100, le=500), offset: int = 0):
-    q = select(TrainingAttempt, User.username).join(User).order_by(TrainingAttempt.id.desc())
+    q = select(TrainingAttempt, User).join(User).order_by(TrainingAttempt.id.desc())
     if status:
         q = q.where(TrainingAttempt.status.in_(status.split(",")))
     if user_id:
@@ -54,7 +54,8 @@ def attempts(db: Session = Depends(get_db), status: str | None = None, user_id: 
         q = q.where(TrainingAttempt.status == "failed")
     total = db.scalar(select(func.count()).select_from(q.order_by(None).subquery()))
     rows = db.execute(q.limit(limit).offset(offset)).all()
-    return {"total": total, "items": [{**attempt_out(db, a, with_error=True).model_dump(), "username": u,
+    return {"total": total, "items": [{**attempt_out(db, a, with_error=True).model_dump(), "username": u.username,
+                                       "technician": u.full_name or u.username, "email": u.email,
                                        "commands": db.scalar(select(func.count()).select_from(Command).where(Command.attempt_id == a.id))}
                                       for a, u in rows]}
 
@@ -68,7 +69,7 @@ def review(aid: int, db: Session = Depends(get_db)):
     end = a.ended_at
     return {
         **attempt_out(db, a, with_error=True).model_dump(),
-        "technician": {"id": a.user.id, "username": a.user.username, "full_name": a.user.full_name},
+        "technician": {"id": a.user.id, "username": a.user.username, "full_name": a.user.full_name, "email": a.user.email},
         "scenario": {"id": a.scenario_id, "name": a.scenario_name, "category": a.scenario.category if a.scenario else None,
                      "difficulty": a.scenario.difficulty if a.scenario else None, "version": v.version if v else None},
         "duration_seconds": int((end - a.started_at).total_seconds()) if end and a.started_at else None,
@@ -92,6 +93,6 @@ def technicians(db: Session = Depends(get_db)):
     out = []
     for u in db.scalars(select(User).where(User.role == "technician").order_by(User.username)):
         n, avg, p = stats.get(u.id, (0, None, 0))
-        out.append({"id": u.id, "username": u.username, "full_name": u.full_name, "active": u.active, "last_login_at": u.last_login_at,
+        out.append({"id": u.id, "username": u.username, "full_name": u.full_name, "email": u.email, "active": u.active, "last_login_at": u.last_login_at,
                     "attempts": totals.get(u.id, 0), "graded": n, "passed": p or 0, "average_score": round(avg, 1) if avg is not None else None})
     return out

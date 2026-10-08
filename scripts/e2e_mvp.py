@@ -35,7 +35,7 @@ def main():
 
     tech = httpx.Client(base_url=BASE, timeout=30)
     user = "tech" + secrets.token_hex(3)
-    ok(tech.post("/api/auth/register", json={"username": user, "password": "e2e-password-1"}).status_code == 201, "technician registered")
+    ok(tech.post("/api/auth/technician", json={"full_name": "E2E Tech", "email": f"{user}@example.test"}).status_code == 200, "technician entered with name and e-mail (no password)")
     ok(any(s["id"] == sc["id"] for s in tech.get("/api/scenarios").json()), "technician sees the scenario")
     a = tech.post("/api/attempts", json={"scenario_id": sc["id"]}).json()
     t0 = time.time()
@@ -72,7 +72,7 @@ def main():
     ok("Shop OK" in screen and "777;lt" not in screen, "commands ran interactively; no hook markers on screen")
     # someone else's attempt is not reachable
     other = httpx.Client(base_url=BASE, timeout=30)
-    other.post("/api/auth/register", json={"username": "x" + user, "password": "e2e-password-1"})
+    other.post("/api/auth/technician", json={"full_name": "Other Tech", "email": f"x{user}@example.test"})
     ok(other.get(f"/api/attempts/{a['id']}").status_code == 404, "another technician cannot see the attempt")
 
     ok(tech.post(f"/api/attempts/{a['id']}/complete").status_code == 200, "Complete Test accepted")
@@ -86,7 +86,7 @@ def main():
     ok(res["passed"] and res["percent"] == 100, f"score {res['score']}/{res['max_score']} ({res['percent']}%)")
     print("     " + "; ".join(f"{b['label']}: {b['points']}/{b['max']}" for b in res["breakdown"]))
     review = admin.get(f"/api/admin/attempts/{a['id']}").json()
-    ok(review["status"] == "completed" and review["technician"]["username"] == user, "admin can open the attempt review")
+    ok(review["status"] == "completed" and review["technician"]["full_name"] == "E2E Tech", "admin can open the attempt review")
     cmds = [(c["command"], c["exit_code"], c["output"]) for c in review["commands"]]
     ok(len(cmds) == 5 and cmds[1][1] == 1 and "add_header" in cmds[1][2], "command history: 5 commands, nginx -t failed with the error shown")
     ok(cmds[4][1] == 0 and cmds[4][2] == "Shop OK", "the recorded output of the last command is the shop page (not the screen echo)")

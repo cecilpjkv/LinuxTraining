@@ -9,11 +9,11 @@ export default function AdminTechnicians() {
     <section className="card">
       <h1>Technicians</h1>
       <table>
-        <thead><tr><th>Username</th><th>Name</th><th>Attempts</th><th>Graded</th><th>Passed</th><th>Average score</th><th>Last login</th></tr></thead>
+        <thead><tr><th>Name</th><th>E-mail</th><th>Attempts</th><th>Graded</th><th>Passed</th><th>Average score</th><th>Last login</th></tr></thead>
         <tbody>
           {rows.map(u => (
             <tr key={u.id} className={u.active ? '' : 'dim'}>
-              <td><Link to={`/admin/attempts?user_id=${u.id}`}>{u.username}</Link></td><td>{u.full_name}</td><td>{u.attempts}</td>
+              <td><Link to={`/admin/attempts?user_id=${u.id}`}>{u.full_name || u.username}</Link></td><td>{u.email ?? '—'}</td><td>{u.attempts}</td>
               <td>{u.graded}</td><td>{u.passed}</td><td>{u.average_score != null ? `${u.average_score}%` : '—'}</td><td>{fmtDate(u.last_login_at)}</td>
             </tr>
           ))}

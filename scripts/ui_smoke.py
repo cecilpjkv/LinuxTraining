@@ -30,6 +30,7 @@ with sync_playwright() as p:
     a = browser.new_page(viewport={"width": 1280, "height": 900})
     watch(a)
     a.goto(f"{BASE}/")
+    a.get_by_role("link", name="Administrator login").click()
     a.get_by_label("Username or e-mail").fill("admin")
     a.get_by_label("Password").fill(ADMIN_PW)
     a.get_by_role("button", name="Log in").click()
@@ -50,10 +51,11 @@ with sync_playwright() as p:
     t = browser.new_page(viewport={"width": 1280, "height": 900})
     watch(t)
     user = "ui" + secrets.token_hex(3)
-    t.goto(f"{BASE}/register")
-    t.get_by_label("Username").fill(user)
-    t.get_by_label(re.compile("^Password")).fill("ui-smoke-password-1")
-    t.get_by_role("button", name="Create account").click()
+    t.goto(f"{BASE}/")
+    ok(t.get_by_label("Password").count() == 0, "technician start page asks for no password")
+    t.get_by_label("Full name").fill("UI Smoke " + user)
+    t.get_by_label("E-mail address").fill(f"{user}@example.test")
+    t.get_by_role("button", name="Continue").click()
     expect(t.get_by_role("heading", name="Scenarios")).to_be_visible()
     expect(t.locator("article.scenario")).to_have_count(50)  # loaded after the heading appears
     ok(True, "technician sees 50 scenario cards")
@@ -84,7 +86,7 @@ with sync_playwright() as p:
 
     # --- administrator reviews it
     a.goto(f"{BASE}/admin/attempts")
-    a.locator("tbody tr", has_text=user).first.get_by_role("link").first.click()
+    a.locator("tbody tr").first.get_by_role("link").first.click()
     expect(a.get_by_role("heading", name=re.compile(r"Command history \(3\)"))).to_be_visible()
     expect(a.get_by_text("PASS").first).to_be_visible()
     a.screenshot(path=f"{OUT}/7-admin-review.png", full_page=True)

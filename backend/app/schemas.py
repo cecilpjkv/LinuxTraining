@@ -8,11 +8,9 @@ class LoginIn(BaseModel):
     password: str = Field(min_length=1, max_length=256)
 
 
-class RegisterIn(BaseModel):
-    username: str = Field(min_length=3, max_length=64, pattern=r"^[A-Za-z0-9_.-]+$")
-    email: str | None = Field(default=None, max_length=255, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
-    full_name: str = Field(default="", max_length=128)
-    password: str = Field(min_length=1, max_length=256)
+class TechnicianIn(BaseModel):
+    full_name: str = Field(min_length=2, max_length=128)
+    email: str = Field(max_length=255, pattern=r"^\s*[^@\s]+@[^@\s]+\.[^@\s]+\s*$")
 
 
 class UserOut(BaseModel):

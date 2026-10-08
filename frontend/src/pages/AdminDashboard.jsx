@@ -15,7 +15,7 @@ export default function AdminDashboard() {
   }
   useEffect(() => { load(); const t = setInterval(load, 5000); return () => clearInterval(t) }, [])
   const terminate = async a => {
-    if (!window.confirm(`Terminate attempt #${a.id} of ${a.username}? It will not be graded.`)) return
+    if (!window.confirm(`Terminate attempt #${a.id} of ${a.technician}? It will not be graded.`)) return
     try { await api(`/api/admin/attempts/${a.id}/terminate`, { method: 'POST' }); load() } catch (e) { setErr(e.message) }
   }
   if (!d) return <p className="muted">{err || 'Loading…'}</p>
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
           <thead><tr><th>#</th><th>Technician</th><th>Scenario</th><th>Status</th><th>Weight</th><th>Started</th><th>Deadline</th><th></th></tr></thead>
           <tbody>
             {labs?.labs.map(a => (
-              <tr key={a.id}><td><Link to={`/admin/attempts/${a.id}`}>{a.id}</Link></td><td>{a.username}</td><td>{a.scenario_name}</td>
+              <tr key={a.id}><td><Link to={`/admin/attempts/${a.id}`}>{a.id}</Link></td><td>{a.technician}<div className="muted small">{a.email}</div></td><td>{a.scenario_name}</td>
                 <td>{statusLabel[a.status]}{a.status === 'queued' && a.queue_position ? ` (#${a.queue_position})` : ''}</td><td>{a.resource_weight}</td>
                 <td>{fmtDate(a.started_at)}</td><td>{fmtDate(a.deadline_at)}</td>
                 <td><button className="small danger" onClick={() => terminate(a)}>Terminate</button></td></tr>

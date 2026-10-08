@@ -32,12 +32,13 @@ def put_settings(body: dict, db: Session = Depends(get_db)):
 def active_labs(db: Session = Depends(get_db)):
     cfg = settings_store.get_all(db)
     n, w = usage(db)
-    rows = db.execute(select(TrainingAttempt, User.username).join(User).where(TrainingAttempt.status.in_((*ACTIVE, "queued")))
+    rows = db.execute(select(TrainingAttempt, User).join(User).where(TrainingAttempt.status.in_((*ACTIVE, "queued")))
                       .order_by(TrainingAttempt.created_at)).all()
     labs = []
-    for a, username in rows:
+    for a, u in rows:
         lab = db.scalar(select(LabContainer).where(LabContainer.attempt_id == a.id))
-        labs.append({**attempt_out(db, a, with_error=True).model_dump(), "username": username,
+        labs.append({**attempt_out(db, a, with_error=True).model_dump(), "username": u.username,
+                     "technician": u.full_name or u.username, "email": u.email,
                      "container": lab.container_name if lab else None, "queue_position": queue_position(db, a)})
     return {"active": n, "max_active": cfg["max_concurrent_tests"], "weight": w, "max_weight": cfg["max_resource_weight"],
             "labs": labs}

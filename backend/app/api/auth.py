@@ -1,3 +1,4 @@
+import re
 import threading
 import time
 from collections import defaultdict, deque
@@ -11,8 +12,8 @@ from ..config import settings
 from ..db import get_db
 from ..deps import current_user
 from ..models import User
-from ..schemas import LoginIn, RegisterIn, UserOut
-from ..security import COOKIE, check_password_policy, hash_password, make_token, read_token, verify_password
+from ..schemas import LoginIn, TechnicianIn, UserOut
+from ..security import COOKIE, hash_password, make_token, read_token, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -68,19 +69,37 @@ def login(body: LoginIn, req: Request, resp: Response, db: Session = Depends(get
     return user
 
 
-@router.post("/register", response_model=UserOut, status_code=201)
-def register(body: RegisterIn, resp: Response, db: Session = Depends(get_db)) -> User:
+NO_PASSWORD = "!"  # technicians have no password: no hash ever matches this
+
+
+def _username_for(db: Session, email: str) -> str:
+    base = re.sub(r"[^a-z0-9_.-]", "", email.split("@")[0].lower())[:40] or "tech"
+    name, n = base, 1
+    while db.scalar(select(User.id).where(User.username == name)):
+        n += 1
+        name = f"{base}{n}"
+    return name
+
+
+@router.post("/technician", response_model=UserOut)
+def technician(body: TechnicianIn, resp: Response, db: Session = Depends(get_db)) -> User:
+    """Technicians start with their name and e-mail address, no password: a new address creates the technician,
+    a known one continues as that technician (with their previous attempts). Administrators use /login."""
     if not settings.allow_registration:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, "registration is disabled; ask an administrator")
-    if msg := check_password_policy(body.password):
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, msg)
-    email = body.email.lower() if body.email else None
-    clash = db.scalar(select(User).where(or_(User.username == body.username, User.email == email) if email else User.username == body.username))
-    if clash:
-        raise HTTPException(status.HTTP_409_CONFLICT, "username or e-mail already registered")
-    user = User(username=body.username, email=email, full_name=body.full_name, password_hash=hash_password(body.password),
-                role="technician")  # self-registration never creates an administrator
-    db.add(user)
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "technician access is disabled; ask an administrator")
+    email = body.email.strip().lower()
+    name = " ".join(body.full_name.split())
+    user = db.scalar(select(User).where(User.email == email))
+    if user and user.role != "technician":
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "this address belongs to an administrator: use the administrator login")
+    if user and not user.active:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "this account is disabled; ask an administrator")
+    if not user:
+        user = User(username=_username_for(db, email), email=email, full_name=name, password_hash=NO_PASSWORD, role="technician")
+        db.add(user)
+    else:
+        user.full_name = name
+    user.last_login_at = datetime.now(timezone.utc)
     db.commit()
     _set_cookie(resp, user)
     return user

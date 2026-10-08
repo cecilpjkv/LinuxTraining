@@ -22,12 +22,37 @@ def test_login_by_email_and_wrong_password(client):
     assert client.post("/api/auth/login", json={"username": "ghost", "password": "nope"}).json()["detail"] == "wrong username or password"
 
 
-def test_register_is_technician(client):
-    r = client.post("/api/auth/register", json={"username": "newbie", "password": "long-enough-pw", "role": "admin"})
-    assert r.status_code == 201 and r.json()["role"] == "technician"
-    assert client.post("/api/auth/register", json={"username": "newbie", "password": "long-enough-pw"}).status_code == 409
-    assert client.post("/api/auth/register", json={"username": "short", "password": "x"}).status_code == 422
-    assert client.post("/api/auth/register", json={"username": "../bad", "password": "long-enough-pw"}).status_code == 422
+def test_technician_name_and_email(client):
+    r = client.post("/api/auth/technician", json={"full_name": "  Jane   Doe ", "email": " Jane.Doe@Example.com "})
+    assert r.status_code == 200, r.text
+    u = r.json()
+    assert u["role"] == "technician" and u["email"] == "jane.doe@example.com" and u["full_name"] == "Jane Doe"
+    assert u["username"] == "jane.doe"
+    assert client.get("/api/auth/me").json()["id"] == u["id"]
+    client.post("/api/auth/logout")
+    # the same address continues as the same technician (name updated), no password involved
+    again = client.post("/api/auth/technician", json={"full_name": "Jane D.", "email": "jane.doe@example.com"}).json()
+    assert again["id"] == u["id"] and again["full_name"] == "Jane D."
+    # a technician has no password to log in with
+    assert client.post("/api/auth/login", json={"username": "jane.doe", "password": "!"}).status_code == 401
+
+
+def test_technician_entry_validation(client, admin):
+    assert client.post("/api/auth/technician", json={"full_name": "X", "email": "x@example.com"}).status_code == 422
+    assert client.post("/api/auth/technician", json={"full_name": "No Mail", "email": "not-an-email"}).status_code == 422
+    # an administrator's address cannot be used to enter as a technician
+    aid = next(u["id"] for u in admin.get("/api/admin/users").json() if u["username"] == "admin")
+    from app.db import SessionLocal
+    from app.models import User
+    with SessionLocal() as db:
+        db.get(User, aid).email = "boss@example.com"
+        db.commit()
+    r = client.post("/api/auth/technician", json={"full_name": "Boss", "email": "boss@example.com"})
+    assert r.status_code == 403
+    # usernames stay unique when local parts collide
+    a = client.post("/api/auth/technician", json={"full_name": "Sam One", "email": "sam@one.example"}).json()
+    b = client.post("/api/auth/technician", json={"full_name": "Sam Two", "email": "sam@two.example"}).json()
+    assert a["username"] == "sam" and b["username"] == "sam2"
 
 
 def test_admin_only(tech):

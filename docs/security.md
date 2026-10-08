@@ -12,7 +12,7 @@ Spec §17, requirement by requirement.
 | Prevent arbitrary host command execution | No API runs anything on the host; the only execution path is `docker exec` into a lab. |
 | Authentication for all admin APIs | Every `/api/admin/*` route depends on `require_admin`; tests check technicians get 403. |
 | Technician can access only their own lab | Attempt APIs return 404 for other users' attempts; the terminal WebSocket checks the session cookie, ownership, status `ready` and the Origin. |
-| Admin APIs require admin role | As above; self-registration always creates technicians. |
+| Admin APIs require admin role | As above; the technician start page (name + e-mail) only ever creates technicians and refuses administrators' addresses. |
 | No host filesystem in containers | No bind mounts or volumes into labs; only tmpfs (`/run`, `/run/lock`, scenario tmpfs from an allow-list). |
 | Restricted networking | The lab daemon runs in its own network namespace; every lab has its own internal network there: no internet, no host, no other lab. |
 | Non-privileged containers | Never `--privileged`. Labs add only `CAP_SYS_ADMIN` (systemd needs its own cgroup tree, in a private cgroup namespace) plus capabilities a scenario declares from a short allow-list (`NET_ADMIN`, …). The technician's shell runs with `CAP_SYS_ADMIN` and other dangerous capabilities removed from its bounding set. |
@@ -21,6 +21,9 @@ Spec §17, requirement by requirement.
 
 Application:
 
+- Technicians have no password: they are identified by the e-mail address they enter (owner's decision for this
+  internal training), so anyone who types a technician's address sees that technician's attempts. Administrators
+  log in with a password.
 - Passwords: scrypt (n=2^14, r=8, p=1, 16-byte salt); policy minimum 10 characters; constant-time comparison; a
   missing user costs the same time as a wrong password.
 - Sessions: HS256 JWT in an `HttpOnly`, `SameSite=Strict` cookie (`Secure` with `LT_COOKIE_SECURE=true`).

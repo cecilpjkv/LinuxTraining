@@ -18,7 +18,7 @@ export default function AttemptReview() {
       <section className="card">
         <h1>Attempt #{a.id}</h1>
         <dl className="facts">
-          <dt>Technician</dt><dd>{a.technician.username}{a.technician.full_name && ` (${a.technician.full_name})`}</dd>
+          <dt>Technician</dt><dd>{a.technician.full_name || a.technician.username}{a.technician.email && <span className="muted"> · {a.technician.email}</span>}</dd>
           <dt>Scenario</dt><dd>{a.scenario.name}{a.scenario.version && <span className="muted"> · version {a.scenario.version}</span>}</dd>
           <dt>Status</dt><dd>{statusLabel[a.status]}{a.end_reason && <span className="muted"> — {a.end_reason}</span>}</dd>
           <dt>Start time</dt><dd>{fmtDate(a.started_at)}</dd>
