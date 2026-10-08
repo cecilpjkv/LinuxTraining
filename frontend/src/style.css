@@ -55,3 +55,4 @@ label.check { display: flex; align-items: center; gap: 8px } label.check input {
 dl.facts { display: grid; grid-template-columns: 130px 1fr; gap: 4px 12px; margin: 0 } dl.facts dt { color: var(--muted) } dl.facts dd { margin: 0 }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em } .clickable { cursor: pointer } .clickable:hover { background: #f6f8fa }
 details summary { cursor: pointer; color: var(--accent); margin-top: 8px }
+.no-copy, .no-copy * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none }

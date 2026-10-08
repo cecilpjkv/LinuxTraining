@@ -55,8 +55,9 @@ export default function Attempt() {
     setBusy(true); setErr('')
     try { setA({ ...a, ...(await api(`/api/attempts/${id}/${path}`, { method: 'POST' })) }) } catch (e) { setErr(e.message) } finally { setBusy(false) }
   }
+  const noCopy = e => e.preventDefault()  // the task and the lab may not be copied (e.g. into an AI chat)
   return (
-    <>
+    <div className="no-copy" onCopy={noCopy} onCut={noCopy} onContextMenu={noCopy} onDragStart={noCopy}>
       <section className="card">
         <div className="row-between">
           <h1>{a.scenario_name}</h1>
@@ -84,6 +85,6 @@ export default function Attempt() {
           <p className="muted">Started {fmtDate(a.started_at)} · ended {fmtDate(a.ended_at)} · <Link to="/">Back to scenarios</Link></p>
         </section>
       )}
-    </>
+    </div>
   )
 }
