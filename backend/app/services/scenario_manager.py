@@ -115,15 +115,25 @@ def validate_meta(meta: dict, max_weight: int | None = None) -> dict:
     if not isinstance(caps, list) or not set(caps) <= CAPABILITIES:
         raise ScenarioError(f"capabilities may only list {', '.join(sorted(CAPABILITIES))}")
     extra["capabilities"] = sorted(caps)
-    tmpfs = meta.get("tmpfs") or {}  # small separate filesystems (disk-full scenarios): {path: size_mb}
+    # small separate filesystems (disk-full, inode scenarios): {path: size_mb} or {path: {size: MB, inodes: N}}
+    tmpfs = meta.get("tmpfs") or {}
     if not isinstance(tmpfs, dict) or len(tmpfs) > 4:
         raise ScenarioError("tmpfs must be a mapping of up to 4 paths")
-    for p, mb in tmpfs.items():
+    norm = {}
+    for p, spec in tmpfs.items():
         if not re.match(r"^/(srv|data|var/www|var/log/app|var/lib/app|opt/app|mnt)(/[A-Za-z0-9._-]+)*$", str(p)) or ".." in str(p):
             raise ScenarioError(f"tmpfs path {p!r} is not allowed")
+        if isinstance(spec, int):
+            spec = {"size": spec}
+        if not isinstance(spec, dict) or set(spec) - {"size", "inodes"}:
+            raise ScenarioError(f"tmpfs {p}: give a size in MB or {{size: MB, inodes: N}}")
+        mb, inodes = spec.get("size"), spec.get("inodes")
         if not isinstance(mb, int) or not 1 <= mb <= 256:
             raise ScenarioError(f"tmpfs {p}: size must be 1-256 MB")
-    extra["tmpfs"] = {str(k): int(v) for k, v in tmpfs.items()}
+        if inodes is not None and (not isinstance(inodes, int) or not 100 <= inodes <= 1_000_000):
+            raise ScenarioError(f"tmpfs {p}: inodes must be 100-1000000")
+        norm[str(p)] = {"size": mb, **({"inodes": inodes} if inodes else {})}
+    extra["tmpfs"] = norm
     collect = meta.get("collect") or []  # commands whose output is kept as the final state
     if not isinstance(collect, list) or len(collect) > 12 or not all(isinstance(c, str) and len(c) < 300 for c in collect):
         raise ScenarioError("collect must be a list of up to 12 commands")

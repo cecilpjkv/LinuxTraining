@@ -33,7 +33,7 @@ class LabSpec:
     memory_mb: int
     pids_limit: int
     capabilities: list[str]
-    tmpfs: dict[str, int]
+    tmpfs: dict[str, dict | int]
 
 
 class LabManager:
@@ -77,8 +77,9 @@ class LabManager:
     def create(self, spec: LabSpec) -> str:
         network = self.create_network(spec.attempt_id)
         tmpfs = {"/run": "rw,nosuid,nodev,size=64m", "/run/lock": "rw,nosuid,nodev,size=8m"}
-        for path, mb in spec.tmpfs.items():
-            tmpfs[path] = f"rw,size={mb}m"
+        for path, t in spec.tmpfs.items():
+            t = {"size": t} if isinstance(t, int) else t
+            tmpfs[path] = f"rw,size={t['size']}m" + (f",nr_inodes={t['inodes']}" if t.get("inodes") else "")
         c = self.client.containers.run(
             spec.image, name=self.name(spec.attempt_id), hostname="training", detach=True,
             network=network, cgroupns="private",
@@ -105,12 +106,26 @@ class LabManager:
             time.sleep(1)
         raise TimeoutError(f"the lab did not finish booting (systemd: {state or 'no answer'})")
 
-    def destroy(self, attempt_id: int) -> bool:
+    def destroy(self, attempt_id: int, wait: int = 60) -> bool:
+        """Removes the lab's container and network. Idempotent: "removal already in progress" (409, found by the
+        scenario checker) waits for that removal instead of failing."""
+        found = False
         try:
             self.client.containers.get(self.name(attempt_id)).remove(force=True, v=True)
             found = True
         except NotFound:
-            found = False
+            pass
+        except APIError as e:
+            if e.status_code != 409:
+                raise
+            found = True
+            end = time.monotonic() + wait
+            while time.monotonic() < end:
+                try:
+                    self.client.containers.get(self.name(attempt_id))
+                except NotFound:
+                    break
+                time.sleep(0.5)
         self.remove_network(attempt_id)
         return found
 

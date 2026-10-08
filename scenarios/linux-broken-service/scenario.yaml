@@ -1,0 +1,13 @@
+name: Inventory API down after deployment
+description: |
+  After last night's deployment the inventory API (port 8081, health check: /health) is down and does not come back,
+  not even after restarting it. The deployment only changed the service definition. Bring the API back and make sure
+  it starts at boot.
+category: Systemd
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+collect:
+  - systemctl cat inventory-api
+  - systemctl status inventory-api --no-pager

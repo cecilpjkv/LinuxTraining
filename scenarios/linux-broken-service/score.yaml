@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  api_responds: {points: 40, label: "The API answers /health"}
+  service_active: {points: 20, label: "The service runs under systemd"}
+  service_enabled: {points: 20, label: "It starts at boot"}
+  unit_valid: {points: 20, label: "The unit points to the real program"}
+process:
+  read_status: {points: 5, label: "Read the service status or logs", any_of: ['systemctl\s+status', 'journalctl']}
+  daemon_reload: {points: 5, label: "Reloaded systemd after editing the unit", any_of: ['daemon-reload']}

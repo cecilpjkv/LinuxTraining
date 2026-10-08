@@ -1,0 +1,12 @@
+name: Scheduled backups stopped
+description: |
+  The application backup runs every 5 minutes from cron and writes to /var/backups/app. Since yesterday no new backup
+  file has appeared. Make the scheduled backup work again.
+category: Linux
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - cat /etc/cron.d/app-backup
+  - ls -la /usr/local/bin/app-backup.sh /var/backups/app

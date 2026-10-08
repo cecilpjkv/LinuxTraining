@@ -1,0 +1,13 @@
+name: Server at 100% CPU
+description: |
+  Monitoring shows this server has been at 100% CPU for the last hour and the metrics agent (port 9100) answers
+  slowly. Nobody changed anything today. Find the cause and fix it so that it does not come back, also not after a
+  reboot. The metrics agent must keep running.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+collect:
+  - top -b -n 1 | head -15
+  - systemctl list-units --type=service --state=running --no-pager

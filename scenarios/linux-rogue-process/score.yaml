@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  process_stopped: {points: 30, label: "The hidden process is stopped"}
+  persistence_removed: {points: 30, label: "It is not restarted by cron (reboot or schedule)"}
+  legit_job_kept: {points: 15, label: "The legitimate cron job of deploy is kept"}
+  account_kept: {points: 10, label: "The deploy account is kept"}
+  binary_removed: {points: 15, label: "The program was removed from disk"}
+process:
+  inspected_procs: {points: 5, label: "Inspected processes and their owners", any_of: ['\bps\b', '\btop\b', '/proc/']}
+  inspected_cron: {points: 5, label: "Checked scheduled jobs", any_of: ['crontab\s+(-\w+\s+)*-l', '/var/spool/cron']}

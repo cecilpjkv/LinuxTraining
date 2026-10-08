@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  worker_running: {points: 30, label: "The worker runs steadily"}
+  jobs_processed: {points: 40, label: "The waiting invoices were processed"}
+  mode_fixed: {points: 30, label: "APP_MODE is production"}
+process:
+  read_logs: {points: 5, label: "Read the worker's log", any_of: ['journalctl', 'systemctl\s+status']}
+  read_env: {points: 5, label: "Inspected the environment file", any_of: ['billing\.env', 'systemctl\s+(cat|show)']}

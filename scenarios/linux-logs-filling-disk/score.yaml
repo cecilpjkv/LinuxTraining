@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  space_ok: {points: 25, label: "The log volume has free space"}
+  service_healthy: {points: 25, label: "ledger-sync is healthy again"}
+  log_level_fixed: {points: 25, label: "Debug logging turned off"}
+  rotation_fixed: {points: 25, label: "Log rotation covers the real log file"}
+process:
+  open_files: {points: 5, label: "Looked for deleted-but-open files", any_of: ['\blsof\b', '/proc/\d+/fd']}
+  checked_space: {points: 5, label: "Checked disk usage", any_of: ['\bdf\b', '\bdu\b']}

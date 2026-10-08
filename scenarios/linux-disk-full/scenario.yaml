@@ -1,0 +1,15 @@
+name: Uploads fail with "No space left on device"
+description: |
+  Customers report that uploading files to the application fails. The application log shows
+  "No space left on device". Customer uploads are stored under /srv/data/uploads and must not be lost.
+  Free enough space for the application to work again.
+category: Linux
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+tmpfs:
+  /srv/data: 64
+collect:
+  - df -h /srv/data
+  - du -sh /srv/data/*

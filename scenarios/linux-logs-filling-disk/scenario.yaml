@@ -1,0 +1,15 @@
+name: Log volume full, ledger sync unhealthy
+description: |
+  The ledger-sync service reports "No space left on device" and has stopped syncing; its health file
+  (/run/ledger-sync.ok) is no longer updated. Its logs live on their own small volume, /var/log/app. Restore the
+  service and make sure the volume does not fill up again.
+category: Linux
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 35
+resource_weight: 1
+tmpfs:
+  /var/log/app: 32
+collect:
+  - df -h /var/log/app
+  - cat /etc/ledger-sync.conf /etc/logrotate.d/ledger-sync

@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  cache_small: {points: 30, label: "The cache service uses a sensible amount of memory"}
+  config_fixed: {points: 25, label: "The cache size is fixed in its configuration (survives restarts)"}
+  cache_running: {points: 25, label: "The cache service still runs"}
+  orders_running: {points: 20, label: "The orders application runs"}
+process:
+  checked_memory: {points: 5, label: "Checked memory usage", any_of: ['\bfree\b', '\btop\b', 'ps\s.*(rss|%mem|mem)', 'smem', '/proc/meminfo']}
+  read_config: {points: 5, label: "Found the service configuration", any_of: ['systemctl\s+(cat|status)\s+cache', 'sysconfig/cache-warmer']}

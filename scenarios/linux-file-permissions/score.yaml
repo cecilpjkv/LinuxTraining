@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  service_running: {points: 35, label: "reportd runs"}
+  output_written: {points: 35, label: "Reports are written again"}
+  config_protected: {points: 30, label: "The password file is not readable by everybody"}
+process:
+  checked_perms: {points: 5, label: "Inspected ownership and permissions", any_of: ['ls\s+-\w*l', '\bstat\b', 'namei', 'getfacl']}
+  read_logs: {points: 5, label: "Read the service status or logs", any_of: ['systemctl\s+status', 'journalctl']}

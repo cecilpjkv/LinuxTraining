@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  inodes_free: {points: 30, label: "Free inodes on /srv/spool"}
+  can_create: {points: 20, label: "New sessions can be created"}
+  active_sessions_kept: {points: 25, label: "Today's sessions were kept"}
+  cleanup_job_fixed: {points: 25, label: "The cleanup job works again (no recurrence)"}
+process:
+  checked_inodes: {points: 5, label: "Checked inode usage (df -i)", any_of: ['df\s+(-\w*i|--inodes)']}

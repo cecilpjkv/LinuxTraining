@@ -74,9 +74,12 @@ def test_meta_validation():
     good = {"name": "x", "category": "Linux", "difficulty": "easy", "docker_image": "linux-training-base", "time_limit": 10,
             "resource_weight": 1}
     assert sm.validate_meta(good)["extra"] == {"capabilities": [], "tmpfs": {}, "collect": []}
+    assert sm.validate_meta({**good, "tmpfs": {"/srv/spool": {"size": 16, "inodes": 2000}, "/srv/data": 64}})["extra"]["tmpfs"] == \
+        {"/srv/spool": {"size": 16, "inodes": 2000}, "/srv/data": {"size": 64}}
     for change in [{"docker_image": "ubuntu"}, {"docker_image": "linux-training-x;rm"}, {"category": "Windows"},
                    {"resource_weight": 9}, {"capabilities": ["SYS_ADMIN"]}, {"tmpfs": {"/etc": 10}},
-                   {"tmpfs": {"/data/../etc": 10}}, {"time_limit": 0}]:
+                   {"tmpfs": {"/data/../etc": 10}}, {"time_limit": 0}, {"tmpfs": {"/srv/x": {"size": 8, "inodes": 5}}},
+                   {"tmpfs": {"/srv/x": {"size": 8, "mode": "777"}}}]:
         with pytest.raises(sm.ScenarioError):
             sm.validate_meta({**good, **change}, max_weight=4)
 

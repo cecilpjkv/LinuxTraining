@@ -1,0 +1,12 @@
+name: Reporting service fails after hardening
+description: |
+  The reporting service (reportd) stopped working this morning, right after a colleague applied "security
+  hardening" to the server. Get the service running again. Its configuration file contains a database password.
+category: Permissions
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - ls -la /opt/reportd /var/lib/reportd
+  - systemctl status reportd --no-pager

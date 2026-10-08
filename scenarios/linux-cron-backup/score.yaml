@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  schedule_valid: {points: 35, label: "A valid cron entry schedules the backup"}
+  script_executable: {points: 25, label: "The backup script can be executed"}
+  backup_runs: {points: 25, label: "The job produces a backup"}
+  crond_running: {points: 15, label: "The cron service runs"}
+process:
+  read_cron: {points: 5, label: "Looked at the cron configuration or log", any_of: ['/etc/cron', 'crontab\s+-l', 'journalctl.*cron', '/var/log/cron']}

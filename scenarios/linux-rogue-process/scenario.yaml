@@ -1,0 +1,13 @@
+name: High load, but no busy service
+description: |
+  The server is slow and the load is high, but none of the services looks busy. A developer account ("deploy") was
+  used for testing on this server last week. Find what is using the server, stop it, and make sure it does not come
+  back. The deploy account and its normal scheduled jobs must stay.
+category: Security basics
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 35
+resource_weight: 1
+collect:
+  - ps -eo user,pid,ppid,pcpu,args --sort=-pcpu | head -8
+  - crontab -l -u deploy

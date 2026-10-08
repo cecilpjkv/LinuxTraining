@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  space_freed: {points: 35, label: "Enough free space on /srv/data"}
+  can_write: {points: 35, label: "The application can write uploads again"}
+  uploads_intact: {points: 30, label: "No customer upload was deleted"}
+process:
+  checked_space: {points: 5, label: "Checked disk usage (df/du)", any_of: ['\bdf\b', '\bdu\b', '\bncdu\b']}

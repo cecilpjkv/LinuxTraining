@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  cpu_normal: {points: 30, label: "CPU usage back to normal"}
+  generator_stopped: {points: 25, label: "The runaway service is stopped (not just its process killed)"}
+  generator_disabled: {points: 25, label: "It does not start again at boot"}
+  metrics_running: {points: 20, label: "The metrics agent still runs"}
+process:
+  found_process: {points: 5, label: "Looked at running processes", any_of: ['\btop\b', '\bps\b', '\bhtop\b', 'pidstat']}
+  traced_unit: {points: 5, label: "Mapped the process to its service", any_of: ['systemctl\s+status', 'systemd-cgls', '/proc/\d+/cgroup', 'systemctl\s+list-units']}
