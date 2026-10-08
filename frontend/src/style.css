@@ -1,0 +1,32 @@
+:root {
+  --bg: #f5f6f8; --card: #ffffff; --text: #1d2330; --muted: #667085; --line: #e2e5ea;
+  --accent: #1f6feb; --ok: #1a7f37; --bad: #cf222e; --warn: #9a6700;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg);
+}
+* { box-sizing: border-box }
+body { margin: 0 }
+a { color: var(--accent); text-decoration: none }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 20px;
+  background: #0d1117; color: #e6edf3 }
+.top .brand { color: #e6edf3; font-weight: 600 }
+.top nav { display: flex; align-items: center; gap: 14px; flex-wrap: wrap }
+.top nav a { color: #c9d1d9 } .top nav a.active { color: #fff; text-decoration: underline }
+.top .who { color: #8b949e; font-size: 0.9em }
+main { max-width: 1200px; margin: 20px auto; padding: 0 16px }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; margin-bottom: 16px }
+.narrow { max-width: 420px; margin: 40px auto }
+h1 { font-size: 1.35rem; margin: 0 0 14px } h2 { font-size: 1.1rem; margin: 18px 0 10px }
+label { display: block; margin-bottom: 12px; font-size: 0.92em }
+input, select, textarea { display: block; width: 100%; margin-top: 4px; padding: 7px 9px; border: 1px solid var(--line);
+  border-radius: 6px; font: inherit; background: #fff }
+textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em }
+button { padding: 7px 14px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; cursor: pointer }
+button:disabled { opacity: 0.6; cursor: default }
+button.small { padding: 3px 8px; font-size: 0.85em } button.secondary { background: #57606a } button.danger { background: var(--bad) }
+button.link { background: none; color: #c9d1d9; padding: 0 }
+.error { color: var(--bad) } .muted { color: var(--muted) } .ok { color: var(--ok) } .bad { color: var(--bad) }
+table { width: 100%; border-collapse: collapse; font-size: 0.92em }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { color: var(--muted); font-weight: 600 }
+td.actions { display: flex; gap: 6px; flex-wrap: wrap }
+@media (max-width: 700px) { table { display: block; overflow-x: auto } }

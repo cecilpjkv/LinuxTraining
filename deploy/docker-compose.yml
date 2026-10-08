@@ -1,0 +1,48 @@
+# LinuxTraining application (spec §23). The training labs are NOT part of this file: the backend creates them through
+# the host's Docker Engine on their own network.
+name: linuxtraining
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: linuxtraining
+      POSTGRES_PASSWORD: ${LT_DB_PASSWORD:?set LT_DB_PASSWORD in deploy/.env}
+      POSTGRES_DB: linuxtraining
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linuxtraining"]
+      interval: 5s
+      retries: 20
+    networks: [app]
+
+  backend:
+    build: ../backend
+    restart: unless-stopped
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      LT_DATABASE_URL: postgresql+psycopg://linuxtraining:${LT_DB_PASSWORD}@db:5432/linuxtraining
+      LT_SECRET_KEY: ${LT_SECRET_KEY:?set LT_SECRET_KEY in deploy/.env}
+      LT_COOKIE_SECURE: ${LT_COOKIE_SECURE:-false}
+      LT_ALLOW_REGISTRATION: ${LT_ALLOW_REGISTRATION:-true}
+      LT_SCENARIOS_DIR: /srv/scenarios
+    volumes:
+      - ../scenarios:/srv/scenarios:ro
+    networks: [app]
+
+  web:
+    build: ../frontend
+    restart: unless-stopped
+    depends_on: [backend]
+    ports:
+      - "${LT_HTTP_PORT:-80}:80"
+    networks: [app]
+
+volumes:
+  pgdata:
+
+networks:
+  app:
