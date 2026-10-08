@@ -1,0 +1,11 @@
+name: "WordPress stuck in maintenance mode"
+description: |
+  An automatic update was interrupted last night. Since then the blog (wp.example.test) only shows "Briefly
+  unavailable for scheduled maintenance. Check back in a minute." Bring the blog back.
+category: WordPress
+difficulty: easy
+docker_image: linux-training-lamp
+time_limit: 15
+resource_weight: 3
+collect:
+  - "curl -sI -H 'Host: wp.example.test' http://127.0.0.1/ | head -5"

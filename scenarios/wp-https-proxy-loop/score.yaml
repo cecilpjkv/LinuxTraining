@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  https_home: {points: 35, label: "https://wp.example.test works"}
+  https_post: {points: 35, label: "Posts work over HTTPS"}
+  secure_links: {points: 30, label: "Links use https://"}
+process:
+  traced: {points: 5, label: "Followed the redirects", any_of: ['curl\s+.*-\w*[IiL]', 'Location']}

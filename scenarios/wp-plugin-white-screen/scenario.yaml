@@ -1,0 +1,12 @@
+name: "WordPress shows a blank page after a plugin update"
+description: |
+  After the plugins were updated this morning, the blog (wp.example.test) — including its admin area — shows an
+  empty white page. Bring the site back. The SEO plugin ("SEO Helper") is important and must stay active.
+category: WordPress
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 3
+collect:
+  - "ls /srv/www/wp/wp-content/plugins"
+  - "tail -3 /var/log/php-fpm/www-error.log"

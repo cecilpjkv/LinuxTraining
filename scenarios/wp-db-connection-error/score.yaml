@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  home_page: {points: 60, label: "The blog's home page works"}
+  post_page: {points: 40, label: "Posts load"}
+process:
+  read_config: {points: 5, label: "Checked wp-config.php", any_of: ['wp-config']}

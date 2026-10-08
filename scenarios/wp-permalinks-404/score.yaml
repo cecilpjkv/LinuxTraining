@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  post_page: {points: 60, label: "Posts and pages load"}
+  home_page: {points: 20, label: "The home page works"}
+  config_valid: {points: 20, label: "nginx's configuration is valid"}
+process:
+  read_conf: {points: 5, label: "Read the site configuration", any_of: ['conf.d', 'nginx\s+-T']}

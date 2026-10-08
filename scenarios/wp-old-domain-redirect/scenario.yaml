@@ -1,0 +1,13 @@
+name: "WordPress redirects to the old domain"
+description: |
+  The blog was moved to this server and its new address is http://wp.example.test. Every visit is immediately
+  redirected to the old address (www.wp-old.example.test), which no longer exists. Make the blog work at its new
+  address.
+category: WordPress
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 3
+collect:
+  - "curl -sI -H 'Host: wp.example.test' http://127.0.0.1/ | head -5"
+  - "wp --allow-root --path=/srv/www/wp option get siteurl"

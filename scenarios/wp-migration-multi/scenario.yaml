@@ -1,0 +1,14 @@
+name: "WordPress migration: nothing works"
+description: |
+  The blog was migrated to this server last night by a contractor. It does not work at all at its new address
+  http://wp.example.test, and the contractor is gone. Get the site fully working: home page, posts, and media uploads
+  by authors. Do not make files writable for everybody.
+category: WordPress
+difficulty: extra-hard
+docker_image: linux-training-lamp
+time_limit: 45
+resource_weight: 3
+collect:
+  - "curl -sI -H 'Host: wp.example.test' http://127.0.0.1/ | head -5"
+  - "grep DB_ /srv/www/wp/wp-config.php"
+  - "cat /etc/nginx/conf.d/wp.conf"

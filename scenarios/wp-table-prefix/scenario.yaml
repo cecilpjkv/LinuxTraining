@@ -1,0 +1,13 @@
+name: "WordPress wants to be installed again"
+description: |
+  After the blog's files and database were restored from backup onto this server, visiting wp.example.test shows the
+  WordPress installation screen as if the site were new. The posts are in the database. Do NOT run the installer: fix
+  the site so it shows its existing content.
+category: WordPress
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 3
+collect:
+  - "grep table_prefix /srv/www/wp/wp-config.php"
+  - "mysql -e 'SHOW TABLES' wordpress"

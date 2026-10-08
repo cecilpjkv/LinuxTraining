@@ -40,7 +40,7 @@ Update later with `git -C /opt/linuxtraining pull && /opt/linuxtraining/deploy/i
 - [x] Phase 4: setup/verify scripts, scoring (MVP flow verified end to end: scripts/e2e_mvp.py)
 - [x] Phase 5: attempt history, admin review, dashboard
 - [x] Phase 6: cleanup, queue, timeouts, security hardening (docs/security.md)
-- [x] 100 seeded scenarios: the 50 of spec 25 plus 50 more (system/security, web/TLS; easy to extra hard)
+- [x] 112 seeded scenarios: the 50 of spec 25, 50 more (system/security, web/TLS) and 12 WordPress (easy to extra hard)
 - [x] 50 seeded scenarios (spec 25): 15 easy / 25 intermediate / 10 advanced, each proven in a real lab by
       `scripts/check-scenarios.sh` (setup breaks it, the reference fix scores full marks)
 

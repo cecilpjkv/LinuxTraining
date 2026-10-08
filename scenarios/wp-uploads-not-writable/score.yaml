@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  uploads_writable: {points: 55, label: "The web server can store uploads"}
+  not_world_writable: {points: 30, label: "Nothing is writable by everybody"}
+  site_works: {points: 15, label: "The site works"}
+process:
+  checked_user: {points: 5, label: "Checked which user PHP runs as", any_of: ['ps\s', 'php-fpm.d', '\buser\s*=']}

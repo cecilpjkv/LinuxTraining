@@ -1,0 +1,13 @@
+name: "WordPress: too many redirects behind the TLS proxy"
+description: |
+  The blog was switched to HTTPS: nginx on port 443 terminates TLS and passes requests to the WordPress backend on
+  port 8080. WordPress's address was set to https://wp.example.test. Now browsers report "too many redirects".
+  Make https://wp.example.test work. (The certificate in /etc/pki/wp is fine.)
+category: WordPress
+difficulty: advanced
+docker_image: linux-training-lamp
+time_limit: 30
+resource_weight: 3
+collect:
+  - "cat /etc/nginx/conf.d/wp.conf"
+  - "curl -skI https://127.0.0.1/ -H 'Host: wp.example.test' | head -5"

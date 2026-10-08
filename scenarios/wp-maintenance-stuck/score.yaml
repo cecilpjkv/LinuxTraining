@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  home_page: {points: 50, label: "The blog works"}
+  post_page: {points: 20, label: "Posts load"}
+  flag_removed: {points: 30, label: "The leftover maintenance flag is removed"}
+process:
+  listed_hidden: {points: 5, label: "Listed hidden files in the site", any_of: ['ls\s+-\w*a', 'find\s+/srv/www/wp']}

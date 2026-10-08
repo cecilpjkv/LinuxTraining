@@ -1,0 +1,13 @@
+name: "WordPress report page: memory exhausted"
+description: |
+  The blog's yearly statistics page (wp.example.test/statistics/) fails with "Allowed memory size of ... bytes
+  exhausted". It needs about 160 MB. Raising WordPress's memory setting did not help. Make the page work; other sites
+  on the server must keep their memory limit.
+category: WordPress
+difficulty: advanced
+docker_image: linux-training-lamp
+time_limit: 25
+resource_weight: 3
+collect:
+  - "grep -rn memory_limit /etc/php.ini /etc/php.d/ /etc/php-fpm.d/"
+  - "grep -n MEMORY /srv/www/wp/wp-config.php"

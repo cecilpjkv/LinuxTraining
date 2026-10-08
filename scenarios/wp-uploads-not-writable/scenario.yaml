@@ -1,0 +1,12 @@
+name: "WordPress cannot upload media"
+description: |
+  Authors cannot upload images to the blog (wp.example.test): "Unable to create directory wp-content/uploads/2024/10.
+  Is its parent directory writable by the server?" Fix uploads without making anything writable for everybody.
+category: WordPress
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 3
+collect:
+  - "ls -ld /srv/www/wp/wp-content /srv/www/wp/wp-content/uploads"
+  - "ps -o user= -C php-fpm | sort -u"

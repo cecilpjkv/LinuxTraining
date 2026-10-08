@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  scheduled_published: {points: 60, label: "Scheduled posts get published"}
+  scheduler_exists: {points: 40, label: "A scheduler is in place for the future"}
+process:
+  read_config: {points: 5, label: "Found the scheduler setting", any_of: ['DISABLE_WP_CRON', 'wp-cron', 'cron\s+event']}

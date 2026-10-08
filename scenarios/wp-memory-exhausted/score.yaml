@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  stats_page: {points: 55, label: "The statistics page works"}
+  home_page: {points: 15, label: "The site works"}
+  scoped_change: {points: 30, label: "The limit was raised only where needed (not for the shared pool)"}
+process:
+  found_admin_value: {points: 5, label: "Found the PHP-FPM pool override", any_of: ['php_admin_value', 'php-fpm.d']}

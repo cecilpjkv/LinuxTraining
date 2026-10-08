@@ -12,7 +12,7 @@ try:
                         capabilities=pkg["extra"]["capabilities"], tmpfs=pkg["extra"]["tmpfs"]))
     labs.wait_ready(aid)
     r = labs.run_script(aid, pkg["setup_script"], timeout=300)
-    print("setup exit", r.exit_code, r.output[-300:])
+    print("setup exit", r.exit_code, r.output[-int(__import__("os").environ.get("LT_TAIL", "300")):])
     from app.services.scoring import PRELUDE
     if cmds and cmds[0] == "VERIFY":
         r = labs.run_script(aid, PRELUDE + pkg["verify_script"], timeout=120)

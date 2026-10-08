@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  home_page: {points: 25, label: "The home page works"}
+  post_page: {points: 20, label: "Posts load"}
+  new_address: {points: 20, label: "The site uses its new address"}
+  uploads_work: {points: 20, label: "Authors can upload media"}
+  not_world_writable: {points: 15, label: "Nothing is writable by everybody"}
+process:
+  read_logs: {points: 5, label: "Read the error logs", any_of: ['/var/log/nginx', '/var/log/php-fpm', 'journalctl']}

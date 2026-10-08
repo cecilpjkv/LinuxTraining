@@ -1,0 +1,13 @@
+name: "WordPress site was hacked"
+description: |
+  Visitors report spam links ("cheap pills") at the bottom of every page of wp.example.test, and the security team
+  found a strange admin account. Clean the site: remove the injected code, every backdoor and the attacker's account,
+  and make sure uploaded files can never be executed as PHP. The real administrator is "wpadmin".
+category: WordPress
+difficulty: extra-hard
+docker_image: linux-training-lamp
+time_limit: 45
+resource_weight: 3
+collect:
+  - "wp --allow-root --path=/srv/www/wp user list --role=administrator"
+  - "find /srv/www/wp/wp-content -name '*.php' -newer /srv/www/wp/wp-settings.php"

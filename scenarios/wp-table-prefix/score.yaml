@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  existing_content: {points: 45, label: "The existing posts are shown"}
+  home_page: {points: 25, label: "The home page works"}
+  no_second_install: {points: 30, label: "No second installation was created"}
+process:
+  listed_tables: {points: 5, label: "Looked at the database tables", any_of: ['SHOW\s+TABLES', 'db\s+tables', 'table_prefix']}

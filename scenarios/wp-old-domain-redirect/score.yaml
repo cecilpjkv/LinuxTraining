@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  no_redirect: {points: 45, label: "The blog opens at its new address"}
+  links_new_domain: {points: 30, label: "Its links use the new address"}
+  post_page: {points: 25, label: "Posts load"}
+process:
+  used_wpcli: {points: 5, label: "Inspected the site URLs", any_of: ['siteurl', 'option\s+get', 'wp_options']}

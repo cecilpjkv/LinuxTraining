@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  no_spam: {points: 15, label: "No spam on the pages"}
+  theme_clean: {points: 15, label: "The theme's injected code is removed"}
+  backdoor_removed: {points: 20, label: "The uploads backdoor is removed"}
+  only_real_admin: {points: 20, label: "Only the real administrator remains"}
+  uploads_no_php: {points: 20, label: "PHP in uploads cannot run"}
+  site_works: {points: 10, label: "The site works"}
+process:
+  searched: {points: 5, label: "Searched for injected code", any_of: ['grep\s+.*(eval|base64)', 'find\s+.*\.php']}

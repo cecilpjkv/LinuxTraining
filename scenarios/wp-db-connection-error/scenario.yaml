@@ -1,0 +1,13 @@
+name: "WordPress: Error establishing a database connection"
+description: |
+  The company blog (wp.example.test) shows only "Error establishing a database connection". The database server is
+  running and nobody changed the database. A colleague edited the site's configuration file yesterday. Bring the
+  blog back.
+category: WordPress
+difficulty: easy
+docker_image: linux-training-lamp
+time_limit: 15
+resource_weight: 3
+collect:
+  - "curl -sI -H 'Host: wp.example.test' http://127.0.0.1/ | head -5"
+  - "grep DB_ /srv/www/wp/wp-config.php"

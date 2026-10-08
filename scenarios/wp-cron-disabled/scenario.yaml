@@ -1,0 +1,13 @@
+name: "Scheduled posts are never published"
+description: |
+  Scheduled blog posts on wp.example.test show "Missed schedule" and are never published. Someone turned off
+  WordPress's built-in scheduler to improve performance, but nothing replaced it. Make scheduled posts publish on time
+  again (a real system cron job is the preferred way).
+category: WordPress
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 3
+collect:
+  - "grep -n WP_CRON /srv/www/wp/wp-config.php"
+  - "ls /etc/cron.d"
