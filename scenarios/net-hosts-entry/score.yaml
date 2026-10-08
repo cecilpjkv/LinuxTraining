@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  resolves_locally: {points: 40, label: "db.internal points to this server"}
+  sync_healthy: {points: 60, label: "inventory-sync connects again"}
+process:
+  tested_name: {points: 5, label: "Checked what the name resolves to", any_of: ['getent\s+hosts', '\bping\b', '\bdig\b', '/etc/hosts']}

@@ -1,0 +1,13 @@
+name: Media uploads fail with "Permission denied"
+description: |
+  The media service cannot store uploaded files any more: "Permission denied" on /srv/media/uploads. The directory
+  belongs to the media group, which the service account is a member of, and the group may write to it. Fix the
+  problem without making the directory writable for everybody.
+category: Storage/Application
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - ls -ld /srv/media/uploads
+  - getfacl /srv/media/uploads

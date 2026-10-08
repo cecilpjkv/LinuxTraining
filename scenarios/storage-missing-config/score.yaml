@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  agent_running: {points: 40, label: "The agent runs"}
+  config_restored: {points: 35, label: "The configuration was restored from the backup (unchanged)"}
+  config_protected: {points: 25, label: "The token file is not readable by everybody"}
+process:
+  listed_backup: {points: 5, label: "Inspected the backup before restoring", any_of: ['tar\s+-?\w*t\w*', 'zcat', 'tar\s+--list']}

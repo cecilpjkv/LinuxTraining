@@ -1,0 +1,15 @@
+name: Backend network unreachable after a change
+description: |
+  The billing service on this server cannot reach the backend API at http://10.50.0.10:8443/ ("Network is
+  unreachable"). The backend sits on a dedicated network that this server connects to through the interface
+  ln-backend, configured at boot by the backend-net service. Someone changed that configuration yesterday. Restore
+  the connection so that it also survives a restart of backend-net and a reboot.
+category: Networking
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 2
+capabilities: [NET_ADMIN]
+collect:
+  - ip -br addr show ln-backend
+  - cat /usr/local/sbin/backend-net

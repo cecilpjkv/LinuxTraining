@@ -1,0 +1,15 @@
+name: Orders site unreachable from the network
+description: |
+  Customers on the network cannot reach the orders web application on port 8080 of this server, although
+  `curl http://localhost:8080/` works on the server. The network team gave you `test-from-network PORT` to test from
+  a client's point of view. The server's firewall is mandatory (security policy) and must stay active; make the
+  application reachable, also after a reboot.
+category: Networking
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 2
+capabilities: [NET_ADMIN]
+collect:
+  - nft list ruleset
+  - cat /etc/sysconfig/nftables.conf

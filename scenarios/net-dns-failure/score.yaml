@@ -1,0 +1,11 @@
+pass_score: 70
+items:
+  resolves: {points: 40, label: "api.payments.internal resolves"}
+  dns_running: {points: 20, label: "The local DNS cache runs"}
+  dns_enabled: {points: 15, label: "It starts at boot"}
+  resolver_config: {points: 25, label: "The server uses its local DNS cache"}
+deductions:
+  hosts_workaround: {points: 30, label: "Names pinned in /etc/hosts instead of fixing DNS"}
+process:
+  tested_dns: {points: 5, label: "Tested name resolution", any_of: ['\bdig\b', '\bnslookup\b', '\bhost\s', 'getent\s+hosts']}
+  read_resolver: {points: 5, label: "Read the resolver configuration", any_of: ['resolv\.conf']}

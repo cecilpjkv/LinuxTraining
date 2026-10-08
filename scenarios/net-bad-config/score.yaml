@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  backend_reachable: {points: 40, label: "The backend API is reachable"}
+  interface_correct: {points: 20, label: "ln-backend is up with an address in 10.50.0.0/24"}
+  persistent: {points: 30, label: "The boot configuration is fixed (survives a restart)"}
+  service_enabled: {points: 10, label: "backend-net runs at boot"}
+process:
+  inspected_ifaces: {points: 5, label: "Inspected interfaces and addresses", any_of: ['\bip\s+(-\w+\s+)*(a|addr|address|link|l)\b', 'ifconfig']}
+  inspected_routes: {points: 5, label: "Inspected routing", any_of: ['\bip\s+(-\w+\s+)*r(oute)?\b', '\broute\s+-n', 'ip\s+route\s+get']}

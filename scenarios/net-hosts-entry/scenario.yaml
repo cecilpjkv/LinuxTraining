@@ -1,0 +1,12 @@
+name: Sync service cannot reach its database
+description: |
+  The inventory-sync service reports that it cannot connect to db.internal:6000. The inventory database was moved
+  onto this server last month (it now runs here as the inventory-db service). Get the sync working again.
+category: Networking
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 2
+collect:
+  - getent hosts db.internal
+  - grep -n internal /etc/hosts

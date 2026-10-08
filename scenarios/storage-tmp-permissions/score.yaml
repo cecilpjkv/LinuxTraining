@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  tmp_mode: {points: 45, label: "/tmp has its standard mode 1777 (world-writable with the sticky bit)"}
+  app_works: {points: 35, label: "The report builder works"}
+  any_user_mktemp: {points: 20, label: "Normal users can create temporary files"}
+process:
+  checked_perms: {points: 5, label: "Inspected /tmp's permissions", any_of: ['ls\s+-\w*d\w*\s+/tmp', 'stat\s+.*?/tmp']}

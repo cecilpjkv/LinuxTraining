@@ -15,10 +15,12 @@ from pathlib import Path
 sys.path.insert(0, "/app")
 from app.services import scenario_manager as sm  # noqa: E402
 from app.services.lab_manager import LabManager, LabSpec  # noqa: E402
-from app.services.scoring import PRELUDE, parse, score  # noqa: E402
+from app.services.scoring import parse, run_verify, score  # noqa: E402
+import app.services.lab_manager as _lm  # noqa: E402
 
 ROOT = Path("/srv/scenarios")
 labs = LabManager()
+_lm.labs = labs  # run_verify uses the module's manager
 
 
 def check(slug: str) -> tuple[str, bool, str]:
@@ -38,14 +40,17 @@ def check(slug: str) -> tuple[str, bool, str]:
         r = labs.run_script(aid, pkg["setup_script"], timeout=300)
         if r.exit_code != 0:
             return slug, False, f"setup.sh exit {r.exit_code}: {r.output[-600:]}"
-        before = parse(labs.run_script(aid, PRELUDE + pkg["verify_script"], timeout=180).output)["checks"]
+        before = parse(run_verify(aid, pkg["verify_script"]).output)["checks"]
         failing = [n for n in pkg["score_config"]["items"] if before.get(n, {}).get("status") != "PASS"]
         if not failing:
             return slug, False, "the problem is not in place after setup.sh (every check passes)"
         r = labs.run_script(aid, sol.read_text(), timeout=300)
         if r.exit_code != 0:
             return slug, False, f"solution.sh exit {r.exit_code}: {r.output[-600:]}"
-        out = labs.run_script(aid, PRELUDE + pkg["verify_script"], timeout=180).output
+        vr = run_verify(aid, pkg["verify_script"])
+        out = vr.output
+        if "@@LT " not in out:
+            return slug, False, f"verify.sh reported nothing after the fix (exit {vr.exit_code}): {out[-300:]!r}"
         res = score(pkg["score_config"], out, [])
         bad = [f"{b['item']}={b['status']}({b['reason'][:120]})" for b in res["breakdown"] if b["kind"] == "state" and b["status"] != "PASS"]
         ded = [b["item"] for b in res["breakdown"] if b["kind"] == "deduction"]

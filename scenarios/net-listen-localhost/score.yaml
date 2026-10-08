@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  reachable_from_network: {points: 60, label: "The metrics endpoint answers on the server's network address"}
+  service_running: {points: 20, label: "The metrics API runs"}
+  port_unchanged: {points: 20, label: "It still uses port 9100"}
+process:
+  checked_listen: {points: 5, label: "Checked which address the service listens on", any_of: ['\bss\s+-\w*l', 'netstat', 'lsof\s+-i']}

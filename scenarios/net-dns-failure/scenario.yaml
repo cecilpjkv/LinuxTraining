@@ -1,0 +1,13 @@
+name: Internal names do not resolve
+description: |
+  The payment worker on this server cannot reach api.payments.internal: "Temporary failure in name resolution".
+  This server runs a local DNS cache that knows the internal names; other servers resolve them fine. The DNS settings
+  were changed during last week's migration. Make name resolution work again (also after a reboot).
+category: Networking
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 2
+collect:
+  - cat /etc/resolv.conf
+  - systemctl status dnsmasq --no-pager

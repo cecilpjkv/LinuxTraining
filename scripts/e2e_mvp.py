@@ -94,6 +94,8 @@ def main():
     ok("syntax is ok" in review["final_state"], "final state collected (nginx -t, status, config)")
     labs = admin.get("/api/admin/labs").json()
     ok(labs["active"] == 0, "lab slot freed")
+    sid = next(s["id"] for s in admin.get("/api/admin/scenarios").json() if s["slug"] == slug)
+    ok(admin.delete(f"/api/admin/scenarios/{sid}").status_code == 204, "test scenario removed again")
     return a["id"]
 
 

@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  app_reachable: {points: 35, label: "Port 8080 is reachable from the network"}
+  firewall_kept: {points: 25, label: "The default-deny firewall stays active"}
+  ssh_rule_kept: {points: 10, label: "The SSH rule is kept"}
+  persistent: {points: 30, label: "The fix is saved (survives a firewall reload / reboot)"}
+process:
+  listed_rules: {points: 5, label: "Listed the firewall rules", any_of: ['nft\s+(-a\s+)?list', 'iptables\s+-\w*L', 'firewall-cmd']}
+  tested: {points: 5, label: "Tested from the network side", any_of: ['test-from-network']}

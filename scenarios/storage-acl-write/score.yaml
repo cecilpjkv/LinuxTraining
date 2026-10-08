@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  app_writes: {points: 45, label: "The media service stores files again"}
+  write_test: {points: 20, label: "The service account can create files there"}
+  not_world_writable: {points: 35, label: "The directory is not writable by everybody (and keeps its group)"}
+process:
+  checked_acl: {points: 5, label: "Inspected the ACL", any_of: ['getfacl']}

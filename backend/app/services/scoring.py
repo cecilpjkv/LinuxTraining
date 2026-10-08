@@ -87,8 +87,19 @@ def score(config: dict, verify_output: str, commands: list[str]) -> dict:
 
 
 def run_verify(attempt_id: int, verify_script: str, timeout: int = 180):
+    """Runs verify.sh; if it reported nothing at all (seen once in ~50 runs on a loaded host: an empty exec stream),
+    it runs once more, so a lost stream never scores a technician 0."""
+    import logging
+    import time
+
     from .lab_manager import labs
-    return labs.run_script(attempt_id, PRELUDE + "\n" + verify_script, timeout=timeout)
+    r = labs.run_script(attempt_id, PRELUDE + "\n" + verify_script, timeout=timeout)
+    if "@@LT " not in r.output:
+        logging.getLogger("grading").warning("attempt %s: verify.sh reported nothing (exit %s, %d bytes); running it again",
+                                             attempt_id, r.exit_code, len(r.output))
+        time.sleep(2)
+        r = labs.run_script(attempt_id, PRELUDE + "\n" + verify_script, timeout=timeout)
+    return r
 
 
 def confirm_broken(attempt_id: int, version) -> tuple[bool, str]:

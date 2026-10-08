@@ -25,6 +25,14 @@ Docker Compose (the application itself).
 - [x] Phase 4: setup/verify scripts, scoring (MVP flow verified end to end: scripts/e2e_mvp.py)
 - [x] Phase 5: attempt history, admin review, dashboard
 - [x] Phase 6: cleanup, queue, timeouts, security hardening (docs/security.md)
+- [x] 50 seeded scenarios (spec 25): 15 easy / 25 intermediate / 10 advanced, each proven in a real lab by
+      `scripts/check-scenarios.sh` (setup breaks it, the reference fix scores full marks)
+
+## Documentation
+
+- `docs/deployment.md`: installation (Docker, lab daemon, images, Compose, reverse proxy, HTTPS, admin, backups)
+- `docs/scenarios.md`: writing scenarios (format, verify helpers, scoring, pitfalls)
+- `docs/security.md`: the security model
 
 ## Quick start (development host)
 
