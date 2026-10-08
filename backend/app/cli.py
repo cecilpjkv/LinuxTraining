@@ -35,9 +35,21 @@ def main() -> int:
     ca = sub.add_parser("create-admin")
     ca.add_argument("username")
     ca.add_argument("--email")
+    sub.add_parser("seed", help="import scenario packages that were never imported (LT_SCENARIOS_DIR)")
     a = p.parse_args()
     if a.cmd == "create-admin":
         return create_admin(a.username, a.email)
+    if a.cmd == "seed":
+        from pathlib import Path
+
+        from .config import settings
+        from .services.scenario_manager import seed
+        with SessionLocal() as db:
+            r = seed(db, Path(settings.scenarios_dir))
+        print(f"scenarios: {len(r['added'])} added, {len(r['skipped'])} seeded before")
+        for k, v in r["errors"].items():
+            print(f"  {k}: {v}", file=sys.stderr)
+        return 1 if r["errors"] else 0
     return 2
 
 

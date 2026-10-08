@@ -1,0 +1,11 @@
+pass_score: 70
+items:
+  nginx_config_valid: {points: 30, label: "Nginx configuration is valid (nginx -t)"}
+  nginx_running: {points: 25, label: "Nginx is running"}
+  site_serves_content: {points: 35, label: "shop.example.test returns HTTP 200 with the shop page"}
+  nginx_enabled_on_boot: {points: 10, label: "Nginx starts at boot"}
+process:
+  tested_config: {points: 5, label: "Tested the configuration before restarting", any_of: ['\bnginx\s+-[tT]\b']}
+  read_logs: {points: 5, label: "Read the service status or logs", any_of: ['systemctl\s+status', 'journalctl', '/var/log/nginx']}
+deductions:
+  site_removed: {points: 40, label: "The shop site was removed instead of repaired"}

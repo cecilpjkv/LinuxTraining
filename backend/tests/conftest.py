@@ -11,6 +11,7 @@ if not _url.rsplit("/", 1)[-1].split("?")[0].endswith("_test"):
     raise SystemExit(f"refusing to run the tests against {_url!r}: the database name must end in _test")
 os.environ["LT_DATABASE_URL"] = _url
 os.environ["LT_SECRET_KEY"] = "test-secret"
+os.environ["LT_DISABLE_SCHEDULER"] = "1"
 
 from app.db import Base, SessionLocal, engine  # noqa: E402
 from app.main import app  # noqa: E402
@@ -52,3 +53,12 @@ def admin(client):
 @pytest.fixture
 def tech(client):
     return login(client, "tech", TECH_PW)
+
+
+@pytest.fixture
+def make_user():
+    def mk(name: str, role: str = "technician", password: str = TECH_PW):
+        with SessionLocal() as db:
+            db.add(User(username=name, role=role, password_hash=hash_password(password)))
+            db.commit()
+    return mk

@@ -1,0 +1,17 @@
+name: Website down after a configuration change
+description: |
+  The customer's shop site (shop.example.test, hosted on this server) stopped responding this morning, right after a
+  colleague changed the web server configuration. Nobody knows exactly what was changed.
+  Restore the website without removing the shop site.
+category: Nginx
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+setup_script: setup.sh
+verification_script: verify.sh
+score_file: score.yaml
+collect:
+  - nginx -t
+  - systemctl status nginx --no-pager -l
+  - cat /etc/nginx/conf.d/shop.conf

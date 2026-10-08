@@ -5,6 +5,9 @@ import Register from './pages/Register.jsx'
 import TechHome from './pages/TechHome.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import AdminUsers from './pages/AdminUsers.jsx'
+import Attempt from './pages/Attempt.jsx'
+import AdminScenarios from './pages/AdminScenarios.jsx'
+import ScenarioEditor from './pages/ScenarioEditor.jsx'
 
 function Shell({ children }) {
   const { user, logout } = useAuth()
@@ -17,6 +20,7 @@ function Shell({ children }) {
             {user.role === 'admin' ? (
               <>
                 <NavLink to="/admin">Dashboard</NavLink>
+                <NavLink to="/admin/scenarios">Scenarios</NavLink>
                 <NavLink to="/admin/users">Users</NavLink>
               </>
             ) : (
@@ -55,7 +59,11 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Home />} />
+          <Route path="/attempts/:id" element={<Guard><Attempt /></Guard>} />
           <Route path="/admin" element={<Guard role="admin"><AdminDashboard /></Guard>} />
+          <Route path="/admin/scenarios" element={<Guard role="admin"><AdminScenarios /></Guard>} />
+          <Route path="/admin/scenarios/new" element={<Guard role="admin"><ScenarioEditor /></Guard>} />
+          <Route path="/admin/scenarios/:id" element={<Guard role="admin"><ScenarioEditor /></Guard>} />
           <Route path="/admin/users" element={<Guard role="admin"><AdminUsers /></Guard>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

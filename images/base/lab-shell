@@ -1,0 +1,6 @@
+#!/bin/sh
+# The technician's terminal: a root login shell without CAP_SYS_ADMIN (no mounts, no cgroup changes); services are
+# still managed through systemd (PID 1) as on a real server.
+cd /root
+export LT_SESSION=1
+exec setpriv --bounding-set -sys_admin,-sys_module,-sys_rawio,-sys_time,-mknod --inh-caps -all -- /bin/bash -l "$@"

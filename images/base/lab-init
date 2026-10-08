@@ -1,0 +1,6 @@
+#!/bin/sh
+# PID 1 of a training lab: systemd needs a writable cgroup tree. The lab runs in its own cgroup namespace, so this
+# remounts only the lab's own cgroup (needs CAP_SYS_ADMIN, which the technician's shell does not get: see
+# lab-shell). No --privileged.
+mount -o remount,rw /sys/fs/cgroup 2>/dev/null || echo "lab-init: cgroup tree stays read-only" >&2
+exec /sbin/init

@@ -20,9 +20,9 @@ Docker Compose (the application itself).
 ## Status
 
 - [x] Phase 1: structure, database (9 tables, Alembic), authentication (scrypt + JWT HttpOnly cookie), roles
-- [ ] Phase 2: scenario management, Docker labs, resource weights, concurrency limit
-- [ ] Phase 3: browser terminal (WebSocket + PTY), command logging
-- [ ] Phase 4: setup/verify scripts, scoring
+- [x] Phase 2: scenario management, Docker labs, resource weights, concurrency limit
+- [x] Phase 3: browser terminal (WebSocket + PTY), command logging
+- [x] Phase 4: setup/verify scripts, scoring (MVP flow verified end to end: scripts/e2e_mvp.py)
 - [ ] Phase 5: attempt history, admin review, dashboard
 - [ ] Phase 6: cleanup, queue, timeouts, security hardening
 

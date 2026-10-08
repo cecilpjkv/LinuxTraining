@@ -30,3 +30,22 @@ th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line
 th { color: var(--muted); font-weight: 600 }
 td.actions { display: flex; gap: 6px; flex-wrap: wrap }
 @media (max-width: 700px) { table { display: block; overflow-x: auto } }
+.highlight { border-color: var(--accent); background: #eef4ff }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px } .filters > * { width: auto; min-width: 160px; margin: 0 }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px }
+.scenario { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px }
+.scenario h3 { margin: 4px 0 0; font-size: 1rem } .scenario .desc { flex: 1; font-size: 0.9em; color: #3d4451; margin: 0 }
+.scenario button { align-self: flex-start }
+.tags { display: flex; gap: 6px; flex-wrap: wrap } .tag { font-size: 0.75em; padding: 2px 7px; border-radius: 10px; background: #eef1f4; color: #3d4451 }
+.d-easy { background: #dafbe1 } .d-intermediate { background: #fff8c5 } .d-advanced { background: #ffebe9 }
+.row-between { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.status { color: var(--muted) } .pre { white-space: pre-wrap } .big { font-size: 1.3rem; font-weight: 600 }
+.actions-row { display: flex; gap: 8px; margin-top: 8px }
+.terminal-wrap { background: #0d1117; border-radius: 8px; padding: 6px; margin-bottom: 16px }
+.terminal { height: 62vh; min-height: 320px }
+.term-state { font-size: 0.8em; color: #8b949e; padding: 2px 6px 6px } .s-connected { color: #3fb950 } .s-reconnecting { color: #d29922 }
+pre.block { background: #f6f8fa; border: 1px solid var(--line); border-radius: 6px; padding: 10px; overflow-x: auto; font-size: 0.82em; white-space: pre-wrap }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 14px }
+label.check { display: flex; align-items: center; gap: 8px } label.check input { width: auto; margin: 0 }
+.button-like { display: inline-block; padding: 7px 14px; border-radius: 6px; background: #57606a; color: #fff; cursor: pointer; margin: 0 }
+.small { font-size: 0.82em } tr.dim td { opacity: 0.55 }
