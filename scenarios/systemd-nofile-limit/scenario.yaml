@@ -1,0 +1,12 @@
+name: Indexer crashes with too many open files
+description: |
+  The feed indexer crashes a few seconds after starting: "Too many open files". It legitimately keeps about 2000 feed
+  files open. Make it run stably.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - "systemctl cat feed-indexer"
+  - "journalctl -u feed-indexer --no-pager -n 3"

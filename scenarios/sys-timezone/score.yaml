@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  timezone_set: {points: 60, label: "Time zone is Europe/Amsterdam"}
+  clock_shows_zone: {points: 40, label: "The system clock shows CET/CEST"}
+process:
+  used_tool: {points: 5, label: "Used the time zone tools", any_of: ['timedatectl', 'zoneinfo']}

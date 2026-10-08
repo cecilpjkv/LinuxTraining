@@ -3,7 +3,7 @@ sys.path.insert(0, "/app")
 from pathlib import Path
 from app.services import scenario_manager as sm
 from app.services.lab_manager import LabManager, LabSpec
-labs = LabManager()
+labs = LabManager(owner="checker")
 slug, cmds = sys.argv[1], sys.argv[2:]
 pkg = sm.read_package(Path("/srv/scenarios"), slug)
 aid = 500000 + uuid.uuid4().int % 99999

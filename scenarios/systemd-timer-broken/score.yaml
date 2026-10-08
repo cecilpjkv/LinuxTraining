@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  timer_active: {points: 25, label: "The timer is active"}
+  timer_enabled: {points: 20, label: "It is enabled at boot"}
+  schedule_daily: {points: 35, label: "It is scheduled daily"}
+  backup_runs: {points: 20, label: "The backup job itself works"}
+process:
+  listed_timers: {points: 5, label: "Listed the timers", any_of: ['list-timers', 'systemd-analyze calendar']}

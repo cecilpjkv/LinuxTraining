@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  proxy_reads_key: {points: 45, label: "The proxy reads its key"}
+  key_protected: {points: 30, label: "The key keeps its strict permissions"}
+  in_group: {points: 25, label: "webproxy is in group certs"}
+process:
+  checked_ids: {points: 5, label: "Checked the user's groups", any_of: ['\bid\b', 'groups', 'getent group']}

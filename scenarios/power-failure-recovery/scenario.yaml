@@ -1,0 +1,15 @@
+name: Several services down after a power failure
+description: |
+  After a power failure the server came back, but the payment gateway, the event logger and the reconciliation job
+  are not working. Nothing was changed by anyone. Get all three working, and leave the server so that it would
+  recover on its own next time where possible.
+category: Linux
+difficulty: extra-hard
+docker_image: linux-training-base
+time_limit: 45
+resource_weight: 1
+tmpfs:
+  /var/log/app: 16
+collect:
+  - "systemctl --failed --no-pager"
+  - "df -h /var/log/app"

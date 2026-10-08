@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  sudoers_valid: {points: 35, label: "The sudo configuration parses"}
+  ops_can_systemctl: {points: 40, label: "ops can run systemctl as root"}
+  least_privilege: {points: 25, label: "ops cannot run anything else as root"}
+process:
+  used_visudo: {points: 5, label: "Validated with visudo", any_of: ['visudo\s+-c']}

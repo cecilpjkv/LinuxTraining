@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  config_persistent: {points: 50, label: "The journal is configured to keep logs on disk"}
+  on_disk: {points: 50, label: "Logs are being written to /var/log/journal"}
+process:
+  read_config: {points: 5, label: "Read the journald configuration", any_of: ['journald.conf', 'cat-config']}

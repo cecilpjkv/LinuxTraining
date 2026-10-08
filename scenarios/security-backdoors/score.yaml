@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  no_extra_root: {points: 25, label: "No second root (UID 0) account"}
+  no_suid_backdoor: {points: 25, label: "No SUID root shell left"}
+  no_attacker_key: {points: 25, label: "The attacker's SSH key is gone"}
+  admin_login: {points: 15, label: "admin can still log in"}
+  admin_sudo: {points: 10, label: "admin keeps sudo via wheel"}
+process:
+  searched_suid: {points: 5, label: "Searched for SUID files", any_of: ['-perm\s+[-/]?[0-7]*4000', '-perm\s+-u=s']}
+  checked_uid0: {points: 5, label: "Checked for UID 0 accounts", any_of: ['/etc/passwd', 'getent passwd']}

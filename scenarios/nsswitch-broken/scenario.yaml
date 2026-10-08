@@ -1,0 +1,13 @@
+name: Users are unknown, but /etc/passwd is fine
+description: |
+  Odd failures everywhere since a configuration management run: `id support` says "no such user", services that run
+  as their own users fail to start, and SSH logins are refused — although /etc/passwd still lists all users. Find
+  and fix the cause.
+category: Linux
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 1
+collect:
+  - "getent passwd support"
+  - "cat /etc/nsswitch.conf"

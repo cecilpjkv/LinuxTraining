@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  parallel_build: {points: 60, label: "30 parallel processes work for builder"}
+  limit_raised: {points: 40, label: "builder's process limit is sensible"}
+process:
+  checked_limits: {points: 5, label: "Checked the user's limits", any_of: ['ulimit', 'limits.d', 'limits.conf']}

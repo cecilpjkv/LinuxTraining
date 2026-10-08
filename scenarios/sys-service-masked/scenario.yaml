@@ -1,0 +1,11 @@
+name: Notification API will not start
+description: |
+  The notification API (port 8090) is down. `systemctl start notify-api` refuses to start it. Bring it back, also
+  after a reboot.
+category: Linux
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 1
+collect:
+  - "systemctl status notify-api --no-pager"

@@ -33,7 +33,7 @@ class Scenario(Base):
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")
     category: Mapped[str] = mapped_column(String(32), index=True)
-    difficulty: Mapped[str] = mapped_column(String(16))  # easy | intermediate | advanced
+    difficulty: Mapped[str] = mapped_column(String(16))  # easy | intermediate | advanced | extra-hard
     docker_image: Mapped[str] = mapped_column(String(128))
     time_limit: Mapped[int] = mapped_column(Integer, default=30)  # minutes
     resource_weight: Mapped[int] = mapped_column(Integer, default=1)

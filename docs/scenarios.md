@@ -22,7 +22,7 @@ name: Website down after a configuration change
 description: |
   The customer's symptom, never the cause. ("The site returns 502", not "the socket is wrong".)
 category: Nginx            # Linux, SSH, Networking, Nginx, Apache, PHP, PHP-FPM, MariaDB, Storage/Application, ...
-difficulty: easy           # easy | intermediate | advanced
+difficulty: easy           # easy | intermediate | advanced | extra-hard (often several faults together)
 docker_image: linux-training-web   # linux-training-base | -web (nginx, httpd, php-fpm) | -lamp (+ MariaDB)
 time_limit: 20             # minutes (capped by the admin's maximum test duration)
 resource_weight: 2         # 1 basic, 2 web/PHP/networking, 3 app + database, 4 heavy (runs alone)

@@ -47,7 +47,7 @@ export default function TechHome() {
             <option value="">All categories</option>{cats.map(c => <option key={c}>{c}</option>)}
           </select>
           <select value={filter.difficulty} onChange={e => setFilter({ ...filter, difficulty: e.target.value })}>
-            <option value="">All difficulties</option><option>easy</option><option>intermediate</option><option>advanced</option>
+            <option value="">All difficulties</option><option>easy</option><option>intermediate</option><option>advanced</option><option value="extra-hard">extra hard</option>
           </select>
           <input placeholder="Search" value={filter.q} onChange={e => setFilter({ ...filter, q: e.target.value })} />
         </div>
@@ -55,7 +55,7 @@ export default function TechHome() {
         <div className="grid">
           {shown.map(s => (
             <article key={s.id} className="scenario">
-              <div className="tags"><span className="tag">{s.category}</span><span className={`tag d-${s.difficulty}`}>{s.difficulty}</span>
+              <div className="tags"><span className="tag">{s.category}</span><span className={`tag d-${s.difficulty}`}>{s.difficulty.replace('-', ' ')}</span>
                 <span className="tag">{s.time_limit} min</span></div>
               <h3>{s.name}</h3>
               <p className="desc">{s.description}</p>

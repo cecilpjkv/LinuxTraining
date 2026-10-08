@@ -1,0 +1,12 @@
+name: Report user cannot schedule jobs
+description: |
+  The reporting team (user "reports") must manage its own scheduled jobs with `crontab -e`. Since last week's security
+  hardening this fails. The hardening policy itself (only approved users may use cron) must stay in place; reports is
+  approved.
+category: Linux
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+collect:
+  - "ls -l /usr/bin/crontab /etc/cron.allow /etc/cron.deny"

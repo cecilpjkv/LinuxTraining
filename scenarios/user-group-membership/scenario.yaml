@@ -1,0 +1,13 @@
+name: TLS proxy cannot read its key
+description: |
+  The internal TLS proxy service runs as user "webproxy" and fails with "Permission denied" reading its private key
+  /etc/pki/app/proxy.key. Keys are readable by the group "certs" only, by policy. Fix it without loosening the key's
+  permissions.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - "ls -l /etc/pki/app"
+  - "id webproxy"

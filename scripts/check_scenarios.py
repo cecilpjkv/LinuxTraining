@@ -19,7 +19,7 @@ from app.services.scoring import parse, run_verify, score  # noqa: E402
 import app.services.lab_manager as _lm  # noqa: E402
 
 ROOT = Path("/srv/scenarios")
-labs = LabManager()
+labs = LabManager(owner="checker")
 _lm.labs = labs  # run_verify uses the module's manager
 
 

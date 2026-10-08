@@ -1,0 +1,13 @@
+pass_score: 70
+items:
+  no_suid_shell: {points: 12, label: "No SUID root shell left"}
+  no_malicious_cron: {points: 12, label: "No cron job calls the attacker"}
+  no_fake_service: {points: 12, label: "The fake systemd service is removed"}
+  no_attacker_key: {points: 12, label: "The attacker's SSH key is removed"}
+  no_sudo_backdoor: {points: 12, label: "No sudo backdoor"}
+  ssh_hardened: {points: 12, label: "Root SSH login is disabled again"}
+  admin_ok: {points: 10, label: "admin keeps login and sudo"}
+  legit_cron_kept: {points: 9, label: "deploy's legitimate job is kept"}
+  web_kept: {points: 9, label: "The web service still runs"}
+process:
+  hunted: {points: 5, label: "Hunted systematically (SUID, cron, units, keys, sudoers)", any_of: ['-perm', 'sudoers', 'authorized_keys', 'list-unit-files']}

@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  paygw_running: {points: 25, label: "The payment gateway runs"}
+  logger_running: {points: 20, label: "The event logger writes again"}
+  log_space: {points: 15, label: "The log volume has space"}
+  reconcile_scheduled: {points: 25, label: "Reconciliation is scheduled and works"}
+  recovers_alone: {points: 15, label: "Services start at boot"}
+process:
+  listed_failed: {points: 5, label: "Listed failed units", any_of: ['--failed', '--state=failed', 'list-units']}
+  read_logs: {points: 5, label: "Read the service logs", any_of: ['journalctl']}

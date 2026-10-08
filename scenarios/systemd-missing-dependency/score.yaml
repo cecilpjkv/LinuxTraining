@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  starts_alone: {points: 40, label: "Starting the worker alone works"}
+  dependency_declared: {points: 25, label: "The worker requires the queue"}
+  ordering_declared: {points: 25, label: "The worker starts after the queue"}
+  worker_enabled: {points: 10, label: "The worker starts at boot"}
+process:
+  read_unit: {points: 5, label: "Read the unit definitions", any_of: ['systemctl\s+cat', 'systemctl\s+show', '/etc/systemd/system']}

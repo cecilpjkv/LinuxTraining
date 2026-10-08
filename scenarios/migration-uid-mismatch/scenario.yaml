@@ -1,0 +1,14 @@
+name: Application broken after a server migration
+description: |
+  The archive application was migrated from an old server last night (files copied with their numeric owners, users
+  recreated by hand). Since then: the archive service is down and cannot be started, its files show odd owners, and
+  the archive's hourly export never runs. Get the application fully working again.
+category: Linux
+difficulty: extra-hard
+docker_image: linux-training-base
+time_limit: 40
+resource_weight: 1
+collect:
+  - "ls -ln /srv/archive"
+  - "id archive"
+  - "systemctl status archive --no-pager"

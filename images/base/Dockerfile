@@ -5,6 +5,7 @@ RUN dnf -y install --allowerasing --setopt=install_weak_deps=False \
       tar gzip bzip2 unzip curl wget cronie openssh-server openssh-clients sudo util-linux passwd hostname \
       sysstat strace tree diffutils logrotate rsyslog man-db bash-completion ncurses jq nmap-ncat tcpdump \
       e2fsprogs xfsprogs rpm-build createrepo_c policycoreutils dnsmasq nftables acl python3 dnf-plugins-core bc \
+      openssl at shadow-utils sqlite \
  && dnf clean all && rm -rf /var/cache/dnf \
  # units that make no sense in a container
  && systemctl mask systemd-logind.service getty@.service console-getty.service systemd-udevd.service \

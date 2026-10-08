@@ -1,0 +1,11 @@
+name: Log rotation stopped for every application
+description: |
+  None of the logs on this server have been rotated for two weeks, and /var/log is filling up. A new rotation rule was
+  added for the payments application around that time. Fix log rotation (all rules must work, including the new one).
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - "logrotate -d /etc/logrotate.conf 2>&1 | tail -5"

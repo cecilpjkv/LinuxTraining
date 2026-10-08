@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  config_valid: {points: 15, label: "sshd's configuration is valid"}
+  sshd_running: {points: 15, label: "sshd runs"}
+  key_login: {points: 35, label: "support can log in"}
+  same_host_keys: {points: 15, label: "The original host keys are kept"}
+  keys_private: {points: 20, label: "The host keys are private again"}
+process:
+  tested: {points: 5, label: "Tested sshd's configuration", any_of: ['sshd\s+-[tT]']}
+  read_logs: {points: 5, label: "Read sshd's errors", any_of: ['journalctl', 'systemctl\s+status']}

@@ -1,0 +1,12 @@
+name: Deploy user cannot restart the app
+description: |
+  The deploy user restarts the shop API during releases with `sudo systemctl restart shop-api`. Since this morning
+  sudo refuses: deploy is no longer able to restart it. Fix it without giving deploy more rights than before.
+category: Linux
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 1
+collect:
+  - "ls -l /etc/sudoers.d/"
+  - "visudo -c"

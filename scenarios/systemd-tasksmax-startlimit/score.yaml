@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  service_running: {points: 30, label: "The converter runs"}
+  service_healthy: {points: 35, label: "It stays healthy with its 40 threads"}
+  tasks_limit_fits: {points: 35, label: "Its task limit fits (>= 64)"}
+process:
+  reset: {points: 5, label: "Cleared the failed state", any_of: ['reset-failed']}
+  read_logs: {points: 5, label: "Read the service log", any_of: ['journalctl', 'systemctl\s+status']}

@@ -1,0 +1,12 @@
+name: Report job works by hand but not from cron
+description: |
+  The hourly sales report job (/etc/cron.d/sales-report) fails every time cron runs it, but it works when an admin runs
+  the same command in a shell. Make the cron job work.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - "cat /etc/cron.d/sales-report"
+  - "grep -i sales /var/log/cron | tail -3"

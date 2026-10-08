@@ -37,7 +37,7 @@ td.actions { display: flex; gap: 6px; flex-wrap: wrap }
 .scenario h3 { margin: 4px 0 0; font-size: 1rem } .scenario .desc { flex: 1; font-size: 0.9em; color: #3d4451; margin: 0 }
 .scenario button { align-self: flex-start }
 .tags { display: flex; gap: 6px; flex-wrap: wrap } .tag { font-size: 0.75em; padding: 2px 7px; border-radius: 10px; background: #eef1f4; color: #3d4451 }
-.d-easy { background: #dafbe1 } .d-intermediate { background: #fff8c5 } .d-advanced { background: #ffebe9 }
+.d-easy { background: #dafbe1 } .d-intermediate { background: #fff8c5 } .d-advanced { background: #ffebe9 } .d-extra-hard { background: #f0d4ff }
 .row-between { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap }
 .status { color: var(--muted) } .pre { white-space: pre-wrap } .big { font-size: 1.3rem; font-weight: 600 }
 .actions-row { display: flex; gap: 8px; margin-top: 8px }

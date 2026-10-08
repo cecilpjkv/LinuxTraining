@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  account_files_readable: {points: 30, label: "passwd and group are readable again"}
+  hashes_private: {points: 40, label: "Password hashes are not readable by users"}
+  services_work: {points: 30, label: "Services running as users work"}
+process:
+  checked_perms: {points: 5, label: "Inspected the files' permissions", any_of: ['ls\s+-\w*l', '\bstat\b', 'rpm\s+-V']}

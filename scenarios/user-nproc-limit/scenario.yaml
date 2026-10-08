@@ -1,0 +1,12 @@
+name: Build user cannot start processes
+description: |
+  Builds run as user "builder" fail with "fork: retry: Resource temporarily unavailable" as soon as they start a few
+  parallel steps. The server has plenty of resources. Make builds with at least 30 parallel processes possible.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - "ls /etc/security/limits.d/"
+  - "su - builder -c 'ulimit -u'"

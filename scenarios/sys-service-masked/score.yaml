@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  api_responds: {points: 50, label: "The API answers"}
+  service_active: {points: 25, label: "The service runs"}
+  service_enabled: {points: 25, label: "It starts at boot"}
+process:
+  read_status: {points: 5, label: "Read the service state", any_of: ['systemctl\s+status', 'systemctl\s+is-', 'journalctl']}

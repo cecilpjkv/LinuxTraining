@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  key_login: {points: 60, label: "support can log in"}
+  not_expiring: {points: 40, label: "The account is no longer expired"}
+process:
+  checked_aging: {points: 5, label: "Inspected the account's aging data", any_of: ['chage\s+-l', '/etc/shadow', 'passwd\s+-S']}

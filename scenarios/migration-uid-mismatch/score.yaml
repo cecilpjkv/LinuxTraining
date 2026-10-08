@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  service_running: {points: 20, label: "The archive service runs"}
+  service_healthy: {points: 20, label: "It can use its files"}
+  owners_fixed: {points: 25, label: "No files with orphaned owners"}
+  service_enabled: {points: 10, label: "It starts at boot"}
+  export_works: {points: 25, label: "The hourly export is valid and works"}
+process:
+  numeric_ls: {points: 5, label: "Listed numeric owners", any_of: ['ls\s+-\w*n', 'find.*-nouser', 'stat\s+-c']}

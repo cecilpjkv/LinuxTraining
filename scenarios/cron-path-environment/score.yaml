@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  job_works_in_cron: {points: 70, label: "The job works in cron's environment"}
+  still_scheduled: {points: 30, label: "It is still scheduled"}
+process:
+  read_cron_log: {points: 5, label: "Read cron's log", any_of: ['/var/log/cron', 'journalctl']}

@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  crond_running: {points: 45, label: "The cron service runs"}
+  crond_enabled: {points: 35, label: "It starts at boot"}
+  jobs_kept: {points: 20, label: "The job definitions were kept"}
+process:
+  checked: {points: 5, label: "Checked the cron service", any_of: ['systemctl\s+status\s+crond', 'crond', 'cron']}

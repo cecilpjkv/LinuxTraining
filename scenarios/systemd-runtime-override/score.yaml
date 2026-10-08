@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  api_on_8081: {points: 45, label: "The API answers on port 8081"}
+  no_stray_overrides: {points: 35, label: "No leftover drop-in overrides the unit"}
+  service_active: {points: 20, label: "The service runs"}
+process:
+  used_cat: {points: 5, label: "Looked at the effective unit with all drop-ins", any_of: ['systemctl\s+cat', 'DropIn', 'systemctl\s+show']}

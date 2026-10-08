@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  users_resolve: {points: 40, label: "User names resolve again"}
+  ssh_works: {points: 30, label: "SSH logins work"}
+  service_works: {points: 30, label: "Services running as users work"}
+process:
+  used_getent: {points: 5, label: "Tested lookups with getent", any_of: ['getent']}
+  read_nsswitch: {points: 5, label: "Read nsswitch.conf", any_of: ['nsswitch']}

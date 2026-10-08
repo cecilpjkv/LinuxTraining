@@ -1,0 +1,14 @@
+name: SSH service does not start
+description: |
+  SSH is down on this server and `systemctl start sshd` fails. During last night's hardening the SSH host keys were
+  "backed up and restored" and a network setting for sshd was added. Restore SSH access for "support" (key login)
+  without generating new host keys (clients would see a changed host key).
+category: SSH
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 1
+collect:
+  - "sshd -t"
+  - "ls -l /etc/ssh/*key*"
+  - "ls /etc/ssh/sshd_config.d/"

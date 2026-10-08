@@ -83,3 +83,23 @@ def test_lab_daemon_is_userns_remapped():
     except Exception:
         pytest.skip("no Docker")
     assert any("userns" in o for o in opts), opts
+
+
+def test_foreign_fresh_lab_is_not_an_orphan(monkeypatch):
+    """The scenario checker's labs (owner=checker) share the daemon: the backend must not destroy them."""
+    from app.services.lab_manager import LabManager, LabSpec
+    import app.services.scheduler as sch
+    checker = LabManager(owner="checker")
+    try:
+        checker.client.images.get("linux-training-base")
+    except Exception:
+        pytest.skip("no Docker / lab image")
+    backend = LabManager()
+    monkeypatch.setattr(sch, "labs", backend)
+    aid = 710000 + uuid.uuid4().int % 9999
+    checker.create(LabSpec(attempt_id=aid, image="linux-training-base", cpu=0.2, memory_mb=128, pids_limit=128, capabilities=[], tmpfs={}))
+    try:
+        Scheduler().remove_orphans()
+        assert checker.running(aid)
+    finally:
+        checker.destroy(aid)

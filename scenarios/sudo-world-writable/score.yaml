@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  deploy_can_restart: {points: 45, label: "deploy can restart shop-api with sudo"}
+  no_extra_rights: {points: 20, label: "deploy has no other root rights"}
+  safe_mode: {points: 20, label: "The sudoers file has a safe mode"}
+  sudoers_valid: {points: 15, label: "The sudoers configuration is valid"}
+process:
+  checked_sudo: {points: 5, label: "Checked sudo's configuration", any_of: ['visudo\s+-c', 'sudo\s+-l', 'sudoers']}

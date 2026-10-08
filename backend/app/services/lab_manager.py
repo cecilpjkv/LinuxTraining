@@ -37,8 +37,11 @@ class LabSpec:
 
 
 class LabManager:
-    def __init__(self, client: docker.DockerClient | None = None):
+    def __init__(self, client: docker.DockerClient | None = None, owner: str = "backend"):
         self._client = client
+        # labs of other tools (the scenario checker) carry their owner: the backend's orphan cleanup leaves them
+        # alone (found: it destroyed the checker's labs mid-run, their attempts are not in the database)
+        self.owner = owner
 
     @property
     def client(self) -> docker.DockerClient:
@@ -58,7 +61,7 @@ class LabManager:
             self.client.networks.get(name).remove()
         except NotFound:
             pass
-        self.client.networks.create(name, driver="bridge", internal=True, labels={LABEL: "1", "lt.attempt": str(attempt_id)},
+        self.client.networks.create(name, driver="bridge", internal=True, labels={LABEL: "1", "lt.attempt": str(attempt_id), "lt.owner": self.owner},
                                     options={"com.docker.network.bridge.name": f"lt-{attempt_id}"[:15]})
         return name
 
@@ -88,7 +91,7 @@ class LabManager:
             nano_cpus=int(spec.cpu * 1e9), mem_limit=f"{spec.memory_mb}m", memswap_limit=f"{spec.memory_mb}m",
             pids_limit=spec.pids_limit,
             ulimits=[docker.types.Ulimit(name="nofile", soft=65536, hard=65536)],
-            labels={LABEL: "1", "lt.attempt": str(spec.attempt_id)},
+            labels={LABEL: "1", "lt.attempt": str(spec.attempt_id), "lt.owner": self.owner},
             log_config=docker.types.LogConfig(type="local", config={"max-size": "1m", "max-file": "2"}),
             stop_signal="SIGRTMIN+3",
         )
@@ -137,14 +140,28 @@ class LabManager:
 
     def managed(self) -> list[dict]:
         """Every lab container Docker knows about (for cleanup of orphans)."""
-        out = []
+        out, seen = [], set()
         for c in self.client.containers.list(all=True, filters={"label": LABEL}):
+            seen.add(c.labels.get("lt.attempt"))
+            if self._foreign_and_fresh(c.labels, c.attrs.get("Created", "")):
+                continue
             out.append({"name": c.name, "status": c.status, "attempt": c.labels.get("lt.attempt")})
-        seen = {o["attempt"] for o in out}
         for n in self.client.networks.list(filters={"label": LABEL}):  # a network left without its container
-            if n.attrs.get("Labels", {}).get("lt.attempt") not in seen:
-                out.append({"name": n.name, "status": "network", "attempt": n.attrs.get("Labels", {}).get("lt.attempt")})
+            labels = n.attrs.get("Labels", {}) or {}
+            if labels.get("lt.attempt") not in seen and not self._foreign_and_fresh(labels, n.attrs.get("Created", "")):
+                out.append({"name": n.name, "status": "network", "attempt": labels.get("lt.attempt")})
         return out
+
+    def _foreign_and_fresh(self, labels: dict, created: str) -> bool:
+        """Another owner's lab younger than an hour (older ones are left over from a crashed tool and cleaned)."""
+        if labels.get("lt.owner", "backend") == self.owner:
+            return False
+        try:
+            from datetime import datetime, timezone
+            t = datetime.fromisoformat(created[:26].rstrip("Z") + "+00:00") if created else None
+        except ValueError:
+            t = None
+        return t is None or (datetime.now(timezone.utc) - t).total_seconds() < 3600
 
     # --- running things inside ---
 

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  indexer_running: {points: 30, label: "The indexer runs"}
+  indexer_healthy: {points: 35, label: "It stays healthy"}
+  limit_raised: {points: 35, label: "Its open-files limit fits its needs (>= 4096)"}
+process:
+  read_logs: {points: 5, label: "Read the service log", any_of: ['journalctl', 'systemctl\s+status']}
+  checked_limits: {points: 5, label: "Checked the process limits", any_of: ['/proc/.*/limits', 'ulimit', 'LimitNOFILE']}

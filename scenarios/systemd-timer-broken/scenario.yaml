@@ -1,0 +1,12 @@
+name: Daily backup timer never fires
+description: |
+  The daily database backup is run by a systemd timer (db-backup.timer). No backup has been made since it was set up
+  last week. Make the timer schedule the backup daily, also after a reboot.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 20
+resource_weight: 1
+collect:
+  - "systemctl list-timers --all --no-pager"
+  - "systemctl cat db-backup.timer"

@@ -1,0 +1,12 @@
+name: No scheduled jobs run any more
+description: |
+  None of the scheduled jobs on this server (backups, cleanups, the heartbeat that monitoring checks) have run since
+  the weekend maintenance. The job definitions themselves were not changed. Fix it, also after a reboot.
+category: Linux
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 1
+collect:
+  - "systemctl status crond --no-pager"
+  - "ls /etc/cron.d"

@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  reports_can_schedule: {points: 45, label: "reports can manage its crontab"}
+  policy_kept: {points: 20, label: "The cron access policy stays (others still excluded)"}
+  crontab_setuid: {points: 20, label: "crontab has its setuid bit again"}
+  crontab_pristine: {points: 15, label: "crontab matches its package"}
+process:
+  verified_rpm: {points: 5, label: "Compared files with their package", any_of: ['rpm\s+-V', 'rpm\s+-qf']}
+  read_error: {points: 5, label: "Ran crontab to see the error", any_of: ['crontab\s+-[el]']}

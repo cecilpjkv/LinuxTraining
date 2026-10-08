@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  config_valid: {points: 40, label: "logrotate accepts the whole configuration"}
+  payments_rule: {points: 30, label: "The payments rule is kept with a valid schedule"}
+  rotation_works: {points: 30, label: "The payments log rotates"}
+process:
+  debugged: {points: 5, label: "Ran logrotate in debug mode", any_of: ['logrotate\s+-\w*d']}

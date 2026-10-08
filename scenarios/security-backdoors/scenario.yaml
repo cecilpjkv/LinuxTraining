@@ -1,0 +1,13 @@
+name: Suspicious accounts after a compromise
+description: |
+  The security team suspects this server was compromised through a weak test account. They found traces of an
+  attacker who wanted to keep root access. Remove every backdoor you can find. Legitimate administrator access
+  (user admin with its SSH key, and sudo for group wheel) must keep working.
+category: Linux
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 35
+resource_weight: 1
+collect:
+  - "awk -F: '$3==0' /etc/passwd"
+  - "find / -xdev -perm -4000 -type f 2>/dev/null"

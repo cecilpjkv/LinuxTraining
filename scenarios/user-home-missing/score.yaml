@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  key_login: {points: 50, label: "analyst can log in with the key"}
+  home_private: {points: 30, label: "The home directory exists, belongs to analyst and is private"}
+  profile_files: {points: 20, label: "The normal profile files are there"}
+process:
+  read_logs: {points: 5, label: "Read the SSH log", any_of: ['journalctl', '/var/log/secure']}

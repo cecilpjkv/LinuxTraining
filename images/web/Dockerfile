@@ -4,7 +4,7 @@
 FROM linux-training-base
 RUN dnf -y module enable php:8.2 nginx:1.24 \
  && dnf -y install --setopt=install_weak_deps=False nginx httpd mod_ssl php-fpm php-cli php-common php-opcache \
-      php-mysqlnd php-pdo php-xml php-json \
+      php-mysqlnd php-pdo php-xml php-json httpd-tools \
  && mkdir -p /opt/training-repo \
  && dnf -y download --resolve --alldeps --destdir /opt/training-repo php-mbstring php-gd php-intl php-bcmath php-soap \
  && ls /opt/training-repo/php-mbstring-*.rpm /opt/training-repo/oniguruma-*.rpm \

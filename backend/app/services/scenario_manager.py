@@ -12,7 +12,7 @@ from ..models import Scenario, ScenarioVersion, SystemSetting
 
 CATEGORIES = ["Linux", "SSH", "Networking", "Nginx", "Apache", "PHP", "PHP-FPM", "MariaDB", "Systemd", "Storage",
               "Permissions", "Security basics", "Storage/Application"]
-DIFFICULTIES = ["easy", "intermediate", "advanced"]
+DIFFICULTIES = ["easy", "intermediate", "advanced", "extra-hard"]
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{1,62}$")
 IMAGE = re.compile(r"^linux-training-[a-z0-9-]+(:[A-Za-z0-9_.-]+)?$")  # only the platform's own lab images
 CHECK = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
