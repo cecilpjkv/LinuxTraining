@@ -6,6 +6,21 @@ Browser-based Linux system-engineer training and assessment platform: technician
 Stack: FastAPI + SQLAlchemy + PostgreSQL (backend), React + Vite + xterm.js (frontend), Docker Engine (labs),
 Docker Compose (the application itself).
 
+## Install on a server (AlmaLinux 9/10)
+
+**Step-by-step guide for any server: [docs/INSTALL.md](docs/INSTALL.md)** (from an empty server to a running
+platform, plus updates, backups, HTTPS and troubleshooting).
+
+The short version, as root on AlmaLinux / Rocky / RHEL 9 or 10 with access to this repository:
+
+    dnf -y install git
+    git clone git@github.com:cecilpjkv/LinuxTraining.git /opt/linuxtraining
+    /opt/linuxtraining/deploy/install-almalinux.sh
+
+Then open `http://SERVER-IP/` — technicians enter their name and e-mail; the administrator uses
+*Administrator login* (user `admin`, password printed by the installer and kept in `/root/.lt-admin-password`).
+Update later with `git -C /opt/linuxtraining pull && /opt/linuxtraining/deploy/install-almalinux.sh`.
+
 ## Layout
 
 | Path | What |
@@ -35,21 +50,6 @@ Docker Compose (the application itself).
 - `docs/deployment.md`: installation details (Docker, lab daemon, images, Compose, reverse proxy, HTTPS, admin, backups)
 - `docs/scenarios.md`: writing scenarios (format, verify helpers, scoring, pitfalls)
 - `docs/security.md`: the security model
-
-## Install on a server (AlmaLinux 9/10)
-
-**Step-by-step guide for any server: [docs/INSTALL.md](docs/INSTALL.md)** (from an empty server to a running
-platform, plus updates, backups, HTTPS and troubleshooting).
-
-The short version, as root on AlmaLinux / Rocky / RHEL 9 or 10 with access to this repository:
-
-    dnf -y install git
-    git clone git@github.com:cecilpjkv/LinuxTraining.git /opt/linuxtraining
-    /opt/linuxtraining/deploy/install-almalinux.sh
-
-Then open `http://SERVER-IP/` — technicians enter their name and e-mail; the administrator uses
-*Administrator login* (user `admin`, password printed by the installer and kept in `/root/.lt-admin-password`).
-Update later with `git -C /opt/linuxtraining pull && /opt/linuxtraining/deploy/install-almalinux.sh`.
 
 ## Quick start (development host)
 
