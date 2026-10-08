@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  customers_separate: {points: 45, label: "Different customers are limited separately"}
+  flood_limited: {points: 40, label: "A flooding client is still limited"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+process:
+  read_config: {points: 5, label: "Read the rate-limit configuration", any_of: ['nginx\s+-T', 'limit_req', 'real_ip']}

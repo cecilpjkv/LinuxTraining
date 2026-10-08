@@ -1,4 +1,4 @@
-name: Thread pool service gave up starting
+name: "Thread pool service gave up starting"
 description: |
   The image converter service crashed this morning with "can't start new thread" and now systemd does not even try to
   start it any more. It uses a pool of 40 worker threads. Get it running reliably.

@@ -1,0 +1,12 @@
+name: "API answers 'unknown host' through the proxy"
+description: |
+  The orders API is served by an internal service and published by nginx as api.example.test. Through nginx every
+  request answers "421 unknown host", while the service works when called directly with the right host name. Fix the
+  proxy.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "cat /etc/nginx/conf.d/api.conf"

@@ -1,4 +1,4 @@
-name: Suspicious accounts after a compromise
+name: "Suspicious accounts after a compromise"
 description: |
   The security team suspects this server was compromised through a weak test account. They found traces of an
   attacker who wanted to keep root access. Remove every backdoor you can find. Legitimate administrator access

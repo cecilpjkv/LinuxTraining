@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  staff_access: {points: 45, label: "staff can open the admin area"}
+  still_protected: {points: 30, label: "It still requires a password"}
+  file_private: {points: 25, label: "The password file is not world-readable"}
+process:
+  read_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}

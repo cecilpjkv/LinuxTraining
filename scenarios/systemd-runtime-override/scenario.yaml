@@ -1,4 +1,4 @@
-name: Fixes to the inventory service have no effect
+name: "Fixes to the inventory service have no effect"
 description: |
   The inventory API should listen on port 8081, as its unit file in /etc/systemd/system says. It doesn't, and editing
   that unit file and restarting changes nothing. Make the service run as defined in its unit file, permanently.

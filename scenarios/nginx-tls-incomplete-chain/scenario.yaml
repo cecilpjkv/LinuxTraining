@@ -1,0 +1,12 @@
+name: "Some clients reject the shop's certificate"
+description: |
+  Browsers on desktops open https://shop.example.test, but the mobile app and partner integrations fail with
+  "unable to get local issuer certificate". They trust the company root CA (/etc/pki/ca-root.crt). Fix the server so
+  every client that trusts the root CA can connect.
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "echo | openssl s_client -connect 127.0.0.1:443 -servername shop.example.test -showcerts 2>/dev/null | grep -c BEGIN"

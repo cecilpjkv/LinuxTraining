@@ -1,4 +1,4 @@
-name: Full cleanup after an intrusion
+name: "Full cleanup after an intrusion"
 description: |
   An attacker had root on this server for several days. Forensics is done; now the server must be cleaned without a
   reinstall. Find and remove every way back in they left. Keep everything legitimate working: administrator "admin"

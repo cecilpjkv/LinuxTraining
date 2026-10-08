@@ -1,0 +1,13 @@
+name: "Browsers warn: certificate expired"
+description: |
+  Customers get a "your connection is not private: certificate expired" warning on https://shop.example.test. The
+  certificate team says the new certificate was delivered to the server weeks ago. Make the site present a valid
+  certificate.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "echo | openssl s_client -connect 127.0.0.1:443 -servername shop.example.test 2>/dev/null | openssl x509 -noout -dates"
+  - "find /etc/pki -name '*.crt'"

@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  config_valid: {points: 30, label: "The configuration is valid"}
+  portal_works: {points: 40, label: "The portal loads"}
+  rewrite_works: {points: 30, label: "Its rewrite rule works (config kept)"}
+process:
+  tested: {points: 5, label: "Tested the configuration", any_of: ['apachectl\s+(configtest|-t)', 'httpd\s+-t']}

@@ -1,0 +1,12 @@
+name: "HTTPS portal shows the wrong site"
+description: |
+  https://portal.example.test shows Apache's test page with a "localhost" certificate instead of the portal with its
+  own certificate (in /etc/pki/portal). HTTP works. Fix HTTPS for the portal.
+category: Apache
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "apachectl -S 2>&1 | head -20"
+  - "cat /etc/httpd/conf.d/zz-portal-ssl.conf"

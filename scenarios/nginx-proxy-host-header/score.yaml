@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  api_works: {points: 80, label: "The API works through nginx"}
+  config_valid: {points: 20, label: "The configuration is valid"}
+process:
+  direct_test: {points: 5, label: "Tested the service directly", any_of: ['curl\s+.*:8100']}

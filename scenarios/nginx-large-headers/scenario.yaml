@@ -1,0 +1,12 @@
+name: "400 and 502 errors for logged-in users"
+description: |
+  Logged-in users of api.example.test (nginx in front of the account service) get "400 Bad Request — Request Header
+  Or Cookie Too Large", and the account page fails with "502 Bad Gateway" for users with many permissions (the service
+  sends a large header). Anonymous users are fine. Fix both.
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "tail -3 /var/log/nginx/error.log"

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  no_listing: {points: 35, label: "No directory listing"}
+  dump_not_downloadable: {points: 35, label: "The dump cannot be downloaded"}
+  files_work: {points: 15, label: "Normal files still load"}
+  portal_works: {points: 15, label: "The portal works"}
+process:
+  checked: {points: 5, label: "Checked the exposure", any_of: ['curl\s', 'Indexes']}

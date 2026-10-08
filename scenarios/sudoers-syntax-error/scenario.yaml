@@ -1,4 +1,4 @@
-name: Nobody can use sudo any more
+name: "Nobody can use sudo any more"
 description: |
   Since the operations team added a rule for their group, nobody on this server can use sudo: it prints a parse error.
   The ops team (group ops, e.g. user ops1) must be able to run systemctl as root without a password, and nothing else.

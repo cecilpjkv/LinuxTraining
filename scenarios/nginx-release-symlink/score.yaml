@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  newest_release: {points: 45, label: "The newest remaining release is online"}
+  current_link: {points: 35, label: "current points to it (deployments keep working)"}
+  config_valid: {points: 20, label: "The configuration is valid"}
+process:
+  read_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx']}

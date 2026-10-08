@@ -1,4 +1,4 @@
-name: Application broken after a server migration
+name: "Application broken after a server migration"
 description: |
   The archive application was migrated from an old server last night (files copied with their numeric owners, users
   recreated by hand). Since then: the archive service is down and cannot be started, its files show odd owners, and

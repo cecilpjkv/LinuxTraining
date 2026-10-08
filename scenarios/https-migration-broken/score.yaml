@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  config_valid: {points: 15, label: "nginx's configuration is valid"}
+  https_works: {points: 30, label: "HTTPS shows the shop"}
+  cert_trusted: {points: 25, label: "The certificate chain is complete and trusted"}
+  redirect_correct: {points: 30, label: "HTTP redirects once to the same HTTPS URL"}
+process:
+  tls_checks: {points: 5, label: "Inspected the TLS setup", any_of: ['openssl\s+(s_client|x509|verify)']}

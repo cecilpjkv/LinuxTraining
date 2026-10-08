@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  export_completes: {points: 70, label: "The export completes"}
+  other_pages: {points: 15, label: "Other pages work"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+process:
+  read_logs: {points: 5, label: "Read the nginx/PHP logs", any_of: ['/var/log/nginx', '/var/log/php-fpm', 'journalctl']}

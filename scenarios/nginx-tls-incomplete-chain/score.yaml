@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  chain_complete: {points: 50, label: "Clients trusting only the root CA can connect"}
+  sends_intermediate: {points: 25, label: "The server sends the intermediate"}
+  https_works: {points: 25, label: "HTTPS works"}
+process:
+  showcerts: {points: 5, label: "Inspected the served chain", any_of: ['s_client.*-showcerts', 'openssl\s+verify']}

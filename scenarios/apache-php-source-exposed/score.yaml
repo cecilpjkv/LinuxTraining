@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  php_runs: {points: 45, label: "PHP pages run"}
+  source_hidden: {points: 35, label: "No PHP source (passwords) is shown"}
+  fpm_enabled: {points: 20, label: "PHP-FPM starts at boot"}
+process:
+  listed_conf: {points: 5, label: "Looked at Apache's configuration files", any_of: ['conf.d', 'httpd\s+-M', 'apachectl\s+-M']}

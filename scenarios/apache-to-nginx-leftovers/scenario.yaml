@@ -1,0 +1,15 @@
+name: "Half-finished migration from Apache to nginx"
+description: |
+  The shop (shop.example.test) was migrated from Apache to nginx last week; Apache must no longer run. Since then:
+  after a reboot sometimes Apache answers instead of nginx, nginx offers PHP files for download instead of running
+  them (which exposes code), and some pages fail with "403". Finish the migration: nginx serves the shop with
+  working PHP, Apache stays off for good.
+category: Nginx
+difficulty: extra-hard
+docker_image: linux-training-web
+time_limit: 45
+resource_weight: 2
+collect:
+  - "systemctl is-enabled httpd nginx php-fpm"
+  - "ls -la /srv/www/shop"
+  - "cat /etc/nginx/conf.d/shop.conf"

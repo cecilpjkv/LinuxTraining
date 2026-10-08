@@ -1,0 +1,14 @@
+name: "Portal PHP pages fail after isolating the site"
+description: |
+  To isolate the customer portal, it was given its own PHP-FPM pool running as its own user ("portal"). Since then
+  every PHP page of portal.example.test fails ("503 Service Unavailable"). Complete the isolation so the portal works
+  with its own pool and user.
+category: Apache
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 2
+collect:
+  - "ls /etc/php-fpm.d/"
+  - "grep -n -i proxy /etc/httpd/conf.d/portal.conf"
+  - "ls -la /srv/www/portal"

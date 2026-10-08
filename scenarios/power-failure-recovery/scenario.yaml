@@ -1,4 +1,4 @@
-name: Several services down after a power failure
+name: "Several services down after a power failure"
 description: |
   After a power failure the server came back, but the payment gateway, the event logger and the reconciliation job
   are not working. Nothing was changed by anyone. Get all three working, and leave the server so that it would

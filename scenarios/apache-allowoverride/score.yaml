@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  friendly_urls: {points: 55, label: "Friendly URLs work"}
+  home: {points: 15, label: "The home page works"}
+  scope_limited: {points: 30, label: ".htaccess stays disabled elsewhere"}
+process:
+  read_logs: {points: 5, label: "Read Apache's logs", any_of: ['/var/log/httpd', 'journalctl']}

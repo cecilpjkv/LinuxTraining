@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  https_works: {points: 25, label: "HTTPS works"}
+  cert_valid: {points: 50, label: "The served certificate is not expired"}
+  chain_trusted: {points: 25, label: "The chain verifies against the company CA"}
+process:
+  inspected_cert: {points: 5, label: "Inspected the served certificate", any_of: ['openssl\s+s_client', 'openssl\s+x509.*-(dates|enddate)']}

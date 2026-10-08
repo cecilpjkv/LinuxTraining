@@ -1,4 +1,4 @@
-name: Worker fails after every reboot
+name: "Worker fails after every reboot"
 description: |
   After every reboot the orders worker fails and someone has to restart it by hand; then it works. The worker needs
   the local queue service. Make the worker start correctly on its own (test it by stopping both services and starting

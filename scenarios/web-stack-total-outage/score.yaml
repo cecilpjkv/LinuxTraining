@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  nginx_valid: {points: 15, label: "nginx's configuration is valid"}
+  nginx_running: {points: 10, label: "nginx runs"}
+  fpm_running: {points: 10, label: "PHP-FPM runs"}
+  shop_works: {points: 45, label: "The shop shows its products"}
+  rotation_kept: {points: 20, label: "The password rotation is kept"}
+process:
+  read_logs: {points: 5, label: "Read the logs of each layer", any_of: ['/var/log/nginx', '/var/log/php-fpm', 'journalctl']}

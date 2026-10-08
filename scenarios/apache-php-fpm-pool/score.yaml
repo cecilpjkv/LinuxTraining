@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  php_works: {points: 40, label: "The portal's PHP pages work"}
+  own_pool_user: {points: 25, label: "They run in the pool's own user"}
+  uses_own_pool: {points: 15, label: "The portal uses its own pool"}
+  not_world_readable: {points: 20, label: "The site is not opened to everybody"}
+process:
+  read_logs: {points: 5, label: "Read the Apache/PHP-FPM logs", any_of: ['/var/log/httpd', '/var/log/php-fpm', 'journalctl']}

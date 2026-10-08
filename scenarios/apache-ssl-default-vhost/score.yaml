@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  https_portal: {points: 35, label: "HTTPS shows the portal"}
+  portal_cert: {points: 40, label: "The portal's own certificate is served"}
+  chain_trusted: {points: 25, label: "The chain verifies"}
+process:
+  vhost_dump: {points: 5, label: "Listed Apache's virtual hosts", any_of: ['apachectl\s+-S', 'httpd\s+-S']}

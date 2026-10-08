@@ -1,0 +1,13 @@
+name: "Admin area answers 500"
+description: |
+  The shop's admin area (shop.example.test/admin/) is protected with a password (user "staff", password
+  "Staff-Pass-1"). Since a permissions cleanup it answers "500 Internal Server Error" for everybody. Restore the
+  protected admin area; it must stay protected.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "ls -l /etc/nginx/.htpasswd"
+  - "tail -3 /var/log/nginx/error.log"

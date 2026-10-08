@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  shop_on_80: {points: 75, label: "The shop is served on port 80"}
+  config_valid: {points: 25, label: "The configuration is valid"}
+process:
+  checked: {points: 5, label: "Checked the listening sockets or configuration", any_of: ['\bss\s+-\w*l', 'nginx\s+-T', 'netstat']}

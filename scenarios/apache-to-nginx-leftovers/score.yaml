@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  served_by_nginx: {points: 15, label: "nginx serves the shop"}
+  php_runs: {points: 25, label: "PHP runs"}
+  catalog_works: {points: 15, label: "All sections load"}
+  no_source_exposed: {points: 25, label: "No PHP source is exposed"}
+  apache_off: {points: 20, label: "Apache stays off (also at boot)"}
+process:
+  read_logs: {points: 5, label: "Read the logs", any_of: ['/var/log/nginx', '/var/log/php-fpm', 'journalctl']}

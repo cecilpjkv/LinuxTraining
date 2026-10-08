@@ -1,4 +1,4 @@
-name: Deploy user cannot restart the app
+name: "Deploy user cannot restart the app"
 description: |
   The deploy user restarts the shop API during releases with `sudo systemctl restart shop-api`. Since this morning
   sudo refuses: deploy is no longer able to restart it. Fix it without giving deploy more rights than before.

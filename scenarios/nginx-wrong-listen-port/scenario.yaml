@@ -1,0 +1,11 @@
+name: "Shop shows a default page"
+description: |
+  Since a configuration change yesterday, shop.example.test shows nginx's default test page instead of the shop on the
+  normal web port. Fix it.
+category: Nginx
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - "nginx -T 2>/dev/null | grep -n listen"

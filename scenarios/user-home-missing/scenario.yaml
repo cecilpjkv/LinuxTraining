@@ -1,4 +1,4 @@
-name: Analyst cannot log in properly
+name: "Analyst cannot log in properly"
 description: |
   The analyst account logs in with an SSH key, but since a cleanup script ran, logins fail. The script removed
   "unused" home directories. The analyst's public key is kept in /root/keys/analyst.pub. Restore the analyst's

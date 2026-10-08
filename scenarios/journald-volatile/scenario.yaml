@@ -1,4 +1,4 @@
-name: Logs disappear after every reboot
+name: "Logs disappear after every reboot"
 description: |
   After every reboot, the system journal only shows messages since that boot; incident analysis needs older logs.
   Make the journal keep its logs across reboots.

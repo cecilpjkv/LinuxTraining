@@ -1,0 +1,11 @@
+name: "Apache refuses its configuration"
+description: |
+  The customer portal (portal.example.test, Apache) went down after someone "trimmed unused modules" from Apache's
+  configuration. Restart attempts fail. Bring the portal back with its configuration as it is.
+category: Apache
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - "apachectl configtest"

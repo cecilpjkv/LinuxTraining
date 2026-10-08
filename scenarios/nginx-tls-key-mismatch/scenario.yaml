@@ -1,0 +1,13 @@
+name: "HTTPS down after a certificate renewal"
+description: |
+  The shop's certificate was renewed yesterday (all files are in /etc/pki/shop). Since nginx was restarted this
+  morning it does not start, and https://shop.example.test is down. Fix it so that HTTPS works with the renewed
+  certificate.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "nginx -t"
+  - "ls -l /etc/pki/shop"

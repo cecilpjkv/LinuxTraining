@@ -1,4 +1,4 @@
-name: No scheduled jobs run any more
+name: "No scheduled jobs run any more"
 description: |
   None of the scheduled jobs on this server (backups, cleanups, the heartbeat that monitoring checks) have run since
   the weekend maintenance. The job definitions themselves were not changed. Fix it, also after a reboot.

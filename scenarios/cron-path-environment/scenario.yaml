@@ -1,4 +1,4 @@
-name: Report job works by hand but not from cron
+name: "Report job works by hand but not from cron"
 description: |
   The hourly sales report job (/etc/cron.d/sales-report) fails every time cron runs it, but it works when an admin runs
   the same command in a shell. Make the cron job work.

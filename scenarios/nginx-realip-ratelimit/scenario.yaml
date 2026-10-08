@@ -1,0 +1,13 @@
+name: "Rate limit blocks all customers at once"
+description: |
+  The shop runs behind a load balancer (it connects from 127.0.0.1 and sends the client address in
+  X-Forwarded-For). Since rate limiting was introduced, customers get "503" as soon as the shop is busy — the limit
+  seems to apply to everyone together. Make the limit apply per customer; it must still stop a single client that
+  floods the shop.
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 2
+collect:
+  - "nginx -T 2>/dev/null | grep -nE 'limit_req|real_ip'"

@@ -1,0 +1,12 @@
+name: "Shop home page gone after a deployment"
+description: |
+  After this morning's deployment the shop's home page (shop.example.test) answers "403 Forbidden"; other files of the
+  site still load. The deployment tool keeps the previous release in /srv/www/shop.previous. Bring the home page
+  back.
+category: Nginx
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - "ls -la /srv/www/shop"

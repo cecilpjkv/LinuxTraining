@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  home_page: {points: 75, label: "The home page loads"}
+  other_files: {points: 25, label: "The rest of the site still works"}
+process:
+  read_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}

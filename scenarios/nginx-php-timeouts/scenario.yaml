@@ -1,0 +1,12 @@
+name: "Monthly export ends with 504"
+description: |
+  The shop's monthly export (shop.example.test/export.php) takes about 8 seconds and always ends with
+  "504 Gateway Time-out". Other pages are fine. Make the export complete. (More than one layer may stop it.)
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "grep -rn timeout /etc/nginx/conf.d/"
+  - "grep -rn max_execution_time /etc/php.ini /etc/php.d/ /etc/php-fpm.d/"

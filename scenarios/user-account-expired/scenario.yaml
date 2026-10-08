@@ -1,4 +1,4 @@
-name: Support account cannot log in
+name: "Support account cannot log in"
 description: |
   The support engineers cannot log in to this server as "support" any more: "Your account has expired; please contact
   your system administrator". The account is still needed. Restore its SSH key login.

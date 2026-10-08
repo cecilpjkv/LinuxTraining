@@ -1,0 +1,11 @@
+name: "Apache: no listening sockets"
+description: |
+  Apache fails to start with "no listening sockets available, shutting down" since its main configuration file was
+  cleaned up. The customer portal (portal.example.test) must be available on port 80 again.
+category: Apache
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - "grep -rn '^Listen' /etc/httpd/"

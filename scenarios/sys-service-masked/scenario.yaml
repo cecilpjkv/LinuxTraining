@@ -1,4 +1,4 @@
-name: Notification API will not start
+name: "Notification API will not start"
 description: |
   The notification API (port 8090) is down. `systemctl start notify-api` refuses to start it. Bring it back, also
   after a reboot.

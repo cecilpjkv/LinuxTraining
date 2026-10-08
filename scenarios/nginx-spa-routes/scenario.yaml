@@ -1,0 +1,12 @@
+name: "App pages return 404 when reloaded"
+description: |
+  The shop's new single-page web app works when users click through it, but reloading any page other than the home
+  page (for example /products/42) gives "404 Not Found". Static files under /assets must keep working, and missing
+  assets must still return 404.
+category: Nginx
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "cat /etc/nginx/conf.d/shop.conf"

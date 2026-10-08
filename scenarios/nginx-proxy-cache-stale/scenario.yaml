@@ -1,0 +1,12 @@
+name: "Old prices shown after every update"
+description: |
+  After the catalogue service publishes new prices, shop.example.test keeps showing the old ones for a whole day.
+  nginx caches the catalogue service's responses. Make the shop show the current version now, and make sure future
+  updates appear within a few minutes while caching stays enabled.
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 2
+collect:
+  - "nginx -T 2>/dev/null | grep -n proxy_cache"

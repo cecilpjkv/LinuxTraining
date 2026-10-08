@@ -1,4 +1,4 @@
-name: Services fail after a permissions script
+name: "Services fail after a permissions script"
 description: |
   A script meant to "secure /etc" ran on this server. Since then services that run as normal users fail to start, and
   the security scanner flags a critical finding. Repair the system files' permissions.

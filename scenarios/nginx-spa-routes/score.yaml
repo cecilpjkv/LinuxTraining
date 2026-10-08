@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  deep_link: {points: 50, label: "Deep links like /products/42 load the app"}
+  home: {points: 10, label: "The home page works"}
+  assets: {points: 20, label: "Assets load"}
+  missing_asset_404: {points: 20, label: "Missing assets still return 404"}
+process:
+  read_conf: {points: 5, label: "Read the site configuration", any_of: ['nginx\s+-T', 'conf.d']}

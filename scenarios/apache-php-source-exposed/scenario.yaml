@@ -1,0 +1,12 @@
+name: "Portal shows PHP code instead of pages"
+description: |
+  The customer portal (portal.example.test) shows raw PHP source code instead of running it — including the database
+  password from config.php. This started after a cleanup of Apache's configuration. Make PHP pages run again.
+category: Apache
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "ls /etc/httpd/conf.d/"
+  - "systemctl status php-fpm --no-pager"

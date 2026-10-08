@@ -1,0 +1,13 @@
+name: "Pretty URLs return 404 after a move"
+description: |
+  The customer portal (portal.example.test) uses an .htaccess file for its friendly URLs (for example /products/42).
+  After the site was moved to this server, those URLs return "404 Not Found"; the home page works. Fix it without
+  allowing .htaccess files anywhere else.
+category: Apache
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "cat /srv/www/portal/.htaccess"
+  - "grep -rn AllowOverride /etc/httpd/conf.d/"

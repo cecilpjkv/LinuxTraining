@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  current_prices: {points: 45, label: "The shop shows the current prices"}
+  short_validity: {points: 35, label: "Cached pages expire within minutes"}
+  cache_kept: {points: 20, label: "Caching stays enabled"}
+process:
+  inspected_cache: {points: 5, label: "Looked at the cache", any_of: ['/var/cache/nginx', 'proxy_cache']}

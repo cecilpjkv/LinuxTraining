@@ -1,4 +1,4 @@
-name: Daily backup timer never fires
+name: "Daily backup timer never fires"
 description: |
   The daily database backup is run by a systemd timer (db-backup.timer). No backup has been made since it was set up
   last week. Make the timer schedule the backup daily, also after a reboot.

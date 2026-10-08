@@ -1,4 +1,4 @@
-name: Log rotation stopped for every application
+name: "Log rotation stopped for every application"
 description: |
   None of the logs on this server have been rotated for two weeks, and /var/log is filling up. A new rotation rule was
   added for the payments application around that time. Fix log rotation (all rules must work, including the new one).

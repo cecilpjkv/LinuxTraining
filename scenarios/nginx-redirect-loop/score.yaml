@@ -1,0 +1,6 @@
+pass_score: 70
+items:
+  https_works: {points: 60, label: "HTTPS shows the shop"}
+  http_redirects: {points: 40, label: "HTTP redirects to the same URL on HTTPS"}
+process:
+  traced: {points: 5, label: "Followed the redirects", any_of: ['curl\s+.*-\w*[IiL]', 'Location']}

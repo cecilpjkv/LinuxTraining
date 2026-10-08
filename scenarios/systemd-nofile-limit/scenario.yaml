@@ -1,4 +1,4 @@
-name: Indexer crashes with too many open files
+name: "Indexer crashes with too many open files"
 description: |
   The feed indexer crashes a few seconds after starting: "Too many open files". It legitimately keeps about 2000 feed
   files open. Make it run stably.

@@ -1,0 +1,14 @@
+name: "Shop down: everything changed at once"
+description: |
+  Three teams made changes last night (web server, PHP, database) and now the shop (shop.example.test) is completely
+  down. Each team says its own change is fine. Get the shop showing its products again; keep the database team's
+  password rotation (new password in /root/.secrets/shopapp.password).
+category: PHP
+difficulty: extra-hard
+docker_image: linux-training-lamp
+time_limit: 45
+resource_weight: 3
+collect:
+  - "nginx -t"
+  - "grep -E '^listen' /etc/php-fpm.d/www.conf"
+  - "cat /srv/www/shop/config.php"

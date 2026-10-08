@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  config_valid: {points: 20, label: "The configuration is valid"}
+  httpd_running: {points: 30, label: "Apache runs"}
+  portal_works: {points: 50, label: "The portal loads on port 80"}
+process:
+  read_logs: {points: 5, label: "Read Apache's error", any_of: ['journalctl', 'systemctl\s+status', '/var/log/httpd']}

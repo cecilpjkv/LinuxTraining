@@ -1,0 +1,13 @@
+name: "Security scan: files exposed on the portal"
+description: |
+  A security scan reports that portal.example.test/files/ lists its contents, and that a database dump can be
+  downloaded from there. Close the finding: no directory listings, and the dump must not be downloadable. Normal
+  pages and files must keep working.
+category: Apache
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - "ls -la /srv/www/portal/files"
+  - "grep -n Options /etc/httpd/conf.d/portal.conf"

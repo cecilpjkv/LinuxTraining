@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  config_valid: {points: 20, label: "nginx's configuration is valid"}
+  https_works: {points: 45, label: "HTTPS works"}
+  renewed_cert_served: {points: 35, label: "The renewed certificate is served"}
+process:
+  compared_keys: {points: 5, label: "Compared certificate and key", any_of: ['openssl\s+(x509|pkey|ec|rsa).*-(modulus|pubout|noout)', 'openssl\s+x509']}

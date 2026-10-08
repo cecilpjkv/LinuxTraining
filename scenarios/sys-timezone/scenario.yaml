@@ -1,4 +1,4 @@
-name: Report times are off by hours
+name: "Report times are off by hours"
 description: |
   Reports generated on this server show the wrong time. The company standard is that all servers use the time zone
   Europe/Amsterdam; this one was reinstalled with UTC. Fix the server's time zone (it must survive a reboot).

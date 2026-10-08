@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  config_valid: {points: 25, label: "The configuration is valid"}
+  nginx_running: {points: 20, label: "nginx runs"}
+  shop_works: {points: 35, label: "The shop works"}
+  workers_unprivileged: {points: 20, label: "Workers do not run as root"}
+process:
+  tested: {points: 5, label: "Tested the configuration", any_of: ['nginx\s+-t']}

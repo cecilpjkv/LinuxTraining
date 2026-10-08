@@ -1,0 +1,13 @@
+name: "Shop 404 after the release cleanup"
+description: |
+  Releases of the shop are deployed into /srv/www/releases/<date> and /srv/www/current points to the live one. After
+  the nightly cleanup of old releases, shop.example.test answers 404 for everything. Bring the newest remaining
+  release online. (The security team recently tightened nginx's file access settings.)
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "ls -la /srv/www /srv/www/releases"
+  - "grep -rn symlink /etc/nginx/"

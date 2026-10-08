@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  big_cookie_ok: {points: 40, label: "Large cookies are accepted"}
+  big_header_ok: {points: 45, label: "Large response headers pass the proxy"}
+  config_valid: {points: 15, label: "The configuration is valid"}
+process:
+  read_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}
