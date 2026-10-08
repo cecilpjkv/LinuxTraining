@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  config_valid: {points: 25, label: "The PHP-FPM configuration is valid"}
+  fpm_running: {points: 20, label: "PHP-FPM runs"}
+  shop_works: {points: 35, label: "The shop works"}
+  capacity_kept: {points: 20, label: "pm.max_children stays 20"}
+process:
+  tested_config: {points: 5, label: "Tested the configuration (php-fpm -t)", any_of: ['php-fpm\s+-t']}

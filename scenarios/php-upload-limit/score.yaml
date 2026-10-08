@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  upload_5mb: {points: 70, label: "A 5 MB upload succeeds"}
+  fpm_running: {points: 10, label: "PHP-FPM runs"}
+  config_valid: {points: 10, label: "The nginx configuration is valid"}
+  shop_works: {points: 10, label: "The shop still works"}
+process:
+  read_logs: {points: 5, label: "Read the web server or PHP logs", any_of: ['/var/log/nginx', '/var/log/php-fpm', 'journalctl']}

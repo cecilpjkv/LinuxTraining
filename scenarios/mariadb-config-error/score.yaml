@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  mariadb_running: {points: 40, label: "MariaDB runs"}
+  tuning_applied: {points: 35, label: "max_connections is 500"}
+  data_intact: {points: 25, label: "The shop data is intact"}
+process:
+  read_logs: {points: 5, label: "Read MariaDB's log", any_of: ['journalctl', '/var/log/mariadb']}

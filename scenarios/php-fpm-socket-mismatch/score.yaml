@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  shop_works: {points: 65, label: "The shop's PHP pages work"}
+  fpm_running: {points: 20, label: "PHP-FPM runs"}
+  config_valid: {points: 15, label: "The nginx configuration is valid"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}
+  checked_socket: {points: 5, label: "Looked at the socket(s)", any_of: ['/run/php-fpm', '\bss\s+-\w*x', 'listen\s*=']}

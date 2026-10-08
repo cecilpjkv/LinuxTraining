@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  shop_works: {points: 45, label: "The shop works"}
+  code_valid: {points: 20, label: "No PHP syntax errors"}
+  settings_kept: {points: 15, label: "The settings were kept"}
+  errors_hidden: {points: 20, label: "Errors are not shown to visitors"}
+process:
+  read_php_log: {points: 5, label: "Read the PHP error log", any_of: ['/var/log/php-fpm', 'journalctl']}
+  lint: {points: 5, label: "Linted the code (php -l)", any_of: ['php\s+-l']}

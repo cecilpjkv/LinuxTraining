@@ -1,0 +1,12 @@
+name: Shop says "Database connection failed"
+description: |
+  The shop (shop.example.test) shows "Database connection failed". The database server was "standardised" by the
+  infrastructure team yesterday; they say MariaDB is running fine. Get the shop showing its products again.
+category: MariaDB
+difficulty: advanced
+docker_image: linux-training-lamp
+time_limit: 30
+resource_weight: 3
+collect:
+  - grep -rn socket /etc/my.cnf /etc/my.cnf.d/
+  - tail -3 /var/log/php-fpm/www-error.log

@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  report_works: {points: 40, label: "The 3-second report completes"}
+  parallel_fast: {points: 45, label: "4 simultaneous requests are served in parallel"}
+  fpm_running: {points: 15, label: "PHP-FPM runs"}
+process:
+  read_fpm_log: {points: 5, label: "Read PHP-FPM's log (it warns about max_children and terminated requests)", any_of: ['/var/log/php-fpm', 'journalctl']}

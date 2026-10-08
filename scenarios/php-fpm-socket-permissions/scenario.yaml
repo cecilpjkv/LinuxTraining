@@ -1,0 +1,14 @@
+name: 502 Bad Gateway after a security review
+description: |
+  After a security review changed the PHP-FPM socket settings, the shop (shop.example.test) returns "502 Bad
+  Gateway". PHP-FPM is running and the socket exists. Restore the shop; the socket must not become accessible to
+  every user on the server.
+category: PHP-FPM
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - grep -E '^listen' /etc/php-fpm.d/www.conf
+  - ls -l /run/php-fpm/www.sock
+  - tail -3 /var/log/nginx/error.log

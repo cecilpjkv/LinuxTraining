@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  mariadb_running: {points: 25, label: "MariaDB runs"}
+  tcp_3306: {points: 35, label: "Applications can connect to 127.0.0.1:3306"}
+  local_only: {points: 25, label: "MariaDB only listens on the local address"}
+  data_intact: {points: 15, label: "The shop data is intact"}
+process:
+  read_logs: {points: 5, label: "Read MariaDB's log", any_of: ['journalctl', '/var/log/mariadb']}

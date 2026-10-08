@@ -1,0 +1,13 @@
+name: PHP-FPM will not start after tuning
+description: |
+  To handle more visitors, a colleague tuned the PHP-FPM process manager settings. Since then PHP-FPM does not start
+  and the shop (shop.example.test) returns "502 Bad Gateway". Fix it while keeping the larger capacity
+  (pm.max_children = 20).
+category: PHP-FPM
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - php-fpm -t
+  - grep -E '^pm' /etc/php-fpm.d/www.conf

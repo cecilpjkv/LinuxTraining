@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  shop_works: {points: 50, label: "The shop's PHP pages work"}
+  fpm_running: {points: 25, label: "PHP-FPM runs"}
+  fpm_enabled: {points: 25, label: "PHP-FPM starts at boot"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}

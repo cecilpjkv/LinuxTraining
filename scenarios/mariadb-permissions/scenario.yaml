@@ -1,0 +1,12 @@
+name: Sales report fails with "command denied"
+description: |
+  The nightly sales report (/usr/local/bin/sales-report) fails since the database accounts were cleaned up. The
+  report only reads data. Make the report work again while following the principle of least privilege.
+category: MariaDB
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 2
+collect:
+  - /usr/local/bin/sales-report
+  - mysql -e "SHOW GRANTS FOR 'reporting'@'localhost'"

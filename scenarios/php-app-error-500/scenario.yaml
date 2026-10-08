@@ -1,0 +1,12 @@
+name: Shop returns HTTP 500
+description: |
+  Right after this morning's small configuration update, the shop (shop.example.test) returns "HTTP 500" with an
+  empty page. The web server and PHP-FPM are running. Fix the shop. Error details must not be shown to visitors.
+category: PHP
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - tail -5 /var/log/php-fpm/www-error.log
+  - php -l /srv/www/shop/settings.php

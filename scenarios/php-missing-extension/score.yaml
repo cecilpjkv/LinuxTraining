@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  shop_works: {points: 45, label: "The shop works"}
+  extension_installed: {points: 30, label: "The missing PHP extension is installed"}
+  code_unchanged: {points: 25, label: "The application code was not changed"}
+process:
+  read_php_log: {points: 5, label: "Read the PHP error log", any_of: ['/var/log/php-fpm', 'journalctl']}
+  installed_package: {points: 5, label: "Installed it as a package", any_of: ['(dnf|yum)\s+(-y\s+)?install']}

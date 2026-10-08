@@ -1,0 +1,13 @@
+name: Shop fails after a code update
+description: |
+  The developers deployed a new version of the shop (shop.example.test) and now every page returns "HTTP 500". They
+  say the code works on their machines and must not be changed. Fix the server. (This server has no internet access;
+  packages are available from its local repository.)
+category: PHP
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - php -m
+  - tail -3 /var/log/php-fpm/www-error.log

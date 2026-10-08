@@ -1,0 +1,12 @@
+name: Product image uploads fail
+description: |
+  Shop administrators upload product images of up to 5 MB through shop.example.test/upload.php. Since the server
+  move, every upload larger than about 1 MB fails. Make 5 MB uploads work. (Several layers may be involved.)
+category: PHP
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 2
+collect:
+  - nginx -T 2>/dev/null | grep client_max_body_size
+  - grep -rE 'upload_max_filesize|post_max_size' /etc/php.ini /etc/php.d/ /etc/php-fpm.d/

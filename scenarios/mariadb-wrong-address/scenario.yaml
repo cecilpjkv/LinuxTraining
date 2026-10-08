@@ -1,0 +1,13 @@
+name: Database does not start after a network change
+description: |
+  After the network settings of the database were changed, MariaDB does not start any more. Applications on this
+  server connect to it over TCP at 127.0.0.1:3306. Bring the database back. For security it must only be reachable
+  from this server itself.
+category: MariaDB
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 2
+collect:
+  - grep -rn -E 'bind|port' /etc/my.cnf.d/
+  - ss -ltnp

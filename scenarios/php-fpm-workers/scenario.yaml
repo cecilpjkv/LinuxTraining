@@ -1,0 +1,13 @@
+name: Shop slow under load, reports page fails
+description: |
+  When several customers use the shop (shop.example.test) at the same time, pages take very long to load. The sales
+  report (/report.php, which takes about 3 seconds to build) always fails with an error. The server has plenty of
+  free memory for more PHP workers. Fix both problems.
+category: PHP-FPM
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 4
+collect:
+  - grep -E '^(pm|request_terminate)' /etc/php-fpm.d/www.conf
+  - tail -5 /var/log/php-fpm/error.log

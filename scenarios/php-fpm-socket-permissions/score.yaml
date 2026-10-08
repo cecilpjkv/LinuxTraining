@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  shop_works: {points: 55, label: "The shop's PHP pages work"}
+  fpm_running: {points: 15, label: "PHP-FPM runs"}
+  socket_not_public: {points: 30, label: "The socket is not open to every user"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}
+  checked_socket: {points: 5, label: "Inspected the socket's owner and mode", any_of: ['ls\s+-\w*l.*sock', 'stat\s+.*sock', 'ls\s+-\w*l\s+/run/php-fpm']}

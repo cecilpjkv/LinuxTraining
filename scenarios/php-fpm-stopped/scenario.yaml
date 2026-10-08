@@ -1,0 +1,12 @@
+name: Shop returns 502 Bad Gateway
+description: |
+  The shop (shop.example.test, nginx with PHP) returns "502 Bad Gateway" on every page. Nothing was deployed today.
+  Get the shop working again, also after a reboot.
+category: PHP-FPM
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 15
+resource_weight: 2
+collect:
+  - systemctl status php-fpm --no-pager
+  - tail -3 /var/log/nginx/error.log

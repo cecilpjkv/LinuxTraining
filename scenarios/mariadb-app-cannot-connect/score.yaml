@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  shop_works: {points: 75, label: "The shop lists its products again"}
+  mariadb_running: {points: 25, label: "MariaDB runs"}
+process:
+  read_php_log: {points: 5, label: "Read the application's error log", any_of: ['/var/log/php-fpm', 'journalctl']}
+  checked_socket: {points: 5, label: "Looked at the database socket", any_of: ['socket', '\bss\s+-\w*x', '/run/mariadb', 'mysql\.sock']}

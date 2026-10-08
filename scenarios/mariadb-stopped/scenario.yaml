@@ -1,0 +1,11 @@
+name: Database server down
+description: |
+  Applications report "Can't connect to local MySQL server". The MariaDB database server on this machine holds the
+  shop database (shopdb). Bring it back, also after a reboot. No data may be lost.
+category: MariaDB
+difficulty: easy
+docker_image: linux-training-lamp
+time_limit: 15
+resource_weight: 2
+collect:
+  - systemctl status mariadb --no-pager

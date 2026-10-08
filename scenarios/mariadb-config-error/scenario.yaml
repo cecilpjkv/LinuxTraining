@@ -1,0 +1,12 @@
+name: MariaDB fails after tuning
+description: |
+  To allow more connections, a colleague added a tuning file for MariaDB. Since the restart, MariaDB does not start
+  and the applications cannot reach their database. Fix it. The server must allow 500 connections.
+category: MariaDB
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 20
+resource_weight: 2
+collect:
+  - cat /etc/my.cnf.d/zz-tuning.cnf
+  - journalctl -u mariadb --no-pager -n 5
