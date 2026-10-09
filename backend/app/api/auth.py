@@ -92,7 +92,7 @@ def technician(body: TechnicianIn, req: Request, resp: Response, db: Session = D
         keys = [f"t-ip:{req.client.host if req.client else '-'}"]
         if _throttled(keys):
             raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, "too many wrong passwords; wait 15 minutes")
-        if not hmac.compare_digest(body.password.encode(), settings.test_password.encode()):
+        if not hmac.compare_digest(body.password.strip().encode(), settings.test_password.strip().encode()):  # pasted spaces
             _failed(keys)
             raise HTTPException(status.HTTP_401_UNAUTHORIZED, "wrong test password")
     email = body.email.strip().lower()
