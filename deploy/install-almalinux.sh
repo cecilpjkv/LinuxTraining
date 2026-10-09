@@ -48,6 +48,14 @@ if [ ! -f /etc/docker/daemon.json ]; then
 }
 JSON
 fi
+# with the nftables firewall backend Docker does not enable IPv4 forwarding itself, and refuses to start without
+# it: persist it, or the daemon (and the whole application) fails after the next reboot
+cat > /etc/sysctl.d/90-linuxtraining.conf <<'SYSCTL'
+# LinuxTraining: Docker (nftables firewall backend) needs IPv4 forwarding and does not enable it itself
+net.ipv4.ip_forward = 1
+SYSCTL
+sysctl -q -p /etc/sysctl.d/90-linuxtraining.conf
+systemctl reset-failed docker 2>/dev/null || true
 systemctl enable --now docker >/dev/null
 for i in $(seq 1 30); do docker info >/dev/null 2>&1 && break; sleep 1; done
 docker info >/dev/null 2>&1 || die "the Docker daemon does not start (see journalctl -u docker)"
