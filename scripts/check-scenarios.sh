@@ -5,5 +5,5 @@ set -eu
 cd "$(dirname "$0")/.."
 docker build -q --build-arg DEV=1 -t linuxtraining-backend-dev backend >/dev/null
 docker run --rm -v /run/lt-labs:/run/lt-labs -e DOCKER_HOST=unix:///run/lt-labs/docker.sock -v "$PWD/backend:/app" -v "$PWD/scenarios:/srv/scenarios:ro" \
-  -v "$PWD/scripts:/scripts:ro" -e LT_DATABASE_URL=postgresql+psycopg://x:x@localhost/x linuxtraining-backend-dev \
+  -v "$PWD/scripts:/scripts:ro" -e LT_CHECK_WORKERS="${LT_CHECK_WORKERS:-2}" -e LT_DATABASE_URL=postgresql+psycopg://x:x@localhost/x linuxtraining-backend-dev \
   python /scripts/check_scenarios.py "$@"

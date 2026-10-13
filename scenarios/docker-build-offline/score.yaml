@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  image_built: {points: 35, label: "The image docs:1.0 is built and contains the site"}
+  site_served: {points: 40, label: "The docs are served on http://localhost:8082/"}
+  container_from_image: {points: 25, label: "The container docs runs from docs:1.0 without mounts"}
+process:
+  listed_images: {points: 5, label: "Listed the local images", any_of: ['docker\s+images', 'docker\s+image\s+ls']}

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  intranet_served: {points: 45, label: "web1 serves the intranet (site title) on port 8080"}
+  idempotent: {points: 25, label: "The playbook runs cleanly and a repeated run changes nothing"}
+  syntax_ok: {points: 15, label: "The playbook passes the syntax check"}
+  nginx_ok: {points: 15, label: "nginx runs on web1 with a valid configuration"}
+process:
+  syntax_check: {points: 5, label: "Used --syntax-check or --check", any_of: ['--syntax-check', '--check', '\s-C\b']}

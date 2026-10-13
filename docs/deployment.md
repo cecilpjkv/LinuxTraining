@@ -65,7 +65,7 @@ The application's own containers stay on the normal daemon; the backend only get
 /opt/linuxtraining/images/build.sh
 ```
 
-Builds `linux-training-base`, `-web` and `-lamp` on the main daemon (it can download packages) and loads them into
+Builds `linux-training-base`, `-web`, `-lamp` and `-devops` on the main daemon (it can download packages) and loads them into
 the lab daemon. Rebuild after changing `images/`; running labs keep the image they started with.
 
 ## 4. Application (PostgreSQL, backend, frontend)

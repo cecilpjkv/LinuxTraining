@@ -57,6 +57,13 @@ def queue_position(db: Session, attempt: TrainingAttempt) -> int | None:
     return ids.index(attempt.id) + 1 if attempt.id in ids else None
 
 
+def spec_for(attempt_id: int, image: str, extra: dict, cfg: dict) -> LabSpec:
+    """The lab of a scenario version (its options) with the administrator's per-server limits."""
+    return LabSpec(attempt_id=attempt_id, image=image, cpu=cfg["lab_cpu"], memory_mb=cfg["lab_memory_mb"],
+                   pids_limit=cfg["lab_pids_limit"], capabilities=extra.get("capabilities", []), tmpfs=extra.get("tmpfs", {}),
+                   nodes=extra.get("nodes") or None, nested=bool(extra.get("nested_containers")))
+
+
 class Scheduler:
     def __init__(self) -> None:
         self._wake = threading.Event()
@@ -203,15 +210,13 @@ class Scheduler:
             db.add(lab)
             db.commit()
             try:
-                lab.container_id = labs.create(LabSpec(attempt_id=a.id, image=sc.docker_image, cpu=cfg["lab_cpu"],
-                                                       memory_mb=cfg["lab_memory_mb"], pids_limit=cfg["lab_pids_limit"],
-                                                       capabilities=v.extra.get("capabilities", []), tmpfs=v.extra.get("tmpfs", {})))
+                lab.container_id = labs.create(spec_for(a.id, sc.docker_image, v.extra, cfg))
                 lab.status = "running"
                 db.commit()
-                labs.wait_ready(a.id)
-                r = labs.run_script(a.id, v.setup_script, timeout=300)
-                if r.exit_code != 0:
-                    raise RuntimeError(f"setup.sh failed (exit {r.exit_code}):\n{r.output[-4000:]}")
+                labs.wait_all(a.id, v.extra)
+                for node, r in labs.run_on_nodes(a.id, v.extra, v.setup_script, timeout=300, setup_order=True):
+                    if r.exit_code != 0:
+                        raise RuntimeError(f"setup.sh failed on {node} (exit {r.exit_code}):\n{r.output[-4000:]}")
                 from .scoring import confirm_broken  # local import: scoring imports this module's helpers
                 ok, why = confirm_broken(a.id, v)
                 if not ok:

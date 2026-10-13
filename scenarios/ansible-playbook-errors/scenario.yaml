@@ -1,0 +1,17 @@
+name: Intranet playbook fails after a refactoring
+description: |
+  Two servers: control (Ansible, where you start) and web1. The playbook in /srv/ansible (ansible-playbook site.yml)
+  deploys the company intranet to web1: nginx serving the site title from the project's variables on port 8080.
+  Connection and sudo are fine, but since a colleague reorganised the project into a role the playbook fails. Make it
+  run cleanly so web1 serves the intranet on port 8080, and make sure a second run changes nothing.
+  Open a second tab to look at web1.
+category: Ansible
+difficulty: advanced
+docker_image: linux-training-devops
+time_limit: 40
+resource_weight: 3
+nodes:
+  - {name: control, image: linux-training-devops}
+  - {name: web1, image: linux-training-web}
+collect:
+  - find /srv/ansible -type f -exec sh -c 'echo "== $1"; cat "$1"' _ {} \;

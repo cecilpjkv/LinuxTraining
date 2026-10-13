@@ -1,0 +1,14 @@
+name: Worker container keeps restarting
+description: |
+  The queue worker runs with Docker Compose from /srv/worker and has been restarting over and over since it was
+  redeployed. Its settings are described in /srv/worker/README. Find out why it stops, fix the project's
+  configuration and get the worker running steadily (it writes a heartbeat to /srv/worker/state/heartbeat).
+category: Docker
+difficulty: easy
+docker_image: linux-training-devops
+time_limit: 20
+resource_weight: 2
+nested_containers: true
+collect:
+  - cat /srv/worker/compose.yaml /srv/worker/worker.env
+  - docker ps -a

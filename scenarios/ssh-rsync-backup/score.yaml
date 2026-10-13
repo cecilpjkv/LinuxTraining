@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  backup_runs: {points: 35, label: "site-backup runs without errors"}
+  data_arrived: {points: 35, label: "A fresh copy of the site arrives in /srv/backups/web"}
+  key_restricted: {points: 20, label: "The backup key stays restricted (from=)"}
+  storage_safe: {points: 10, label: "The backup folders are not world-writable"}
+process:
+  read_logs: {points: 5, label: "Read the logs on either server", any_of: ['journalctl', '/var/log/secure', '/var/log/messages']}
+deductions:
+  host_key_check_off: {points: 25, label: "SSH host key checking was switched off"}

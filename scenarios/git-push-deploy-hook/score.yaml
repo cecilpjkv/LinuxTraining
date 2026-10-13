@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  main_deploys: {points: 50, label: "A push of main is deployed to /var/www/app"}
+  only_main: {points: 20, label: "Other branches are not deployed"}
+  webroot_safe: {points: 20, label: "/var/www/app is not world-writable"}
+  repo_intact: {points: 10, label: "The central repository is intact"}
+process:
+  read_hook: {points: 5, label: "Looked at the hook", any_of: ['hooks/post-receive']}

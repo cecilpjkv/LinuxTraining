@@ -1,0 +1,13 @@
+name: Agent "already running" after a power cut
+description: |
+  After the server lost power last night, the metrics-agent service does not come back: starting it fails with
+  "metrics-agent already running", yet no agent process can be found. Get the agent running and reporting again
+  (it updates /var/lib/metrics-agent/last-report every few seconds) without disturbing anything else on the server.
+category: Systemd
+difficulty: easy
+docker_image: linux-training-base
+time_limit: 15
+resource_weight: 1
+collect:
+  - systemctl status metrics-agent --no-pager
+  - cat /var/lib/metrics-agent/agent.pid

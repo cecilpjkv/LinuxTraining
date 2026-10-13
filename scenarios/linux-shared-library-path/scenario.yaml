@@ -1,0 +1,14 @@
+name: Vendor tool fails after an upgrade
+description: |
+  After yesterday's upgrade of the vendor's reporting package (/opt/vendor), the report-export service no longer
+  produces /var/lib/report/latest.json, and running /opt/vendor/bin/report-tool by hand fails as well. The tool must
+  work for every user, for services and for cron, not only in your own shell.
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+collect:
+  - ldd /opt/vendor/bin/report-tool
+  - cat /etc/ld.so.conf.d/*.conf
+  - ls -l /opt/vendor/lib

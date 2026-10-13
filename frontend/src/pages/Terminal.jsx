@@ -5,7 +5,7 @@ import '@xterm/xterm/css/xterm.css'
 
 // Browser terminal: xterm.js <-> WebSocket <-> PTY in the lab. Reconnects by itself; the server keeps the shell and
 // replays the recent screen.
-export default function Terminal({ attemptId, enabled }) {
+export default function Terminal({ attemptId, enabled, node = '' }) {
   const box = useRef(null)
   const [state, setState] = useState('connecting')
   useEffect(() => {
@@ -20,7 +20,8 @@ export default function Terminal({ attemptId, enabled }) {
     const send = m => ws && ws.readyState === 1 && ws.send(JSON.stringify(m))
     const connect = () => {
       const proto = location.protocol === 'https:' ? 'wss' : 'ws'
-      ws = new WebSocket(`${proto}://${location.host}/ws/attempts/${attemptId}/terminal?cols=${term.cols}&rows=${term.rows}`)
+      const n = node ? `&node=${encodeURIComponent(node)}` : ''
+      ws = new WebSocket(`${proto}://${location.host}/ws/attempts/${attemptId}/terminal?cols=${term.cols}&rows=${term.rows}${n}`)
       ws.onopen = () => { retry = 0; setState('connected'); term.reset(); term.focus() }
       ws.onmessage = e => term.write(e.data)
       ws.onclose = e => {
@@ -52,7 +53,7 @@ export default function Terminal({ attemptId, enabled }) {
     ro.observe(box.current)
     return () => { for (const t of ['mousedown', 'dblclick', 'selectstart']) el.removeEventListener(t, block, true)
       stopped = true; clearTimeout(timer); onSel.dispose(); onData.dispose(); onResize.dispose(); ro.disconnect(); ws && ws.close(); term.dispose() }
-  }, [attemptId, enabled])
+  }, [attemptId, enabled, node])
   return (
     <div className="terminal-wrap no-copy" onCopy={e => e.preventDefault()} onCut={e => e.preventDefault()}
       onContextMenu={e => e.preventDefault()} onDragStart={e => e.preventDefault()}>

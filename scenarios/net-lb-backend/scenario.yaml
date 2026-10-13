@@ -1,0 +1,19 @@
+name: Load balancer returns 502 for the new backend
+description: |
+  Two servers: lb, the nginx load balancer for shop.example.test (where you start), and app1, the new backend web
+  server. The shop was switched to app1 this morning and since then lb answers "502 Bad Gateway". The backend site on
+  app1 is meant to run on port 8080 and to be reachable from lb only; app1's firewall must stay on. Get the shop
+  working through lb. Open a second tab to work on app1.
+category: Nginx
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 40
+resource_weight: 3
+capabilities: [NET_ADMIN]
+nodes:
+  - {name: lb, image: linux-training-web}
+  - {name: app1, image: linux-training-web}
+collect:
+  - cat /etc/nginx/conf.d/*.conf
+  - nft list ruleset
+  - ss -ltnp

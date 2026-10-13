@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  api_through_proxy: {points: 55, label: "/api/status.json works through the proxy on port 8090"}
+  both_running: {points: 25, label: "Both services (proxy, api) run"}
+  compose_valid: {points: 20, label: "The compose project is valid"}
+process:
+  read_logs: {points: 5, label: "Read the containers' logs", any_of: ['docker\s+(compose\s+)?logs']}
+deductions:
+  api_published: {points: 30, label: "The internal api service was published on the host"}

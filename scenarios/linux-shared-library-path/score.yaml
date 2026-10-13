@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  tool_runs: {points: 40, label: "report-tool runs with a clean environment (no LD_LIBRARY_PATH)"}
+  export_works: {points: 40, label: "report-export refreshes latest.json"}
+  linker_config_clean: {points: 20, label: "The dynamic linker configuration lists only existing directories"}
+process:
+  ldd: {points: 5, label: "Checked the libraries with ldd", any_of: ['\bldd\b']}

@@ -1,0 +1,15 @@
+name: Release deploy left the live site broken
+description: |
+  The company site is deployed by pulling the main branch into /srv/site (a git clone of /srv/git/site.git), and
+  served from there on http://localhost:8000/. This morning's deploy of release 2.3 stopped halfway and the
+  homepage now shows strange "<<<<<<<" lines. Someone had also made an urgent change directly on the server last week
+  (a new phone number) that must not be lost. Finish the deploy so the site shows release 2.3 with that change, the
+  clone is clean, and the central repository has everything, so the next deploy works.
+category: Git
+difficulty: intermediate
+docker_image: linux-training-devops
+time_limit: 30
+resource_weight: 1
+collect:
+  - git -C /srv/site status
+  - git -C /srv/site log --oneline --graph --all -n 15

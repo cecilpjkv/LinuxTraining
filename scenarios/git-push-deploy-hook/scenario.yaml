@@ -1,0 +1,14 @@
+name: Pushing to the server no longer deploys
+description: |
+  Developers deploy the app by pushing the main branch over SSH to deploy@<this server>:/srv/git/app.git; a
+  post-receive hook then checks the code out into /var/www/app. The push itself succeeds, but /var/www/app has not
+  changed since the server was migrated. Make a push of main deploy again (and only a push of main: other branches
+  must not be deployed). Keep /var/www/app owned sensibly; do not make it writable for everyone.
+category: Git
+difficulty: advanced
+docker_image: linux-training-devops
+time_limit: 35
+resource_weight: 1
+collect:
+  - ls -l /srv/git/app.git/hooks/post-receive /var/www
+  - cat /srv/git/app.git/hooks/post-receive

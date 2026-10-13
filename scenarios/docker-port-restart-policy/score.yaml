@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  page_loads: {points: 50, label: "The status page loads on http://localhost:8080/"}
+  restart_policy: {points: 30, label: "status-page restarts automatically (always / unless-stopped)"}
+  container_ok: {points: 20, label: "The container status-page runs with /srv/status mounted"}
+process:
+  inspected: {points: 5, label: "Inspected the container", any_of: ['docker\s+(container\s+)?inspect', 'docker\s+(container\s+)?ls\s+-a', 'docker\s+ps\s+-a', 'docker\s+logs']}

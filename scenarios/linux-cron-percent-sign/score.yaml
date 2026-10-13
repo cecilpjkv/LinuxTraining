@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  export_written: {points: 50, label: "Today's export file is written by the schedule"}
+  percent_escaped: {points: 30, label: "The % signs in the cron line are escaped"}
+  script_executable: {points: 20, label: "The export script is executable"}
+process:
+  read_cron_log: {points: 5, label: "Read cron's log", any_of: ['/var/log/cron', 'journalctl']}

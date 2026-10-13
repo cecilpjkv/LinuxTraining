@@ -10,7 +10,7 @@ const blank = {
   score_yaml: 'pass_score: 70\nitems:\n  service_running: {points: 100, label: "Service is running"}\n',
   options: { capabilities: [], tmpfs: {}, collect: [] },
 }
-const IMAGES = ['linux-training-base', 'linux-training-web', 'linux-training-lamp']
+const IMAGES = ['linux-training-base', 'linux-training-web', 'linux-training-lamp', 'linux-training-devops']
 
 export default function ScenarioEditor() {
   const { id } = useParams()
@@ -56,7 +56,7 @@ export default function ScenarioEditor() {
       <label>Setup script (setup.sh — creates the broken state inside the lab)<textarea rows={14} value={f.setup_script} onChange={set('setup_script')} spellCheck={false} /></label>
       <label>Verification script (verify.sh — checks the final state)<textarea rows={12} value={f.verify_script} onChange={set('verify_script')} spellCheck={false} /></label>
       <label>Scoring (score.yaml)<textarea rows={10} value={f.score_yaml} onChange={set('score_yaml')} spellCheck={false} /></label>
-      <label>Lab options (JSON: capabilities {meta.capabilities.join('/')}, tmpfs {'{path: MB}'}, collect [commands])<textarea rows={5} value={opts} onChange={e => setOpts(e.target.value)} spellCheck={false} /></label>
+      <label>Lab options (JSON: capabilities {meta.capabilities.join('/')}, tmpfs {'{path: MB}'}, collect [commands], nodes [{'{name, image}'}] for several servers, nested_containers true for Docker inside the lab)<textarea rows={5} value={opts} onChange={e => setOpts(e.target.value)} spellCheck={false} /></label>
       {err && <p className="error">{err}</p>}{msg && <p className="ok">{msg}</p>}
       <div className="actions-row"><button>Save</button><button type="button" className="secondary" onClick={() => nav('/admin/scenarios')}>Back</button></div>
     </form>

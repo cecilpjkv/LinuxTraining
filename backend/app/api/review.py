@@ -73,7 +73,7 @@ def review(aid: int, db: Session = Depends(get_db)):
         "scenario": {"id": a.scenario_id, "name": a.scenario_name, "category": a.scenario.category if a.scenario else None,
                      "difficulty": a.scenario.difficulty if a.scenario else None, "version": v.version if v else None},
         "duration_seconds": int((end - a.started_at).total_seconds()) if end and a.started_at else None,
-        "commands": [{"at": c.at, "session": c.session_id, "command": c.command, "exit_code": c.exit_code, "cwd": c.cwd,
+        "commands": [{"at": c.at, "session": c.session_id, "node": c.node, "command": c.command, "exit_code": c.exit_code, "cwd": c.cwd,
                       "output": c.output} for c in a.commands],
         "verification": [{"check": r.check, "label": r.label, "passed": r.passed, "detail": r.detail} for r in a.verification_results],
         "breakdown": a.score.breakdown if a.score else [],

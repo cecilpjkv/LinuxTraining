@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  logs_arrive: {points: 45, label: "New messages from web01 arrive in /var/log/remote/web01.log"}
+  tcp_listening: {points: 20, label: "The log server receives on TCP 514"}
+  firewall_kept: {points: 20, label: "The log server's firewall stays on (policy drop)"}
+  config_valid: {points: 15, label: "rsyslog's configuration is valid on both servers"}
+process:
+  sent_test: {points: 5, label: "Sent a test message with logger", any_of: ['\blogger\b']}
+  checked_fw: {points: 5, label: "Looked at the firewall", any_of: ['\bnft\b']}

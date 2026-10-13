@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  idempotent: {points: 35, label: "A repeated run succeeds and changes nothing"}
+  no_duplicates: {points: 25, label: "Every setting and the banner appear exactly once"}
+  playbook_runs: {points: 20, label: "The playbook runs without errors"}
+  state_ok: {points: 20, label: "sshd runs hardened; the deploy user exists"}
+process:
+  check_mode: {points: 5, label: "Tried the playbook in check/diff mode", any_of: ['--check', '--diff', '\s-C\b']}

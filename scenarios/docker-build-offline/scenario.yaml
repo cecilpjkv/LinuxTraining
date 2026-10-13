@@ -1,0 +1,16 @@
+name: Docs image does not build on the server
+description: |
+  The API documentation site is built into an image from /srv/api-docs and should run as the container "docs" on
+  http://localhost:8082/. The build fails on this server, which has no internet access; the base image the team
+  uses, docker.io/library/nginx:1.27-alpine, is available locally. Build the image as docs:1.0 and run it as the
+  container "docs" on port 8082 (the site's content must be inside the image, not mounted).
+category: Docker
+difficulty: intermediate
+docker_image: linux-training-devops
+time_limit: 25
+resource_weight: 2
+nested_containers: true
+collect:
+  - cat /srv/api-docs/Dockerfile /srv/api-docs/.dockerignore
+  - docker images
+  - docker ps -a

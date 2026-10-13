@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  site_content: {points: 35, label: "The site shows release 2.3 with the new phone number"}
+  no_markers: {points: 15, label: "No conflict markers left"}
+  clone_clean: {points: 20, label: "The clone in /srv/site is clean (merge finished)"}
+  central_up_to_date: {points: 30, label: "The central repository's main is the deployed commit, hotfix included"}
+process:
+  git_status: {points: 5, label: "Checked git status / log", any_of: ['git\s+status', 'git\s+log']}

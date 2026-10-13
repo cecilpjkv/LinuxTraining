@@ -1,0 +1,11 @@
+pass_score: 70
+items:
+  shop_works: {points: 50, label: "shop.example.test works through lb"}
+  backend_listening: {points: 20, label: "The backend listens on the network on port 8080"}
+  firewall_kept: {points: 20, label: "app1's firewall stays on"}
+  config_valid: {points: 10, label: "lb's nginx configuration is valid"}
+process:
+  read_error_log: {points: 5, label: "Read nginx's error log", any_of: ['/var/log/nginx', 'journalctl']}
+  tested_backend: {points: 5, label: "Tested the backend directly from lb", any_of: ['curl\s.*app1', 'nc\s.*app1']}
+deductions:
+  port_open_to_all: {points: 15, label: "Port 8080 was opened to everybody instead of only lb"}

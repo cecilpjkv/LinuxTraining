@@ -35,6 +35,7 @@ export default function Attempt() {
   const [a, setA] = useState(null)
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [tab, setTab] = useState(0)
   useEffect(() => {
     let t, alive = true
     const load = async () => {
@@ -77,7 +78,16 @@ export default function Attempt() {
         {['queued', 'provisioning'].includes(a.status) && <button className="secondary" disabled={busy} onClick={() => act('abandon', 'Cancel this test?')}>Cancel</button>}
         {err && <p className="error">{err}</p>}
       </section>
-      {a.status === 'ready' && <Terminal attemptId={a.id} enabled />}
+      {a.status === 'ready' && !a.nodes?.length && <Terminal attemptId={a.id} enabled />}
+      {a.status === 'ready' && a.nodes?.length > 0 && (
+        // a multi-server lab: one shell per server, all kept open (switching tabs keeps each session)
+        <>
+          <div className="tabs">{a.nodes.map((n, i) => (
+            <button key={n} className={i === tab ? 'tab active' : 'tab'} onClick={() => setTab(i)}>{n}</button>))}
+          </div>
+          {a.nodes.map((n, i) => <div key={n} hidden={i !== tab}><Terminal attemptId={a.id} node={n} enabled /></div>)}
+        </>
+      )}
       {a.score != null && (
         <section className="card">
           <h2>Result</h2>

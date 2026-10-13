@@ -1,0 +1,14 @@
+name: Partner cannot upload over SFTP
+description: |
+  Our partner ACME uploads order files over SFTP as the user "acme" (key login) into the folder "upload" of their
+  own area, /srv/sftp/acme. Since a colleague set the area up "properly" yesterday, their SFTP client just gets
+  disconnected. Make uploads work again. ACME must stay locked into their area and must not get a shell on the
+  server.
+category: SSH
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+collect:
+  - sshd -T | grep -Ei 'chroot|forcecommand|subsystem'
+  - ls -ld /srv/sftp /srv/sftp/acme /srv/sftp/acme/upload

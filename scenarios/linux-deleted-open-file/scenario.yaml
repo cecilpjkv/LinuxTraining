@@ -1,0 +1,17 @@
+name: Disk full, but no big files anywhere
+description: |
+  The report-worker service stopped reporting healthy (its health file /run/report-worker.ok is no longer updated)
+  and its log volume /var/log/app shows 100% used in df. A colleague already "cleaned up" the big log, yet du finds
+  almost nothing on the volume and the space did not come back. Free the space for good, get the worker healthy, and
+  make sure its log is written to /var/log/app/worker.log again.
+category: Storage
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+tmpfs:
+  /var/log/app: 32
+collect:
+  - df -h /var/log/app
+  - ls -la /var/log/app
+  - systemctl status report-worker --no-pager

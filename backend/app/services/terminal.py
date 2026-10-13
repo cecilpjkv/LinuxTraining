@@ -1,8 +1,9 @@
 """Terminal sessions (spec §9-10), kept apart from Docker management: the Lab Manager hands over an interactive TTY
 exec, this module relays it and records the command history.
 
-One shell per attempt. It outlives a browser disconnect: reconnecting re-attaches to the same shell and replays the
-recent screen output. The shell's hooks (images/base/lt-shell-hooks.sh) print OSC 777 sequences:
+One shell per attempt and server (a multi-server lab has one per server). It outlives a browser disconnect:
+reconnecting re-attaches to the same shell and replays the recent screen output. The shell's hooks
+(images/base/lt-shell-hooks.sh) print OSC 777 sequences:
     ESC ] 777 ; lt ; s BEL                          a command starts (PS0)
     ESC ] 777 ; lt ; e ; EXIT ; B64(cwd) ; B64(cmd) BEL   it ended (PROMPT_COMMAND)
 They are removed from the stream and turned into Command rows with the output in between (truncated).
@@ -95,10 +96,11 @@ def _trim(s: str) -> str:
 
 
 class TerminalSession:
-    def __init__(self, attempt_id: int, cols: int, rows: int):
+    def __init__(self, attempt_id: int, cols: int, rows: int, node: str = "", key: str | None = None):
         self.attempt_id = attempt_id
+        self.node = node  # the server's name in a multi-server lab ("" with one server)
         self.id = uuid.uuid4().hex[:12]
-        self.exec_id, self.sock = labs.shell(attempt_id, cols, rows)
+        self.exec_id, self.sock = labs.shell(attempt_id, cols, rows, node=key)
         self.parser = CommandParser()
         self.scroll = bytearray()
         self.listener: Callable[[str | None], None] | None = None  # gets screen text; None = session ended
@@ -106,7 +108,7 @@ class TerminalSession:
         self.closed = False
         self.last_activity = time.monotonic()
         self.decoder = codecs.getincrementaldecoder("utf-8")("replace")
-        self.thread = threading.Thread(target=self._pump, name=f"term-{attempt_id}", daemon=True)
+        self.thread = threading.Thread(target=self._pump, name=f"term-{attempt_id}{'-' + node if node else ''}", daemon=True)
         self.thread.start()
 
     def _pump(self) -> None:
@@ -139,7 +141,7 @@ class TerminalSession:
     def _store(self, cmds: list[dict]) -> None:
         try:
             with SessionLocal() as db:
-                db.add_all([Command(attempt_id=self.attempt_id, session_id=self.id, at=c["at"], command=c["command"],
+                db.add_all([Command(attempt_id=self.attempt_id, session_id=self.id, node=self.node, at=c["at"], command=c["command"],
                                     output=c["output"], exit_code=c["exit_code"], cwd=c["cwd"]) for c in cmds])
                 db.commit()
         except Exception as e:  # history must not take the terminal down
@@ -181,30 +183,31 @@ class TerminalSession:
 
 
 class Terminals:
-    """The live sessions, one per attempt."""
+    """The live sessions, one per attempt and server."""
 
     def __init__(self) -> None:
-        self._s: dict[int, TerminalSession] = {}
+        self._s: dict[tuple[int, str], TerminalSession] = {}
         self._lock = threading.Lock()
 
-    def get_or_open(self, attempt_id: int, cols: int, rows: int) -> TerminalSession:
+    def get_or_open(self, attempt_id: int, cols: int, rows: int, node: str = "", key: str | None = None) -> TerminalSession:
         with self._lock:
-            s = self._s.get(attempt_id)
+            s = self._s.get((attempt_id, node))
             if s is None or s.closed:
-                s = TerminalSession(attempt_id, cols, rows)
-                self._s[attempt_id] = s
+                s = TerminalSession(attempt_id, cols, rows, node, key)
+                self._s[(attempt_id, node)] = s
             return s
 
     def close(self, attempt_id: int) -> None:
+        """Closes every shell of the attempt."""
         with self._lock:
-            s = self._s.pop(attempt_id, None)
-        if s:
+            gone = [self._s.pop(k) for k in [k for k in self._s if k[0] == attempt_id]]
+        for s in gone:
             s.close()
+        for s in gone:
             s.thread.join(timeout=5)  # the last commands are stored before the lab is graded
 
     def attached(self, attempt_id: int) -> bool:
-        s = self._s.get(attempt_id)
-        return bool(s and not s.closed and s.listener)
+        return any(s.listener and not s.closed for (aid, _n), s in list(self._s.items()) if aid == attempt_id)
 
 
 terminals = Terminals()

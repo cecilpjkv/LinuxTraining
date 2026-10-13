@@ -1,0 +1,19 @@
+name: Website backups fail since the backup server was rebuilt
+description: |
+  Two servers: web (where you start) and backup. Every night web copies its site (/var/www/site) to the backup
+  server with /usr/local/sbin/site-backup (rsync over SSH as the user "backup", into /srv/backups/web). The backup
+  server was reinstalled and moved to a new address last week, and no backup has succeeded since. Make the backup
+  work again (run the script by hand to test it), without weakening SSH security: host keys must still be checked,
+  and the backup key must stay restricted to the web server. Open a second tab to work on backup.
+category: SSH
+difficulty: advanced
+docker_image: linux-training-devops
+time_limit: 40
+resource_weight: 3
+nodes:
+  - {name: web, image: linux-training-devops}
+  - {name: backup, image: linux-training-devops}
+collect:
+  - cat /usr/local/sbin/site-backup
+  - cat /home/backup/.ssh/authorized_keys
+  - ls -ld /srv/backups /srv/backups/web

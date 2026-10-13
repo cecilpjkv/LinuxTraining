@@ -7,7 +7,7 @@ from sqlalchemy import update
 
 from ..db import SessionLocal
 from ..models import Command, LabContainer, Score, ScenarioVersion, TrainingAttempt, VerificationResult
-from .lab_manager import labs
+from .lab_manager import labs, node_list
 from .scheduler import now, scheduler
 from .scoring import run_verify, score
 from .terminal import terminals
@@ -36,7 +36,7 @@ def grade(attempt_id: int, final_status: str = "completed", reason: str = "compl
         try:
             if not v:
                 raise RuntimeError("the scenario version of this attempt no longer exists")
-            r = run_verify(attempt_id, v.verify_script)
+            r = run_verify(attempt_id, v.verify_script, extra=v.extra)
             history = [c.command for c in db.query(Command).filter_by(attempt_id=attempt_id).order_by(Command.id)]
             res = score(v.score_config, r.output, history)
             for item, cfg in v.score_config["items"].items():
@@ -45,7 +45,7 @@ def grade(attempt_id: int, final_status: str = "completed", reason: str = "compl
                                           detail=(c["detail"] if c else "not reported by verify.sh")[:2000]))
             db.add(Score(attempt_id=a.id, total=res["total"], maximum=res["maximum"], passed=res["passed"],
                          breakdown=res["breakdown"], verify_output=_strip_markers(r.output)[-20000:]))
-            a.final_state = collect_state(attempt_id, v.extra.get("collect", []))
+            a.final_state = collect_state(attempt_id, v.extra.get("collect", []), v.extra)
             a.status, a.end_reason = final_status, reason
             if r.timed_out:
                 a.error = "verify.sh hit its time limit; unreported checks scored 0"
@@ -62,11 +62,14 @@ def grade(attempt_id: int, final_status: str = "completed", reason: str = "compl
     scheduler.kick()
 
 
-def collect_state(attempt_id: int, commands: list[str]) -> str:
+def collect_state(attempt_id: int, commands: list[str], extra: dict | None = None) -> str:
+    """The scenario's collect commands, on every server of the lab ("$ node: command" when there are several)."""
+    nodes = node_list(extra)
     parts = []
-    for c in commands:
-        r = labs.exec(attempt_id, ["bash", "-c", c], timeout=20, max_output=16 * 1024)
-        parts.append(f"$ {c}\n{r.output.rstrip()}\n[exit {r.exit_code}]")
+    for name, key in nodes:
+        for c in commands:
+            r = labs.exec(attempt_id, ["bash", "-c", c], timeout=20, max_output=16 * 1024, node=key)
+            parts.append(f"$ {f'{name}: ' if len(nodes) > 1 else ''}{c}\n{r.output.rstrip()}\n[exit {r.exit_code}]")
     return "\n\n".join(parts)
 
 

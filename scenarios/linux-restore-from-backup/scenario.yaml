@@ -1,0 +1,14 @@
+name: Configuration directory deleted by mistake
+description: |
+  A cleanup script removed /etc/booking by mistake and the booking service is down since. The server keeps nightly
+  backups of /etc in /var/backups/booking. Bring the configuration back exactly as it was (contents, owners and
+  permissions: the API key must stay private) and get the booking service running again.
+category: Storage/Application
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 25
+resource_weight: 1
+collect:
+  - ls -la /var/backups/booking
+  - ls -laR /etc/booking
+  - systemctl status booking --no-pager

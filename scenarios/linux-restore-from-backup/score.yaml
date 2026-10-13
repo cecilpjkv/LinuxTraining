@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  files_restored: {points: 35, label: "The configuration files are restored unchanged"}
+  owners_modes: {points: 30, label: "Owners and permissions are as before (API key private)"}
+  service_running: {points: 35, label: "The booking service runs and answers"}
+process:
+  tested_archive: {points: 5, label: "Listed or tested an archive before restoring", any_of: ['tar\s+.*-?t', 'gzip\s+-t', 'zcat']}

@@ -86,25 +86,33 @@ def score(config: dict, verify_output: str, commands: list[str]) -> dict:
             "breakdown": breakdown, "checks": res["checks"]}
 
 
-def run_verify(attempt_id: int, verify_script: str, timeout: int = 180):
-    """Runs verify.sh; if it reported nothing at all (seen once in ~50 runs on a loaded host: an empty exec stream),
-    it runs once more, so a lost stream never scores a technician 0."""
+def run_verify(attempt_id: int, verify_script: str, timeout: int = 180, extra: dict | None = None):
+    """Runs verify.sh (on every server of the lab, their reports together); if it reported nothing at all (seen once
+    in ~50 runs on a loaded host: an empty exec stream), it runs once more, so a lost stream never scores a
+    technician 0."""
     import logging
     import time
 
-    from .lab_manager import labs
-    r = labs.run_script(attempt_id, PRELUDE + "\n" + verify_script, timeout=timeout)
+    from .lab_manager import ExecResult, labs
+
+    def once() -> ExecResult:
+        runs = labs.run_on_nodes(attempt_id, extra, PRELUDE + "\n" + verify_script, timeout=timeout)
+        if len(runs) == 1:
+            return runs[0][1]
+        return ExecResult(exit_code=max(r.exit_code for _, r in runs), timed_out=any(r.timed_out for _, r in runs),
+                          output="".join(f"### server {n}\n{r.output.rstrip()}\n" for n, r in runs))
+    r = once()
     if "@@LT " not in r.output:
         logging.getLogger("grading").warning("attempt %s: verify.sh reported nothing (exit %s, %d bytes); running it again",
                                              attempt_id, r.exit_code, len(r.output))
         time.sleep(2)
-        r = labs.run_script(attempt_id, PRELUDE + "\n" + verify_script, timeout=timeout)
+        r = once()
     return r
 
 
 def confirm_broken(attempt_id: int, version) -> tuple[bool, str]:
     """After setup.sh: at least one scored check must fail, otherwise the scenario's problem is not in place."""
-    r = run_verify(attempt_id, version.verify_script)
+    r = run_verify(attempt_id, version.verify_script, extra=getattr(version, "extra", None))
     checks = parse(r.output)["checks"]
     items = version.score_config["items"]
     failing = [n for n in items if checks.get(n, {}).get("status") != "PASS"]

@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  upload_works: {points: 50, label: "acme can upload into upload/ over SFTP"}
+  chroot_secure: {points: 30, label: "acme stays chrooted; the chroot path is root-owned and not writable by others"}
+  no_shell: {points: 20, label: "acme cannot run commands on the server"}
+process:
+  read_logs: {points: 5, label: "Read sshd's log", any_of: ['journalctl', '/var/log/secure']}

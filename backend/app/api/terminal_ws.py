@@ -4,7 +4,8 @@ import json
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
 from ..db import SessionLocal
-from ..models import TrainingAttempt, User
+from ..models import ScenarioVersion, TrainingAttempt, User
+from ..services.lab_manager import node_key
 from ..security import COOKIE, read_token
 from ..services.terminal import terminals
 
@@ -26,6 +27,15 @@ async def terminal(ws: WebSocket, aid: int):
         user = db.get(User, uid) if uid else None
         a = db.get(TrainingAttempt, aid)
         ok = user and user.active and a and a.user_id == user.id and a.status == "ready"
+        v = db.get(ScenarioVersion, a.scenario_version_id) if ok and a.scenario_version_id else None
+        extra = dict(v.extra or {}) if v else {}
+    # which server of a multi-server lab (?node=NAME; none: the main server); the history records its name
+    node, key = ws.query_params.get("node", ""), None
+    try:
+        key = node_key(extra, node)
+        node = (node or extra["nodes"][0]["name"]) if extra.get("nodes") else ""
+    except KeyError:
+        ok = False
     if not ok:
         await ws.close(code=4403)
         return
@@ -43,7 +53,7 @@ async def terminal(ws: WebSocket, aid: int):
         loop.call_soon_threadsafe(put)
 
     try:
-        sess = await loop.run_in_executor(None, terminals.get_or_open, aid, cols, rows)
+        sess = await loop.run_in_executor(None, terminals.get_or_open, aid, cols, rows, node, key)
     except Exception:
         await ws.send_text("\r\n[the lab terminal could not be opened]\r\n")
         await ws.close(code=1011)

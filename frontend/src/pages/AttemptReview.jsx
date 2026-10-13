@@ -13,6 +13,7 @@ export default function AttemptReview() {
   const [open, setOpen] = useState({})
   useEffect(() => { api(`/api/admin/attempts/${id}`).then(setA).catch(e => setErr(e.message)) }, [id])
   if (!a) return <p className="muted">{err || 'Loading…'}</p>
+  const multi = a.commands.some(c => c.node)
   return (
     <>
       <section className="card">
@@ -32,18 +33,18 @@ export default function AttemptReview() {
       <section className="card">
         <h2>Command history ({a.commands.length})</h2>
         <table className="cmds">
-          <thead><tr><th>Time</th><th>Command</th><th>Exit</th><th>Directory</th></tr></thead>
+          <thead><tr><th>Time</th>{multi && <th>Server</th>}<th>Command</th><th>Exit</th><th>Directory</th></tr></thead>
           <tbody>
             {a.commands.map((c, i) => (
               <>
                 <tr key={i} className="clickable" onClick={() => setOpen({ ...open, [i]: !open[i] })}>
-                  <td className="mono">{time(c.at)}</td><td className="mono">{c.command}</td>
+                  <td className="mono">{time(c.at)}</td>{multi && <td className="mono">{c.node}</td>}<td className="mono">{c.command}</td>
                   <td className={c.exit_code ? 'bad' : 'ok'}>{c.exit_code}</td><td className="mono small">{c.cwd}</td>
                 </tr>
-                {open[i] && <tr key={`o${i}`}><td /><td colSpan={3}><pre className="block">{c.output || '(no output)'}</pre></td></tr>}
+                {open[i] && <tr key={`o${i}`}><td /><td colSpan={multi ? 4 : 3}><pre className="block">{c.output || '(no output)'}</pre></td></tr>}
               </>
             ))}
-            {!a.commands.length && <tr><td colSpan={4} className="muted">No commands recorded.</td></tr>}
+            {!a.commands.length && <tr><td colSpan={5} className="muted">No commands recorded.</td></tr>}
           </tbody>
         </table>
         <p className="muted small">Click a command to see its output.</p>

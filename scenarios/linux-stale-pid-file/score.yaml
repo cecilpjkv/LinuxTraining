@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  agent_running: {points: 45, label: "metrics-agent is active"}
+  agent_reporting: {points: 35, label: "The agent reports (last-report is fresh)"}
+  pidfile_correct: {points: 20, label: "The pid file points at the agent process"}
+process:
+  read_status: {points: 5, label: "Read the service status or journal", any_of: ['systemctl\s+status', 'journalctl']}
+deductions:
+  crond_stopped: {points: 40, label: "An unrelated service (crond) was killed or stopped"}

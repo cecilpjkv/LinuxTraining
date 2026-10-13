@@ -98,6 +98,7 @@ class Command(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     attempt_id: Mapped[int] = mapped_column(ForeignKey("training_attempts.id", ondelete="CASCADE"), index=True)
     session_id: Mapped[str] = mapped_column(String(32))
+    node: Mapped[str] = mapped_column(String(32), default="")  # the server of a multi-server lab ("" with one)
     at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     command: Mapped[str] = mapped_column(Text)
     output: Mapped[str] = mapped_column(Text, default="")  # truncated

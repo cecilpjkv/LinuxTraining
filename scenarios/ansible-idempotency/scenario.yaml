@@ -1,0 +1,14 @@
+name: Hardening playbook only works once
+description: |
+  /srv/ansible/hardening.yml hardens this server (run it with ansible-playbook hardening.yml from /srv/ansible). It
+  worked the first time, but every later run fails, and the configuration files it writes now contain lines twice.
+  Rewrite the playbook so it can run any number of times: a repeated run must succeed and report no changes, every
+  setting must appear exactly once, and sshd must only be restarted when its configuration actually changed.
+category: Ansible
+difficulty: intermediate
+docker_image: linux-training-devops
+time_limit: 35
+resource_weight: 1
+collect:
+  - cat /srv/ansible/hardening.yml
+  - cat /etc/ssh/sshd_config.d/50-hardening.conf /etc/issue.net

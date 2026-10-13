@@ -1,0 +1,18 @@
+name: Ansible cannot reach the new web server
+description: |
+  Two servers: control (the Ansible control node, where you start) and web1, a new web server. The project in
+  /srv/ansible (run it from there: ansible-playbook site.yml) should configure web1, but Ansible fails before
+  changing anything. Ansible connects as the user "ansible" with the key /root/.ssh/ansible_ed25519 and needs
+  root rights on web1 through sudo, without a password. Make the playbook run successfully against web1.
+  Open a second tab to work on web1.
+category: Ansible
+difficulty: intermediate
+docker_image: linux-training-devops
+time_limit: 35
+resource_weight: 3
+nodes:
+  - {name: control, image: linux-training-devops}
+  - {name: web1, image: linux-training-web}
+collect:
+  - cat /srv/ansible/ansible.cfg /srv/ansible/inventory.ini
+  - cat /etc/sudoers.d/ansible

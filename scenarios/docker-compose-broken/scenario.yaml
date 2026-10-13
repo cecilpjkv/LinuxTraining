@@ -1,0 +1,15 @@
+name: Shop front does not start with docker compose
+description: |
+  The shop front is deployed with Docker Compose from /srv/shop (docker compose up -d). After the last change the
+  project does not start any more. It must serve the shop's page (from /srv/shop/html) on http://localhost:8081/,
+  with the port taken from the project's .env file. Fix the project and start it with docker compose.
+category: Docker
+difficulty: intermediate
+docker_image: linux-training-devops
+time_limit: 25
+resource_weight: 2
+nested_containers: true
+collect:
+  - cat /srv/shop/compose.yaml
+  - ls -la /srv/shop
+  - docker ps -a

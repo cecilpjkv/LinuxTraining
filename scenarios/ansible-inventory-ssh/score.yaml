@@ -1,0 +1,11 @@
+pass_score: 70
+items:
+  site_deployed: {points: 40, label: "web1 serves the page deployed by the playbook"}
+  ansible_connects: {points: 25, label: "Ansible reaches web1 (ansible webservers -m ping)"}
+  become_works: {points: 20, label: "Ansible becomes root on web1"}
+  motd_set: {points: 15, label: "The playbook's other changes are in place (/etc/motd)"}
+process:
+  ran_playbook: {points: 5, label: "Ran the playbook", any_of: ['ansible-playbook']}
+  verbose: {points: 5, label: "Debugged with ping or -v", any_of: ['ansible\s.*-m\s*ping', 'ansible(-playbook)?\s.*\s-v']}
+deductions:
+  sudo_for_everyone: {points: 30, label: "Passwordless sudo was given to all users"}

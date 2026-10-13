@@ -1,0 +1,10 @@
+pass_score: 70
+items:
+  intranet_resolves: {points: 30, label: "app resolves intranet.corp.lan"}
+  api_resolves: {points: 30, label: "inventory-sync resolves api.corp.lan"}
+  server_reachable: {points: 25, label: "ns1 answers DNS queries on its network address"}
+  config_valid: {points: 15, label: "dnsmasq's configuration is valid"}
+process:
+  used_dig: {points: 5, label: "Queried the DNS server directly", any_of: ['\bdig\b', '\bnslookup\b', '\bhost\s']}
+deductions:
+  hosts_workaround: {points: 40, label: "Internal names were put into /etc/hosts instead of fixing DNS"}

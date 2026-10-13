@@ -1,0 +1,15 @@
+name: Status page container unreachable
+description: |
+  The status page runs in a container called status-page (nginx, serving /srv/status) and must be reachable at
+  http://localhost:8080/. A colleague recreated the container last night: since then the page does not load, and the
+  container did not come back after a test restart either. Fix it so the page loads on port 8080 and the container is
+  started again automatically if it stops. Use the docker command as on any Docker host.
+category: Docker
+difficulty: easy
+docker_image: linux-training-devops
+time_limit: 20
+resource_weight: 2
+nested_containers: true
+collect:
+  - docker ps -a
+  - docker inspect status-page --format '{{json .HostConfig.PortBindings}} {{json .HostConfig.RestartPolicy}}'

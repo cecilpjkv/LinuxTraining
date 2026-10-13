@@ -11,7 +11,8 @@ from sqlalchemy.orm import Session
 from ..models import Scenario, ScenarioVersion, SystemSetting
 
 CATEGORIES = ["Linux", "SSH", "Networking", "Nginx", "Apache", "PHP", "PHP-FPM", "MariaDB", "Systemd", "Storage",
-              "Permissions", "Security basics", "Storage/Application", "WordPress", "Performance"]
+              "Permissions", "Security basics", "Storage/Application", "WordPress", "Performance", "Docker", "Git", "Ansible",
+              "DevOps"]
 DIFFICULTIES = ["easy", "intermediate", "advanced", "extra-hard"]
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{1,62}$")
 IMAGE = re.compile(r"^linux-training-[a-z0-9-]+(:[A-Za-z0-9_.-]+)?$")  # only the platform's own lab images
@@ -19,6 +20,8 @@ CHECK = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 MAX_SCRIPT = 64 * 1024
 CAPABILITIES = {"NET_ADMIN", "NET_RAW", "SYS_PTRACE", "SYS_NICE", "SYS_RESOURCE"}  # extra caps a scenario may ask for
 FILES = ("scenario.yaml", "setup.sh", "verify.sh", "score.yaml")
+NODE = re.compile(r"^[a-z][a-z0-9-]{0,14}$")
+MAX_NODES = 3
 
 
 class ScenarioError(ValueError):
@@ -138,6 +141,35 @@ def validate_meta(meta: dict, max_weight: int | None = None) -> dict:
     if not isinstance(collect, list) or len(collect) > 12 or not all(isinstance(c, str) and len(c) < 300 for c in collect):
         raise ScenarioError("collect must be a list of up to 12 commands")
     extra["collect"] = collect
+    # several servers on one private network: [{name, image}], the first is where the terminal opens (its image is
+    # docker_image); each server finds the others by name. setup.sh/verify.sh run on every one with LT_NODE set.
+    nodes = meta.get("nodes") or []
+    if nodes:
+        if not isinstance(nodes, list) or not 2 <= len(nodes) <= MAX_NODES:
+            raise ScenarioError(f"nodes must list 2-{MAX_NODES} servers")
+        norm_nodes = []
+        for i, n in enumerate(nodes):
+            n = {"name": n} if isinstance(n, str) else n
+            if not isinstance(n, dict) or set(n) - {"name", "image"}:
+                raise ScenarioError("nodes: give each server as {name: ..., image: ...}")
+            name, image = str(n.get("name", "")), n.get("image") or out["docker_image"]
+            if not NODE.match(name) or name in ("training", "localhost"):
+                raise ScenarioError(f"nodes: bad server name {name!r} (lowercase letters, digits, -; up to 15)")
+            if not isinstance(image, str) or not IMAGE.match(image):
+                raise ScenarioError(f"nodes: {name}: image must be one of the platform's lab images (linux-training-...)")
+            if i == 0 and image != out["docker_image"]:
+                raise ScenarioError("nodes: the first server's image is docker_image")
+            norm_nodes.append({"name": name, "image": image})
+        if len({n["name"] for n in norm_nodes}) != len(norm_nodes):
+            raise ScenarioError("nodes: server names must be unique")
+        extra["nodes"] = norm_nodes
+        if out["resource_weight"] < len(norm_nodes):
+            raise ScenarioError("resource_weight must be at least the number of servers")
+    nested = meta.get("nested_containers", False)
+    if not isinstance(nested, bool):
+        raise ScenarioError("nested_containers must be true or false")
+    if nested:
+        extra["nested_containers"] = True
     out["extra"] = extra
     return out
 

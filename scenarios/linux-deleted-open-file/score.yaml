@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  space_freed: {points: 40, label: "The space on /var/log/app is free again"}
+  worker_healthy: {points: 35, label: "report-worker runs and reports healthy"}
+  log_visible: {points: 25, label: "The worker writes /var/log/app/worker.log (no deleted file held open)"}
+process:
+  found_open_file: {points: 5, label: "Looked for deleted files still held open", any_of: ['lsof', '/proc/[0-9]+/fd', '/proc/\$\w+/fd', 'deleted']}

@@ -154,7 +154,7 @@ At the end you see something like:
   Web interface : http://203.0.113.25/   (technicians: name + e-mail; administrators: 'admin' via 'Administrator login')
   Admin password: Xy7pQ2...              (also in /root/.lt-admin-password, mode 0600)
   Test password : k3Rt9bQx               (technicians enter it with name + e-mail)
-  Scenarios     : 112
+  Scenarios     : 132
 ```
 
 **Write down the admin password** (or look it up later with `cat /root/.lt-admin-password`) and the **test
@@ -173,7 +173,7 @@ In your web browser go to the address from step 7, for example **http://203.0.11
 - **Technicians**: enter full name, e-mail address and the test password → *Continue* → choose a scenario → *Start test*.
 - **Administrator**: click **Administrator login** (under the form) → user `admin` + the password from step 7.
 
-Check as administrator: *Dashboard* shows **Scenarios: 112**.
+Check as administrator: *Dashboard* shows **Scenarios: 132**.
 
 ---
 

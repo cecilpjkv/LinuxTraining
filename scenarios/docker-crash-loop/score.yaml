@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  heartbeat: {points: 40, label: "The worker writes its heartbeat"}
+  queue_url_set: {points: 35, label: "The worker gets the production QUEUE_URL"}
+  running_steadily: {points: 25, label: "The worker container runs steadily (no restarts)"}
+process:
+  read_logs: {points: 5, label: "Read the worker's logs", any_of: ['docker\s+(compose\s+)?logs']}

@@ -2,8 +2,12 @@
 one container, named training-attempt-<id>, on its own internal network whose bridge is lt-<id> (the host's
 lt-labs-firewall drops everything from and to lt-* bridges: no internet, no other lab, not the host), with
 CPU/memory/PID limits and no host mounts. Scenario scripts are streamed to bash over stdin: they run only inside the container and leave no
-copy there for the technician to read."""
+copy there for the technician to read.
+
+A lab can have several servers (scenario option `nodes`): the first is training-attempt-<id> (where the terminal opens),
+the others training-attempt-<id>-<node>, all on the lab's network, where each answers to its node name."""
 import logging
+import re
 import socket
 import struct
 import time
@@ -15,7 +19,10 @@ from docker.errors import APIError, NotFound
 log = logging.getLogger("lab")
 
 LABEL = "lt.managed"
+# Docker's read-only /proc paths (MaskedPaths stay Docker's default)
+DEFAULT_READONLY_PATHS = ["/proc/bus", "/proc/fs", "/proc/irq", "/proc/sys", "/proc/sysrq-trigger"]
 PREFIX = "training-attempt-"
+SHARE = re.compile(r"^@@LT SHARE ([A-Z][A-Z0-9_]{0,31}) ([A-Za-z0-9+/=._:-]{1,8192})$", re.M)
 
 
 @dataclass
@@ -34,6 +41,25 @@ class LabSpec:
     pids_limit: int
     capabilities: list[str]
     tmpfs: dict[str, dict | int]
+    nodes: list[dict] | None = None  # [{name, image}], the first one is the main server; None: one server
+    nested: bool = False  # the lab runs containers itself (writable /proc/sys for the container engine's network)
+
+
+def node_list(extra: dict | None) -> list[tuple[str, str | None]]:
+    """(node name, container key) for every server of a lab: the key is None for the main server (the container named
+    after the attempt alone). A one-server lab is [("training", None)]."""
+    nodes = (extra or {}).get("nodes") or []
+    if not nodes:
+        return [("training", None)]
+    return [(n["name"], None if i == 0 else n["name"]) for i, n in enumerate(nodes)]
+
+
+def node_key(extra: dict | None, name: str | None) -> str | None:
+    """The container key of the node called name (None or "": the main server); KeyError if the lab has no such node."""
+    for n, key in node_list(extra):
+        if not name or n == name:
+            return key
+    raise KeyError(name)
 
 
 class LabManager:
@@ -74,61 +100,91 @@ class LabManager:
     # --- lifecycle ---
 
     @staticmethod
-    def name(attempt_id: int) -> str:
-        return f"{PREFIX}{attempt_id}"
+    def name(attempt_id: int, node: str | None = None) -> str:
+        return f"{PREFIX}{attempt_id}" + (f"-{node}" if node else "")
 
     def create(self, spec: LabSpec) -> str:
+        """Creates the lab's network and its servers; returns the main server's container id."""
         network = self.create_network(spec.attempt_id)
         tmpfs = {"/run": "rw,nosuid,nodev,size=64m", "/run/lock": "rw,nosuid,nodev,size=8m"}
         for path, t in spec.tmpfs.items():
             t = {"size": t} if isinstance(t, int) else t
             tmpfs[path] = f"rw,size={t['size']}m" + (f",nr_inodes={t['inodes']}" if t.get("inodes") else "")
-        c = self.client.containers.run(
-            spec.image, name=self.name(spec.attempt_id), hostname="training", detach=True,
-            network=network, cgroupns="private",
-            cap_add=["SYS_ADMIN", *spec.capabilities],  # SYS_ADMIN: systemd's cgroups (see images/base/lab-init)
-            tmpfs=tmpfs,
-            nano_cpus=int(spec.cpu * 1e9), mem_limit=f"{spec.memory_mb}m", memswap_limit=f"{spec.memory_mb}m",
-            pids_limit=spec.pids_limit,
-            ulimits=[docker.types.Ulimit(name="nofile", soft=65536, hard=65536)],
-            labels={LABEL: "1", "lt.attempt": str(spec.attempt_id), "lt.owner": self.owner},
-            log_config=docker.types.LogConfig(type="local", config={"max-size": "1m", "max-file": "2"}),
-            stop_signal="SIGRTMIN+3",
-        )
-        return c.id
+        nodes = spec.nodes or [{"name": "training", "image": spec.image}]
+        # a container engine inside also manages the lab's own network interfaces (its namespace, not the host's)
+        caps = ["SYS_ADMIN", *spec.capabilities, *(["NET_ADMIN"] if spec.nested and "NET_ADMIN" not in spec.capabilities else [])]
+        api = self.client.api
+        first = None
+        for i, node in enumerate(nodes):
+            key = None if i == 0 else node["name"]
+            hc = api.create_host_config(
+                network_mode=network, cgroupns="private",
+                cap_add=caps,  # SYS_ADMIN: systemd's cgroups (see images/base/lab-init)
+                tmpfs=tmpfs,
+                nano_cpus=int(spec.cpu * 1e9), mem_limit=f"{spec.memory_mb}m", memswap_limit=f"{spec.memory_mb}m",
+                pids_limit=spec.pids_limit,
+                ulimits=[docker.types.Ulimit(name="nofile", soft=65536, hard=65536)],
+                log_config=docker.types.LogConfig(type="local", config={"max-size": "1m", "max-file": "2"}),
+            )
+            if spec.nested:
+                # the container engine inside sets network sysctls of the lab's own namespace: /proc/sys is writable
+                # (the user namespace keeps every host-wide sysctl read-only), the other read-only paths stay
+                hc["ReadonlyPaths"] = [p for p in DEFAULT_READONLY_PATHS if p != "/proc/sys"]
+            net = None
+            if spec.nodes:  # the other servers find this one by its node name
+                net = api.create_networking_config({network: api.create_endpoint_config(aliases=[node["name"]])})
+            c = api.create_container(
+                node["image"], name=self.name(spec.attempt_id, key), hostname=node["name"], detach=True,
+                host_config=hc, networking_config=net, stop_signal="SIGRTMIN+3",
+                labels={LABEL: "1", "lt.attempt": str(spec.attempt_id), "lt.owner": self.owner, "lt.node": node["name"]},
+            )
+            api.start(c["Id"])
+            first = first or c["Id"]
+        return first
 
-    def wait_ready(self, attempt_id: int, timeout: int = 90) -> str:
+    def wait_ready(self, attempt_id: int, timeout: int = 90, node: str | None = None) -> str:
         """Waits until systemd finished booting (running or degraded)."""
         end = time.monotonic() + timeout
         state = ""
         while time.monotonic() < end:
-            r = self.exec(attempt_id, ["systemctl", "is-system-running"], timeout=15)
+            r = self.exec(attempt_id, ["systemctl", "is-system-running"], timeout=15, node=node)
             state = r.output.strip()
             if state in ("running", "degraded"):
                 return state
             time.sleep(1)
-        raise TimeoutError(f"the lab did not finish booting (systemd: {state or 'no answer'})")
+        raise TimeoutError(f"the lab{f' server {node}' if node else ''} did not finish booting (systemd: {state or 'no answer'})")
+
+    def wait_all(self, attempt_id: int, extra: dict | None, timeout: int = 90) -> None:
+        for _name, key in node_list(extra):
+            self.wait_ready(attempt_id, timeout, node=key)
 
     def destroy(self, attempt_id: int, wait: int = 60) -> bool:
-        """Removes the lab's container and network. Idempotent: "removal already in progress" (409, found by the
-        scenario checker) waits for that removal instead of failing."""
-        found = False
+        """Removes the lab's containers (every server) and network. Idempotent: "removal already in progress" (409,
+        found by the scenario checker) waits for that removal instead of failing."""
+        names = {self.name(attempt_id)}
         try:
-            self.client.containers.get(self.name(attempt_id)).remove(force=True, v=True)
-            found = True
-        except NotFound:
+            names |= {c.name for c in self.client.containers.list(all=True, filters={"label": f"lt.attempt={attempt_id}"})
+                      if c.name.startswith(f"{PREFIX}{attempt_id}-")}
+        except APIError:
             pass
-        except APIError as e:
-            if e.status_code != 409:
-                raise
-            found = True
-            end = time.monotonic() + wait
-            while time.monotonic() < end:
-                try:
-                    self.client.containers.get(self.name(attempt_id))
-                except NotFound:
-                    break
-                time.sleep(0.5)
+        found = False
+        for name in sorted(names):
+            try:
+                self.client.containers.get(name).remove(force=True, v=True)
+                found = True
+            except NotFound:
+                pass
+            except APIError as e:
+                if e.status_code != 409:
+                    raise
+                found = True
+                end = time.monotonic() + wait
+                while time.monotonic() < end:
+                    try:
+                        self.client.containers.get(name)
+                    except NotFound:
+                        break
+                    time.sleep(0.5)
         self.remove_network(attempt_id)
         return found
 
@@ -166,10 +222,10 @@ class LabManager:
     # --- running things inside ---
 
     def exec(self, attempt_id: int, cmd: list[str], stdin: str | None = None, timeout: int = 60,
-             max_output: int = 256 * 1024) -> ExecResult:
+             max_output: int = 256 * 1024, node: str | None = None) -> ExecResult:
         """Runs cmd in the lab (as root, not a TTY), optionally feeding stdin; output is stdout+stderr, bounded."""
         api = self.client.api
-        cid = self.name(attempt_id)
+        cid = self.name(attempt_id, node)
         ex = api.exec_create(cid, ["timeout", "-k", "5", str(timeout), *cmd], stdin=stdin is not None, stdout=True,
                              stderr=True, tty=False, environment={"LC_ALL": "C", "TERM": "dumb"})
         sock = api.exec_start(ex["Id"], socket=True)
@@ -186,14 +242,34 @@ class LabManager:
         code = -1 if code is None else code
         return ExecResult(exit_code=code, output=out, timed_out=code == 124)
 
-    def run_script(self, attempt_id: int, script: str, timeout: int = 120) -> ExecResult:
-        return self.exec(attempt_id, ["bash", "-s"], stdin=script, timeout=timeout)
+    def run_script(self, attempt_id: int, script: str, timeout: int = 120, node: str | None = None) -> ExecResult:
+        return self.exec(attempt_id, ["bash", "-s"], stdin=script, timeout=timeout, node=node)
 
-    def shell(self, attempt_id: int, cols: int = 120, rows: int = 32):
+    def run_on_nodes(self, attempt_id: int, extra: dict | None, script: str, timeout: int = 120,
+                     setup_order: bool = False) -> list[tuple[str, ExecResult]]:
+        """Runs a scenario script on every server of the lab, with LT_NODE (this server's name) and LT_NODES (all of
+        them) set. setup_order: the main server last, so its setup can rely on the others being in place.
+        A run may hand values to the runs after it: an output line "@@LT SHARE NAME VALUE" becomes LT_SHARE_NAME
+        (for example a key pair made on one server and needed on another; VALUE has no spaces: base64 it)."""
+        nodes = node_list(extra)
+        names = " ".join(n for n, _ in nodes)
+        out, shares = [], {}
+        for name, key in (nodes[1:] + nodes[:1]) if setup_order else nodes:
+            env = ""
+            if len(nodes) > 1:
+                env = f"export LT_NODE={name} LT_NODES='{names}'" + "".join(f" LT_SHARE_{k}={v}" for k, v in shares.items()) + "\n"
+            r = self.run_script(attempt_id, env + script, timeout=timeout, node=key)
+            for m in SHARE.finditer(r.output):
+                shares[m.group(1)] = m.group(2)
+            r.output = SHARE.sub("@@LT SHARE \\1 [hidden]", r.output)
+            out.append((name, r))
+        return out
+
+    def shell(self, attempt_id: int, cols: int = 120, rows: int = 32, node: str | None = None):
         """An interactive TTY exec for the browser terminal (images/base/lab-shell drops SYS_ADMIN). Returns
         (exec_id, raw socket)."""
         api = self.client.api
-        ex = api.exec_create(self.name(attempt_id), ["/usr/local/sbin/lab-shell"], stdin=True, stdout=True, stderr=True,
+        ex = api.exec_create(self.name(attempt_id, node), ["/usr/local/sbin/lab-shell"], stdin=True, stdout=True, stderr=True,
                              tty=True, environment={"TERM": "xterm-256color", "LANG": "C.UTF-8", "COLUMNS": str(cols),
                                                     "LINES": str(rows)})
         sock = api.exec_start(ex["Id"], socket=True, tty=True)

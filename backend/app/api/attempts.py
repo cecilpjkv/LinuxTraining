@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..deps import current_user
-from ..models import Scenario, TrainingAttempt, User
+from ..models import Scenario, ScenarioVersion, TrainingAttempt, User
 from ..schemas import AttemptOut
 from ..services import settings_store
 from ..services.scheduler import ACTIVE, now, queue_position, scheduler
@@ -23,6 +23,8 @@ def attempt_out(db: Session, a: TrainingAttempt, with_error: bool = False) -> At
         o.percent = round(100 * a.score.total / a.score.maximum, 1) if a.score.maximum else 0
     if a.scenario:
         o.description = a.scenario.description
+    v = db.get(ScenarioVersion, a.scenario_version_id) if a.scenario_version_id else None
+    o.nodes = [n["name"] for n in ((v.extra or {}).get("nodes") or [])] if v else []
     if not with_error and a.error:
         o.error = "the lab could not be prepared; please try again or tell an administrator"
     return o

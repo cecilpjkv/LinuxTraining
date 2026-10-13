@@ -73,7 +73,7 @@ class ScenarioIn(BaseModel):
     setup_script: str
     verify_script: str
     score_yaml: str
-    options: dict = {}  # capabilities, tmpfs, collect
+    options: dict = {}  # capabilities, tmpfs, collect, nodes, nested_containers
 
 
 class ScenarioPatch(BaseModel):
@@ -109,5 +109,6 @@ class AttemptOut(BaseModel):
     passed: bool | None = None
     description: str = ""
     error: str = ""
+    nodes: list[str] = []  # the servers of a multi-server lab (terminal tabs); empty with one server
 
     model_config = {"from_attributes": True}

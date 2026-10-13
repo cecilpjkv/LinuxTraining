@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  shop_serves: {points: 50, label: "The shop page is served on http://localhost:8081/"}
+  started_by_compose: {points: 25, label: "It runs as the compose project shop"}
+  compose_valid: {points: 25, label: "The compose project is valid (docker compose config)"}
+process:
+  compose_config: {points: 5, label: "Validated the project with docker compose config", any_of: ['docker\s+compose\s+.*config', 'docker-compose\s+.*config']}

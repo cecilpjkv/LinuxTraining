@@ -16,6 +16,8 @@ Spec §17, requirement by requirement.
 | No host filesystem in containers | No bind mounts or volumes into labs; only tmpfs (`/run`, `/run/lock`, scenario tmpfs from an allow-list). |
 | Restricted networking | The lab daemon runs in its own network namespace; every lab has its own internal network there: no internet, no host, no other lab. |
 | Non-privileged containers | Never `--privileged`. Labs add only `CAP_SYS_ADMIN` (systemd needs its own cgroup tree, in a private cgroup namespace) plus capabilities a scenario declares from a short allow-list (`NET_ADMIN`, …). The technician's shell runs with `CAP_SYS_ADMIN` and other dangerous capabilities removed from its bounding set. |
+| Labs that run containers | Only scenarios with `nested_containers: true`: the lab also gets `NET_ADMIN` (its own network namespace only) and a writable `/proc/sys` (the other read-only and masked `/proc` paths stay; inside the user namespace only the lab's own network sysctls can change, every host-wide one is refused by the kernel). The engine (Podman) runs as a systemd service inside the lab; no host socket is involved. |
+| Multi-server labs | All servers of a lab share one internal network of their own; they reach each other, nothing else. Each server has the per-lab limits. |
 | — and if a lab is escaped anyway | User-namespace remapping: root in a lab is an unprivileged uid (200000+) on the host. |
 | Timeout and PID limits | Per-scenario time limit capped by `max_test_minutes` (graded at the deadline), idle labs abandoned, PID limit per lab, script timeouts (`timeout -k`). |
 
