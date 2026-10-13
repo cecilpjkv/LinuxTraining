@@ -1,0 +1,14 @@
+pass_score: 70
+items:
+  user_ok: {points: 10, label: "shopdev exists as an ordinary user"}
+  key_login: {points: 20, label: "shopdev logs in over SSH with their key"}
+  shop_owned: {points: 15, label: "shopdev owns the shop's files and can change them"}
+  uploads_work: {points: 15, label: "The shop can still write uploads"}
+  blog_protected: {points: 20, label: "shopdev cannot read the blog's config.php"}
+  sites_work: {points: 20, label: "Both sites work", partial: true}
+deductions:
+  world_writable: {points: 20, label: "Files or directories writable for everyone"}
+  too_much_power: {points: 30, label: "shopdev got root or admin rights"}
+process:
+  created_user: {points: 5, label: "Created the user", any_of: ['useradd', 'adduser']}
+  set_ownership: {points: 5, label: "Set ownership and permissions", any_of: ['chown', 'chmod', 'setfacl']}

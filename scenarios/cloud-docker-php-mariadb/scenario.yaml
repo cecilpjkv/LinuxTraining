@@ -1,0 +1,19 @@
+name: "Docker Compose: PHP 8.3 for the shop, MariaDB back one version"
+description: |
+  The shop runs with Docker Compose from /srv/shop (http://localhost:8080/). Two change requests for today:
+    - The new shop release requires PHP 8.3 and the page now shows an error. Add PHP 8.3 to the stack (image
+      php:8.3-fpm-alpine is on the server) and serve the shop with it. Check the PHP version inside the container.
+    - Since last week's MariaDB update to 10.11.18 the vendor reports problems: go back to the designated previous
+      version, image mariadb:10.11.14 (on the server). The data must be kept: check that the database is healthy and
+      that the orders are all there.
+  First look at what is running (containers, services, logs).
+category: Cloud
+difficulty: advanced
+docker_image: linux-training-devops
+time_limit: 40
+resource_weight: 3
+nested_containers: true
+collect:
+  - cat /srv/shop/compose.yaml
+  - docker ps -a
+  - docker volume ls

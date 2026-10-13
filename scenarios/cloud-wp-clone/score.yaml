@@ -1,0 +1,13 @@
+pass_score: 70
+items:
+  files_copied: {points: 10, label: "The site's files are copied to /srv/www/staging"}
+  staging_db: {points: 15, label: "Staging uses the wp_staging database with its own user"}
+  db_user_isolated: {points: 15, label: "The staging database user cannot reach production"}
+  data_imported: {points: 15, label: "The production content is in wp_staging"}
+  staging_works: {points: 25, label: "staging.example.test shows the site under its own address"}
+  changes_isolated: {points: 20, label: "Changes on staging do not reach production"}
+deductions:
+  production_changed: {points: 40, label: "Production was changed or broken"}
+process:
+  exported: {points: 5, label: "Exported the database", any_of: ['mysqldump', 'mariadb-dump', 'wp db export']}
+  replaced_urls: {points: 5, label: "Changed the site address in the copy", any_of: ['search-replace', 'siteurl', 'WP_HOME', 'WP_SITEURL']}

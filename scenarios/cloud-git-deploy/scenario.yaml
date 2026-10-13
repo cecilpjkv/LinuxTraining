@@ -1,0 +1,25 @@
+name: "Deploy a site from a private Git repository"
+description: |
+  Two servers: web (where you start) and git, the company's Git server. The shop's code is in the private repository
+  git@git:/srv/git/shop.git (SSH access only, with keys). Deploy it on web:
+    - Clone it into /var/www/shop as the user "deploy" and check out the branch release/2.1 (the one approved for
+      production). deploy needs an SSH key that the git server accepts for the user git.
+    - nginx already serves shop.example.test from /var/www/shop/public. The files belong to deploy, nginx must be
+      able to read them, and nothing may be writable for everyone. Check that the site shows version 2.1.
+    - Automatic deployment: the webhook service deploy-webhook on web (port 9000; it pulls the latest code as deploy
+      when it receives a POST on /hooks/deploy with the header "X-Deploy-Token: <the token in
+      /etc/deploy-webhook/token>") must run, also after a reboot. Make the git server call it after every push to
+      the repository, and test it.
+  Open a second tab to work on git.
+category: Cloud
+difficulty: advanced
+docker_image: linux-training-cloud
+time_limit: 45
+resource_weight: 3
+nodes:
+  - {name: web, image: linux-training-cloud}
+  - {name: git, image: linux-training-cloud}
+collect:
+  - runuser -u deploy -- git -C /var/www/shop status -sb 2>&1; runuser -u deploy -- git -C /var/www/shop remote -v 2>&1
+  - systemctl status deploy-webhook --no-pager
+  - ls -la /srv/git/shop.git/hooks; cat /srv/git/shop.git/hooks/post-receive

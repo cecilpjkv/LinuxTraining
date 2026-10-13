@@ -1,0 +1,14 @@
+pass_score: 70
+items:
+  cpu_process: {points: 15, label: "The process using the most CPU"}
+  memory_process: {points: 15, label: "The process using the most memory"}
+  largest_dir: {points: 15, label: "The biggest application directory"}
+  top_ip: {points: 15, label: "The busiest client IP address"}
+  slow_log_on: {points: 20, label: "Slow query log on, 2 second threshold, also after a restart", partial: true}
+  slow_query: {points: 20, label: "The query that takes longer than 2 seconds"}
+deductions:
+  services_stopped: {points: 20, label: "Services were stopped during an analysis"}
+process:
+  checked_load: {points: 4, label: "Checked CPU and memory", any_of: ['\btop\b', 'htop', 'ps .*--sort', 'ps aux', 'free']}
+  checked_disk: {points: 3, label: "Checked disk usage", any_of: ['\bdf\b', '\bdu\b', 'ncdu']}
+  read_slow_log: {points: 3, label: "Read the slow query log", any_of: ['slow', 'mysqldumpslow']}

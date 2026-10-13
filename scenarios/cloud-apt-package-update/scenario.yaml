@@ -1,0 +1,16 @@
+name: "Security update for nginx (Debian)"
+description: |
+  This customer server runs Debian 12. A security advisory was published for nginx and the change request says:
+  update the nginx packages (nginx and nginx-common) to the newest version available in the server's package
+  repository. Only nginx is approved for this change window: do not upgrade anything else. Before and after, check
+  the installed version with dpkg, and afterwards make sure nginx runs the new version and the website
+  www.example.test still works (check the service status and its logs).
+category: Cloud
+difficulty: easy
+docker_image: linux-training-debian
+time_limit: 20
+resource_weight: 1
+collect:
+  - dpkg -l 'nginx*' openssl libssl3 | tail -n +6
+  - apt list --upgradable
+  - systemctl status nginx --no-pager

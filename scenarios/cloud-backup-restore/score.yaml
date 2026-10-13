@@ -1,0 +1,13 @@
+pass_score: 70
+items:
+  full_backup: {points: 15, label: "Full backup of the files and the database (before the change)", partial: true}
+  incr_backup: {points: 20, label: "Incremental backup with the change, files only what changed", partial: true}
+  restored_files: {points: 15, label: "Files restored to /srv/www/shop-test (latest state)"}
+  restored_db: {points: 15, label: "Database restored to shop_test (latest state)"}
+  test_site: {points: 25, label: "test.shop.example.test works on the test database"}
+  backup_log: {points: 10, label: "Backups and the restore are logged", partial: true}
+deductions:
+  production_broken: {points: 40, label: "Production is broken or lost the new product"}
+process:
+  used_tar: {points: 5, label: "Used tar's incremental mode", any_of: ['listed-incremental', '\s-g\s']}
+  dumped_db: {points: 5, label: "Dumped the database", any_of: ['mysqldump', 'mariadb-dump']}

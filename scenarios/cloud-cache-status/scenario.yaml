@@ -1,0 +1,18 @@
+name: "Is the shop's page cache working?"
+description: |
+  shop.example.test runs behind a caching nginx on this server. The customer says "the cache does nothing, every
+  page is slow" and asks you to check. Use curl to request the pages below several times, look at the response
+  headers and find the cache status each one gets (HIT, MISS, BYPASS, ...):
+    1. the home page http://shop.example.test/ (after it was requested once)
+    2. http://shop.example.test/account/
+    3. the home page for a logged-in customer (send the cookie "shop_session=abc123")
+    4. http://shop.example.test/api/stock (after it was requested once)
+  Explain in a few words why pages 2, 3 and 4 are not served from the cache. Write the results into
+  /root/answers.txt (the template is there). Do not change the configuration.
+category: Cloud
+difficulty: easy
+docker_image: linux-training-web
+time_limit: 20
+resource_weight: 2
+collect:
+  - cat /root/answers.txt

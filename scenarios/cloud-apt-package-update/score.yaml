@@ -1,0 +1,12 @@
+pass_score: 70
+items:
+  nginx_updated: {points: 35, label: "nginx and nginx-common are on the new version"}
+  running_new: {points: 20, label: "The running nginx is the new version"}
+  service_ok: {points: 15, label: "nginx is active and enabled"}
+  site_works: {points: 30, label: "The website still works"}
+deductions:
+  other_upgraded: {points: 20, label: "Packages outside the change were upgraded"}
+process:
+  dpkg_version: {points: 4, label: "Checked the installed version with dpkg", any_of: ['dpkg (-l|-s|--list|--status)', 'dpkg-query']}
+  apt_update: {points: 3, label: "Refreshed the package lists", any_of: ['apt(-get)? update']}
+  listed_upgrades: {points: 3, label: "Listed the available upgrades", any_of: ['list --upgradable', 'apt(-get)? (-s|--simulate) upgrade', 'apt-cache policy']}

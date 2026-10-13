@@ -25,3 +25,10 @@ RUN mkdir -p /opt/lt-images \
  && skopeo copy -q docker://docker.io/library/busybox:1.36 docker-archive:/opt/lt-images/busybox.tar:docker.io/library/busybox:1.36 \
  && skopeo copy -q docker://docker.io/library/nginx:1.27-alpine docker-archive:/opt/lt-images/nginx.tar:docker.io/library/nginx:1.27-alpine \
  && ls -la /opt/lt-images
+# PHP-FPM 8.1/8.3 and MariaDB 10.11.14/10.11.18, built from Alpine by build.sh (images/containers): one archive per
+# image, under its full registry name (docker save keeps short names, which Podman would load as localhost/...)
+RUN --mount=type=bind,source=lt-images,target=/tmp/lt \
+    for t in php:8.1-fpm-alpine php:8.3-fpm-alpine mariadb:10.11.14 mariadb:10.11.18; do \
+      skopeo copy -q docker-archive:/tmp/lt/${t%%:*}.tar:$t docker-archive:/opt/lt-images/$(echo $t | tr : -).tar:docker.io/library/$t || exit 1; \
+    done \
+ && ls -la /opt/lt-images

@@ -1,0 +1,13 @@
+pass_score: 70
+items:
+  home_cached: {points: 15, label: "Home page: status on repeat requests"}
+  account_status: {points: 15, label: "/account/: cache status"}
+  account_reason: {points: 10, label: "/account/: why it is not cached"}
+  session_status: {points: 15, label: "Logged-in customer: cache status"}
+  session_reason: {points: 10, label: "Logged-in customer: why it is not cached"}
+  stock_status: {points: 15, label: "/api/stock: cache status"}
+  stock_reason: {points: 10, label: "/api/stock: why it is not cached"}
+  config_unchanged: {points: 10, label: "The cache configuration was left as it was"}
+process:
+  read_headers: {points: 5, label: "Looked at the response headers", any_of: ['curl\s.*(-I|--head|-i|-D|-v|--include)']}
+  read_config: {points: 5, label: "Read the cache configuration", any_of: ['nginx -T', '/etc/nginx/conf.d']}

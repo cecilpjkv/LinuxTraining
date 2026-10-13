@@ -1,0 +1,12 @@
+pass_score: 70
+items:
+  php83_serves: {points: 25, label: "The shop is served by PHP 8.3"}
+  db_version: {points: 20, label: "The database runs mariadb:10.11.14"}
+  db_healthy: {points: 15, label: "The database is up and answers"}
+  data_intact: {points: 30, label: "All orders are still there, unchanged"}
+  compose_managed: {points: 10, label: "Everything runs from the compose project"}
+deductions:
+  data_lost: {points: 30, label: "The database volume was recreated"}
+process:
+  inspected: {points: 5, label: "Looked at the running containers", any_of: ['docker (compose )?ps', 'docker (compose )?logs']}
+  checked_php: {points: 5, label: "Checked the PHP version in the container", any_of: ['php -v', 'php --version', 'phpversion', 'PHP_VERSION']}

@@ -1,0 +1,13 @@
+pass_score: 70
+items:
+  key_access: {points: 15, label: "deploy reaches the repository over SSH with a key"}
+  cloned_branch: {points: 20, label: "/var/www/shop is a clone on release/2.1"}
+  site_works: {points: 15, label: "shop.example.test shows version 2.1"}
+  permissions: {points: 10, label: "Files owned by deploy, nothing writable for everyone"}
+  webhook_service: {points: 10, label: "The webhook service runs and starts at boot"}
+  webhook_deploys: {points: 30, label: "A push to release/2.1 is deployed automatically"}
+deductions:
+  wrong_branch: {points: 15, label: "A branch other than release/2.1 was deployed"}
+process:
+  made_key: {points: 5, label: "Created an SSH key", any_of: ['ssh-keygen']}
+  cloned: {points: 5, label: "Cloned the repository", any_of: ['git clone']}

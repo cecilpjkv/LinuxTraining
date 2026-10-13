@@ -1,0 +1,18 @@
+name: "A Linux user for the shop's developer"
+description: |
+  This server hosts two PHP sites: shop.example.test (/srv/www/shop) and blog.example.test (/srv/www/blog), both
+  run by PHP-FPM as the user apache. The shop's new developer needs their own login:
+    - Create the user "shopdev" and let them log in over SSH with their key (/root/shopdev.pub).
+    - shopdev owns the shop's files and can change them; the web server and PHP must still be able to read them,
+      and PHP to write into the shop's uploads directory (/srv/www/shop/uploads). Nothing should be writable for everyone.
+    - shopdev must not be able to read the blog's protected files (its config.php holds the database password).
+  Both sites must keep working.
+category: Cloud
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 2
+collect:
+  - id shopdev; getent passwd shopdev
+  - ls -la /srv/www/shop /srv/www/shop/uploads /srv/www/blog
+  - ls -la /home/shopdev/.ssh

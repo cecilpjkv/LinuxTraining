@@ -1,0 +1,15 @@
+pass_score: 70
+items:
+  debug_enabled: {points: 15, label: "Debug logging is enabled in wp-config.php"}
+  debug_logged: {points: 20, label: "A test message lands in the debug log"}
+  display_off: {points: 10, label: "Errors are not shown to visitors"}
+  event_scheduled: {points: 20, label: "shop_cleanup_carts is scheduled every hour"}
+  event_ran: {points: 10, label: "The cleanup job has run"}
+  system_cron: {points: 25, label: "A system cron job runs WordPress's due events"}
+deductions:
+  site_broken: {points: 40, label: "The site no longer works"}
+  wp_cron_reenabled: {points: 10, label: "The page-load scheduler was switched back on"}
+process:
+  edited_config: {points: 5, label: "Worked in wp-config.php", any_of: ['wp-config\.php', 'wp config set']}
+  read_log: {points: 5, label: "Checked the debug log", any_of: ['debug\.log']}
+  listed_events: {points: 5, label: "Listed the scheduled events", any_of: ['cron event list', 'cron event run']}

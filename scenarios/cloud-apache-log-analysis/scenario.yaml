@@ -1,0 +1,14 @@
+name: "Apache access log report for a customer"
+description: |
+  The customer behind shop.example.test (Apache on this server) suspects a bot is hammering the site and asks for a
+  short report on today's traffic. Find the site's access log, then count the responses with status 200, 301, 403,
+  404 and 500 and find the client IP address that made the most requests. Use the command line (grep, awk, sort,
+  uniq, ...). Write your findings into /root/answers.txt (the template is there; numbers only for the counts). Do
+  not change or rotate the log.
+category: Cloud
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - cat /root/answers.txt

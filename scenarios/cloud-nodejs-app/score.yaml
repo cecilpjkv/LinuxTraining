@@ -1,0 +1,12 @@
+pass_score: 70
+items:
+  node_installed: {points: 10, label: "Node.js and npm are installed"}
+  app_responds: {points: 25, label: "The application answers on port 3000 (/ and /health)", partial: true}
+  site_works: {points: 10, label: "app.example.test shows the application through nginx"}
+  not_root: {points: 15, label: "It runs as the user nodeapp"}
+  service_enabled: {points: 15, label: "It is a systemd service, started at boot"}
+  auto_restart: {points: 15, label: "It comes back after a crash"}
+  logs: {points: 10, label: "Its requests are logged (journal)"}
+process:
+  checked_versions: {points: 5, label: "Checked the installed versions", any_of: ['node (-v|--version)', 'npm (-v|--version)']}
+  read_logs: {points: 5, label: "Read the application's log", any_of: ['journalctl']}

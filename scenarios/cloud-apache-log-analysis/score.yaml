@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  log_found: {points: 15, label: "Found the site's access log"}
+  status_counts: {points: 50, label: "Status code counts (200, 301, 403, 404, 500)", partial: true}
+  top_ip: {points: 35, label: "The client IP address with the most requests"}
+process:
+  located_log: {points: 5, label: "Looked up where the site logs", any_of: ['httpd -S', 'apachectl -S', 'CustomLog', '/etc/httpd/conf.d']}
+  used_awk: {points: 5, label: "Counted by the status field", any_of: ['awk', 'cut -d']}
+  sorted_counts: {points: 5, label: "Sorted and counted", any_of: ['uniq -c', 'sort']}

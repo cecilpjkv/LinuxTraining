@@ -65,7 +65,7 @@ say "Lab daemon (user-namespace remapped, own network namespace)"
 "$APP/deploy/docker-labs/install.sh"
 
 if [ "${LT_SKIP_IMAGES:-0}" != 1 ]; then
-  say "Lab images (base, web, lamp, devops) — the first build takes several minutes"
+  say "Lab images (base, web, lamp, cloud, devops, debian) — the first build takes several minutes"
   "$APP/images/build.sh"
 fi
 

@@ -21,10 +21,12 @@ version; attempts keep the version they ran.
 name: Website down after a configuration change
 description: |
   The customer's symptom, never the cause. ("The site returns 502", not "the socket is wrong".)
-category: Nginx            # Linux, SSH, Networking, Nginx, Apache, PHP, PHP-FPM, MariaDB, Docker, Git, Ansible, ...
+category: Nginx            # Linux, SSH, Networking, Nginx, Apache, PHP, PHP-FPM, MariaDB, Docker, Git, Ansible, Cloud, ...
 difficulty: easy           # easy | intermediate | advanced | extra-hard (often several faults together)
 docker_image: linux-training-web   # linux-training-base | -web (nginx, httpd, php-fpm) | -lamp (+ MariaDB)
+                                   # | -cloud (lamp + git, rsync; Node.js/npm in the local repository)
                                    # | -devops (git, Ansible, docker/compose via Podman, rsync)
+                                   # | -debian (Debian 12, APT: nginx one update behind)
 time_limit: 20             # minutes (capped by the admin's maximum test duration)
 resource_weight: 2         # 1 basic, 2 web/PHP/networking/Docker, 3 app + database or two servers, 4 heavy (alone)
 capabilities: [NET_ADMIN]  # optional: NET_ADMIN, NET_RAW, SYS_PTRACE, SYS_NICE, SYS_RESOURCE
@@ -96,7 +98,10 @@ Short form: `nginx_running: 25`. Process points are a small signal on top; the s
 - **tmpfs**: the mount point is world-writable (1777) unless `setup.sh` changes it (logrotate refuses such
   directories); inode accounting varies, so fill a volume until it refuses rather than counting.
 - **Offline labs**: there is no internet. Packages a scenario wants installed must be in the image's local
-  repository (`images/web`: `/opt/training-repo`; `images/devops`: nginx for playbooks).
+  repository (`images/web`: `/opt/training-repo`; `images/cloud`: + nodejs, npm; `images/devops`: nginx for
+  playbooks; `images/debian`: `/opt/apt-repo` with nginx 1.22.1-9+deb12u10 and openssl 3.0.22).
+- **Answer files**: when the task is to find something out (log counts, cache status, the busiest process), setup
+  writes a template (`/root/answers.txt`, `key=` lines) and verify compares the values with what it computes itself.
 - **Ansible** needs a UTF-8 locale: verify runs with `LC_ALL=C`, so `export LC_ALL=C.UTF-8 LANG=C.UTF-8 HOME=/root`
   before calling it.
 - **sshd is already running** in the images: after changing its configuration in setup, `systemctl restart sshd`
@@ -129,7 +134,8 @@ With `nested_containers: true` (and `docker_image: linux-training-devops`) the t
 `docker compose` as on a Docker host. Behind them is Podman's system service (`podman.socket`, `/run/docker.sock`
 points at it); the lab gets `NET_ADMIN` and a writable `/proc/sys` for the engine's networks (see security.md).
 There is no registry: setup loads the images from `/opt/lt-images` (`podman load -i /opt/lt-images/nginx.tar`;
-`busybox.tar` too) and scenarios refer to them by their full names (`docker.io/library/nginx:1.27-alpine`).
+`busybox.tar` too; `php-8.1-fpm-alpine.tar`, `php-8.3-fpm-alpine.tar`, `mariadb-10.11.14.tar` and
+`mariadb-10.11.18.tar` — built from Alpine by `images/build.sh` from `images/containers`, one layer each) and scenarios refer to them by their full names (`docker.io/library/nginx:1.27-alpine`).
 Storage is `vfs` (copies per layer): keep to small images. `podman` in the technician's shell talks to the same
 service (`CONTAINER_HOST`); in setup/verify use `docker` or plain `podman`.
 

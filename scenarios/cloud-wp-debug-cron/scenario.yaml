@@ -1,0 +1,19 @@
+name: "WordPress: debug log and a scheduled cleanup job"
+description: |
+  The developer of wp.example.test needs two things before they start debugging the shop plugin:
+    - WordPress debug logging on: errors and notices go to a log file (wp-content/debug.log or a path of your
+      choice), never onto the pages visitors see. Trigger a test message (visit
+      http://wp.example.test/?shop_debug_test=1) and check that it lands in the log.
+    - The plugin's cleanup job, the WordPress hook "shop_cleanup_carts", scheduled to run every hour. On this host
+      WordPress's page-load scheduler is switched off (DISABLE_WP_CRON, keep it that way): set up a system cron job
+      that runs the due WordPress events every 5 minutes, and check that the cleanup job actually runs.
+  The site must keep working.
+category: Cloud
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 30
+resource_weight: 3
+collect:
+  - grep -nE "WP_DEBUG|WP_CRON" /srv/www/wp/wp-config.php
+  - ls /etc/cron.d; crontab -l -u apache
+  - wp --allow-root --path=/srv/www/wp cron event list

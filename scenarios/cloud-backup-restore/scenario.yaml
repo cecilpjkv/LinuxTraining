@@ -1,0 +1,23 @@
+name: "Backups and a test restore for a shop"
+description: |
+  The customer's shop (shop.example.test: files in /srv/www/shop, database "shop") has no backups yet. Set them up
+  and prove that they can be restored:
+    1. Full backup into /backup: the files as /backup/shop-full-files.tar.gz, made with GNU tar's incremental
+       snapshot file /backup/shop-files.snar, and the database as /backup/shop-full-db.sql.gz.
+    2. The customer then adds a product: run   shop-admin add-product "Lemon Cake"   (it adds a database row and
+       an image file).
+    3. Incremental backup: /backup/shop-incr1-files.tar.gz (only what changed since the full backup, using the same
+       snapshot file) and /backup/shop-incr1-db.sql.gz. Check that the new product is in it.
+    4. Restore the latest state into a test environment: files in /srv/www/shop-test, database "shop_test", site
+       test.shop.example.test (resolves to this server). The test site must use the test database, never production.
+    5. Log every backup and the restore with a line each in /var/log/shop-backup.log, and check the logs.
+  Production must keep working.
+category: Cloud
+difficulty: advanced
+docker_image: linux-training-cloud
+time_limit: 45
+resource_weight: 3
+collect:
+  - ls -la /backup /srv/www/shop-test
+  - cat /var/log/shop-backup.log
+  - cat /srv/www/shop-test/config.php

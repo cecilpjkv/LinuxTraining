@@ -1,0 +1,20 @@
+name: "Performance check: why is the shop slow?"
+description: |
+  The customer of shop.example.test complains that the site is slow at times and asks for a performance check of
+  this server. Find out and write into /root/answers.txt (the template is there):
+    - the process using the most CPU and the process using the most memory,
+    - the biggest directory inside the application directory /srv/www/shop,
+    - the client IP address with the most requests to the shop today (nginx access log),
+    - which database query takes longer than two seconds: turn on MariaDB's slow query log with a threshold of
+      2 seconds (it must stay on after a restart), let it collect for a minute or two, and give the name in the
+      query's /* comment */.
+  This is an analysis: do not stop or remove anything.
+category: Cloud
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 30
+resource_weight: 3
+collect:
+  - cat /root/answers.txt
+  - mysql -e "SHOW GLOBAL VARIABLES WHERE Variable_name IN ('slow_query_log','long_query_time','slow_query_log_file')"
+  - grep -rn slow /etc/my.cnf /etc/my.cnf.d

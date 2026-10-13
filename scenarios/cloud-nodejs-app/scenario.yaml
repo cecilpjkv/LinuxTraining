@@ -1,0 +1,19 @@
+name: "Deploy a Node.js application"
+description: |
+  A customer wants a small Node.js application on this server, behind the existing nginx site app.example.test
+  (nginx already forwards it to port 3000, so the site answers "502 Bad Gateway" for now).
+    - Install Node.js and npm (they are in the server's package repository) and check their versions.
+    - Create the application in /opt/hello-node: an HTTP server on port 3000 that answers "Hello from Node" on /
+      and "ok" on /health, and writes a line to its output for every request.
+    - Run it as a system service with systemd, as a dedicated user "nodeapp" (not root), started at boot and
+      restarted automatically if it crashes.
+  Check the application's logs and that it comes back after being killed.
+category: Cloud
+difficulty: intermediate
+docker_image: linux-training-cloud
+time_limit: 35
+resource_weight: 2
+collect:
+  - node -v; npm -v
+  - ss -ltnp
+  - systemctl cat $(systemctl list-units --type=service --no-legend | awk '/node|hello/{print $1}') --no-pager

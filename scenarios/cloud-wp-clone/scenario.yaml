@@ -1,0 +1,19 @@
+name: "Clone a WordPress site to staging"
+description: |
+  The customer wants a staging copy of their WordPress site wp.example.test (files in /srv/www/wp, database
+  "wordpress") to test changes on:
+    - Files in /srv/www/staging, served by nginx as staging.example.test (the name already resolves to this server).
+    - Its own database "wp_staging" with its own database user (password of your choice) that has no access to the
+      production database. Copy the production data into it (export and import).
+    - The staging site must show the same content under its own address; it must not send visitors to the
+      production site, and changes made on staging must not reach production.
+  Production must stay exactly as it is and keep working.
+category: Cloud
+difficulty: advanced
+docker_image: linux-training-lamp
+time_limit: 40
+resource_weight: 3
+collect:
+  - grep -n "DB_" /srv/www/staging/wp-config.php
+  - mysql -e "SELECT user, host FROM mysql.user; SHOW DATABASES"
+  - wp --allow-root --path=/srv/www/staging option get siteurl
