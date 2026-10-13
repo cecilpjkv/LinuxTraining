@@ -57,6 +57,7 @@ Update later with `git -C /opt/linuxtraining pull && /opt/linuxtraining/deploy/i
 ## Documentation
 
 - `docs/INSTALL.md`: step-by-step installation on a new server (start here)
+- `docs/admin.md`: administration & operations — install/update commands, the administrator account, backend CLI, backups
 - `docs/deployment.md`: installation details (Docker, lab daemon, images, Compose, reverse proxy, HTTPS, admin, backups)
 - `docs/scenarios.md`: writing scenarios (format, verify helpers, scoring, pitfalls)
 - `docs/security.md`: the security model
