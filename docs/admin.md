@@ -285,7 +285,63 @@ Keep a copy of `deploy/.env` with your backups (store it somewhere safe — it i
 
 ---
 
-## 8. Troubleshooting
+## 8. Trimming attempt and technician history
+
+When the database grows (attempts, their command history, and technician accounts pile up over time), trim it in two
+moves: **archive first, then delete the old rows.** The archive keeps everything — the delete only removes it from
+the live database to reclaim space, and it is recoverable from the archive with `pg_restore`. Do these in order.
+
+The bulk of the size is the `commands` table (truncated terminal output). Deleting a training attempt **cascades**
+automatically to its `commands`, `verification_results`, `scores` and `lab_containers`, so you only delete attempts.
+
+```sh
+cd /opt/linuxtraining/deploy
+```
+
+**1. Archive the history first (do not skip this).**
+
+```sh
+docker compose exec -T db pg_dump -U linuxtraining -Fc \
+  -t training_attempts -t commands -t verification_results -t scores -t lab_containers -t users \
+  linuxtraining > /var/backups/linuxtraining/history-$(date +%F).dump
+```
+
+(Or archive the whole database: `docker compose exec -T db pg_dump -U linuxtraining -Fc linuxtraining > …`.)
+
+**2. Delete old, finished attempts.** `ended_at IS NOT NULL` leaves any running lab untouched; adjust the interval:
+
+```sh
+docker compose exec -T db psql -U linuxtraining -d linuxtraining -c \
+"DELETE FROM training_attempts
+ WHERE ended_at IS NOT NULL
+   AND created_at < now() - interval '90 days';"
+```
+
+**3. (Optional) Remove technician accounts that have no attempts left.** Run this *after* step 2. It never touches
+administrators or technicians who still have history:
+
+```sh
+docker compose exec -T db psql -U linuxtraining -d linuxtraining -c \
+"DELETE FROM users
+ WHERE role='technician'
+   AND id NOT IN (SELECT DISTINCT user_id FROM training_attempts);"
+```
+
+**4. Reclaim the disk.** A normal delete frees space inside the database but not back to the OS. To return it to the
+OS, run (it briefly **locks** those tables — do it in a quiet window):
+
+```sh
+docker compose exec -T db psql -U linuxtraining -d linuxtraining -c "VACUUM FULL;"
+```
+
+Use plain `VACUUM (ANALYZE);` instead if you only want the space reused internally, without locking.
+
+> Everything removed in steps 2–3 is recoverable from the step-1 archive (`pg_restore`). That is why the order
+> matters: **archive, then trim.**
+
+---
+
+## 9. Troubleshooting
 
 | Symptom | Check |
 |---|---|
