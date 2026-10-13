@@ -65,8 +65,15 @@ The application's own containers stay on the normal daemon; the backend only get
 /opt/linuxtraining/images/build.sh
 ```
 
-Builds `linux-training-base`, `-web`, `-lamp` and `-devops` on the main daemon (it can download packages) and loads them into
-the lab daemon. Rebuild after changing `images/`; running labs keep the image they started with.
+Builds `linux-training-base`, `-web`, `-lamp`, `-cloud`, `-devops` and `-debian` on the main daemon (it can download
+packages) and loads them into the lab daemon. Rebuild after changing `images/`; running labs keep the image they
+started with.
+
+The `-devops` image also carries, for offline Ansible labs: the `ansible.posix`, `community.general`,
+`community.mysql` and `community.crypto` collections, and a local package repository (`/opt/training-repo`) with
+PHP-FPM, MariaDB (+ PyMySQL), firewalld, httpd and Certbot with its nginx plugin. Certbot issues real certificates
+without internet against Pebble (Let's Encrypt's test ACME server, bundled as `/usr/local/bin/pebble`, disabled by
+default). The first `-devops` build downloads these, so it is the slowest.
 
 ## 4. Application (PostgreSQL, backend, frontend)
 

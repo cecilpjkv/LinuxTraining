@@ -32,3 +32,19 @@ RUN --mount=type=bind,source=lt-images,target=/tmp/lt \
       skopeo copy -q docker-archive:/tmp/lt/${t%%:*}.tar:$t docker-archive:/opt/lt-images/$(echo $t | tr : -).tar:docker.io/library/$t || exit 1; \
     done \
  && ls -la /opt/lt-images
+# Ansible labs: the collections playbooks use (offline), and what target servers install from the local repository
+# (PHP-FPM, MariaDB + PyMySQL for community.mysql, firewalld, Certbot with its nginx plugin from EPEL). Pebble, Let's
+# Encrypt's test ACME server, gives Certbot real certificate issuance without internet (acme-ca.service, disabled).
+RUN ansible-galaxy collection install -p /usr/share/ansible/collections ansible.posix community.general community.mysql community.crypto \
+ && sed -i 's/^enabled=0/enabled=1/' /etc/yum.repos.d/almalinux*.repo \
+ && dnf -y install --setopt=install_weak_deps=False epel-release \
+ && dnf -y download --resolve --alldeps --destdir /opt/training-repo php-fpm php-cli php-mysqlnd php-mbstring php-opcache \
+      mariadb-server mariadb python3-PyMySQL firewalld httpd certbot python3-certbot-nginx \
+ && ls /opt/training-repo/certbot-*.rpm /opt/training-repo/firewalld-*.rpm /opt/training-repo/mariadb-server-*.rpm \
+ && createrepo_c -q --update /opt/training-repo \
+ && dnf -y remove epel-release && rm -f /etc/yum.repos.d/epel*.repo \
+ && sed -i 's/^enabled=1/enabled=0/' /etc/yum.repos.d/almalinux*.repo \
+ && dnf clean all && rm -rf /var/cache/dnf \
+ && curl -fsSL https://github.com/letsencrypt/pebble/releases/download/v2.6.0/pebble-linux-amd64.tar.gz \
+    | tar -xzO pebble-linux-amd64/linux/amd64/pebble > /usr/local/bin/pebble \
+ && chmod 755 /usr/local/bin/pebble && /usr/local/bin/pebble -version

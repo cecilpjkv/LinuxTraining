@@ -21,7 +21,8 @@ version; attempts keep the version they ran.
 name: Website down after a configuration change
 description: |
   The customer's symptom, never the cause. ("The site returns 502", not "the socket is wrong".)
-category: Nginx            # Linux, SSH, Networking, Nginx, Apache, PHP, PHP-FPM, MariaDB, Docker, Git, Ansible, Cloud, ...
+category: Nginx            # Linux, SSH, Networking, Nginx, Apache, PHP, PHP-FPM, MariaDB, Docker, Git, Ansible, Cloud,
+                           # Compromise (incident response: clean a hacked server without a reinstall), ...
 difficulty: easy           # easy | intermediate | advanced | extra-hard (often several faults together)
 docker_image: linux-training-web   # linux-training-base | -web (nginx, httpd, php-fpm) | -lamp (+ MariaDB)
                                    # | -cloud (lamp + git, rsync; Node.js/npm in the local repository)
