@@ -1,0 +1,13 @@
+name: "A malware file keeps coming back"
+description: |
+  Every time the team deletes /usr/local/bin/.update it reappears within seconds. The file is not part of any
+  package. Find what keeps recreating it, stop that for good, and remove the file and anything the attacker left to
+  bring it back — without a reboot. The server's legitimate nightly job for user "deploy" must keep working.
+category: Compromise
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 35
+resource_weight: 1
+collect:
+  - "ls -l /usr/local/bin/.update"
+  - "systemctl list-units --type=service --state=running --no-legend"

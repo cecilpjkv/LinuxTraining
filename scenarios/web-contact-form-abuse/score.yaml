@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  no_arbitrary_recipient: {points: 30, label: "The form only mails the site's own address"}
+  no_header_injection:    {points: 30, label: "User input cannot inject mail headers"}
+  form_works:             {points: 25, label: "A normal message still goes through"}
+  marker_sent:            {points: 15, label: "The message body reaches the mail"}
+process:
+  inspected: {points: 5, label: "Looked at the form or the mail log", any_of: ['contact\.php', 'mail\.log', 'sendmail']}

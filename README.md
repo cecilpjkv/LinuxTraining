@@ -40,10 +40,12 @@ Update later with `git -C /opt/linuxtraining pull && /opt/linuxtraining/deploy/i
 - [x] Phase 4: setup/verify scripts, scoring (MVP flow verified end to end: scripts/e2e_mvp.py)
 - [x] Phase 5: attempt history, admin review, dashboard
 - [x] Phase 6: cleanup, queue, timeouts, security hardening (docs/security.md)
-- [x] 143 seeded scenarios: the 50 of spec 25, 50 more (system/security, web/TLS), 12 WordPress (easy to extra hard),
-      10 more Linux, 10 DevOps (Docker/Compose, Git, Ansible) and 11 Cloud hosting tasks (cache and log analysis,
+- [x] 149 seeded scenarios: the 50 of spec 25, 50 more (system/security, web/TLS), 12 WordPress (easy to extra hard),
+      10 more Linux, 10 DevOps (Docker/Compose, Git, Ansible), 11 Cloud hosting tasks (cache and log analysis,
       performance, WordPress debug/cron and cloning, Git and Node.js deployments, Docker PHP/MariaDB versions, APT
-      updates on Debian, backups and restore, application users)
+      updates on Debian, backups and restore, application users) and 6 Compromise incident-response tasks (malware
+      redirect / fake Cloudflare page, code injected into the app's own files, contact-form spam abuse, a file that
+      reappears, files multiplying, a hidden CPU miner — each proven: setup breaks it, the reference fix scores full)
 - [x] Multi-server labs (2-3 servers on one private network, a terminal tab per server) and labs that run containers
       themselves (`docker`/`docker compose` backed by Podman): 7 scenarios use two servers, 6 run Docker
 - [x] 50 seeded scenarios (spec 25): 15 easy / 25 intermediate / 10 advanced, each proven in a real lab by

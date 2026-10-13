@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  watcher_gone: {points: 30, label: "The service that recreates the file is stopped and disabled"}
+  cron_gone:    {points: 25, label: "No cron job recreates the file"}
+  seed_gone:    {points: 15, label: "The attacker's seed copy is removed"}
+  file_gone:    {points: 20, label: "The malware file is removed"}
+  legit_kept:   {points: 10, label: "deploy's nightly job is kept"}
+process:
+  hunted: {points: 5, label: "Hunted the persistence (services, cron)", any_of: ['systemctl', 'list-unit', 'cron', 'crontab']}

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  gen_stopped:  {points: 30, label: "The process creating the files is stopped"}
+  service_gone: {points: 25, label: "Its service is stopped and disabled"}
+  persist_gone: {points: 20, label: "It cannot start again after a reboot"}
+  dir_clean:    {points: 25, label: "The directory is cleaned up and no longer grows"}
+process:
+  hunted: {points: 5, label: "Found the process or its service", any_of: ['pgrep', 'ps\s', 'systemctl', 'lsof']}

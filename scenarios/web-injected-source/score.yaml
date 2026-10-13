@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  files_clean:  {points: 40, label: "The injected loader is removed from every PHP file"}
+  payload_gone: {points: 25, label: "The attacker's payload file is deleted"}
+  no_exec:      {points: 20, label: "The injected code no longer executes"}
+  site_works:   {points: 15, label: "The site still works", partial: true}
+process:
+  searched: {points: 5, label: "Searched for the injected code", any_of: ['grep\s+.*(base64|eval|include)', 'find\s+.*\.php']}

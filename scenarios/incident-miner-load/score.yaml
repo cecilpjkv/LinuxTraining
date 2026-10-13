@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  miner_stopped: {points: 30, label: "The miner process is stopped"}
+  service_gone:  {points: 25, label: "Its service is stopped and disabled"}
+  persist_gone:  {points: 20, label: "It cannot start again (cron / boot)"}
+  metrics_kept:  {points: 25, label: "The monitoring agent still answers on :9100"}
+process:
+  hunted: {points: 5, label: "Investigated the busy process", any_of: ['top', 'ps\s', 'pgrep', 'systemctl']}

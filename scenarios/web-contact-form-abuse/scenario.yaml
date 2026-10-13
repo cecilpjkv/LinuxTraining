@@ -1,0 +1,14 @@
+name: "Contact form abused to send spam"
+description: |
+  The hosting provider warned that this server is sending spam. The only mail-sending code on it is the contact
+  form at /contact.php on www.help.example.test. Attackers are using it to send mail to arbitrary addresses and to
+  smuggle in their own headers. Lock the form down so it only mails the site's own address
+  (owner@help.example.test) and cannot be used to inject headers, while a normal message from a visitor still goes
+  through.
+category: Compromise
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 30
+resource_weight: 2
+collect:
+  - "tail -n 20 /var/log/app/mail.log"

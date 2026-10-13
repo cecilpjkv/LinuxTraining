@@ -1,0 +1,13 @@
+name: "Malware injected into the application's PHP files"
+description: |
+  A scan flagged www.portal.example.test: the same block of obfuscated code sits at the top of many of the site's
+  PHP files, and there is an extra file the developers do not recognise. Remove the injected code from the
+  application's own files and delete anything the attacker added, without breaking the site. The home page must keep
+  showing "PORTAL-HOME-OK".
+category: Compromise
+difficulty: advanced
+docker_image: linux-training-web
+time_limit: 35
+resource_weight: 2
+collect:
+  - "grep -rl base64_decode /srv/www/portal"

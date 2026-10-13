@@ -1,0 +1,14 @@
+name: "Server pinned at 100% CPU after a break-in"
+description: |
+  Since a break-in last week this server sits at 100% CPU. The load comes from a process that hides under a
+  kernel-thread-like name and runs as the service account "svc". Stop it, make sure it cannot come back (also not
+  after a reboot), and remove how it persists. The monitoring agent on 127.0.0.1:9100 must keep answering.
+category: Compromise
+difficulty: advanced
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 2
+capabilities: [SYS_PTRACE]
+collect:
+  - "ps -u svc -o pid,%cpu,comm 2>/dev/null"
+  - "systemctl list-units --type=service --state=running --no-legend"
