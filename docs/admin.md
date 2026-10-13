@@ -35,6 +35,19 @@ Run all `docker compose` commands below from `/opt/linuxtraining/deploy`.
 
 AlmaLinux / Rocky / RHEL **9 or 10**, as root, with access to this repository. Full walkthrough: [INSTALL.md](INSTALL.md).
 
+**Before you start, the server needs:**
+
+- **Supported OS**: AlmaLinux / Rocky / RHEL 9 or 10 (the installer refuses anything else). 2 GB RAM minimum, 5 GB and
+  2 vCPU recommended; ~20 GB free disk.
+- **Outbound internet during the install** — the first run downloads the Docker packages and dnf packages, and the
+  lab-image build pulls base images from Docker Hub (`almalinux/9-init`, `alpine`, `php`, `mariadb`, `nginx`,
+  `busybox`). Once built, the **running labs have no internet** — only the install host needs it. If builds fail with
+  Docker Hub "toomanyrequests" (anonymous pull rate limit), run `docker login` first and re-run the installer, or
+  retry later.
+- **Access to this (private) repository** — a GitHub **deploy key** on the server, or make the repo public and clone
+  over HTTPS. Full steps: [INSTALL.md](INSTALL.md) Step 5.
+- **Inbound TCP 80** open to the server (and 443 if you add HTTPS) in any provider firewall / security group.
+
 ```sh
 dnf -y update                       # reboot if it installed a new kernel, then reconnect
 dnf -y install git
