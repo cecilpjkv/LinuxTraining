@@ -1,0 +1,13 @@
+name: "Python service fails to start"
+description: |
+  The internal tool "pyapp" should listen on port 8080 and answer "PYAPP-OK" on / and "ok" on /health, running as
+  the user "pyapp". After a change its systemd service no longer starts. Read the logs, fix the service so it runs
+  and stays up across a restart, and keep it running as pyapp (not root).
+category: Linux
+difficulty: intermediate
+docker_image: linux-training-base
+time_limit: 30
+resource_weight: 1
+collect:
+  - "systemctl status pyapp --no-pager"
+  - "journalctl -u pyapp --no-pager -n 20"

@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  app_online:   {points: 20, label: "The app answers on pm2.example.test"}
+  boot_service: {points: 40, label: "A PM2 boot service is installed and enabled"}
+  saved_list:   {points: 30, label: "The PM2 process list is saved (with the app) for boot"}
+  not_root:     {points: 10, label: "The app runs as appops, not root"}
+process:
+  used_pm2: {points: 5, label: "Used pm2 (startup / save / list)", any_of: ['pm2 (startup|save|list|jlist|ls|dump)']}

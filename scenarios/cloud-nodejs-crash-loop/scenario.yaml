@@ -1,0 +1,14 @@
+name: "Node.js app keeps crashing (502)"
+description: |
+  The API behind api.shop.example.test returns "502 Bad Gateway". It is a Node.js service (shop-api) that should
+  listen on port 3000 and answer "SHOP-API-OK" on / and "ok" on /health. Since the last deploy the service will not
+  stay up. Find out why from its logs, fix it so it runs and survives a restart, and keep it running as the
+  unprivileged user "nodeapp" (not root).
+category: Cloud
+difficulty: intermediate
+docker_image: linux-training-cloud
+time_limit: 30
+resource_weight: 2
+collect:
+  - "systemctl status shop-api --no-pager"
+  - "journalctl -u shop-api --no-pager -n 20"

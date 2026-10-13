@@ -1,0 +1,9 @@
+pass_score: 70
+items:
+  service_active: {points: 25, label: "The shop-api service is running (not crash-looping)"}
+  port_3000:      {points: 15, label: "Something listens on port 3000"}
+  site_works:     {points: 25, label: "api.shop.example.test answers through nginx", partial: true}
+  not_root:       {points: 20, label: "It runs as nodeapp, not root"}
+  survives:       {points: 15, label: "It stays up after a restart"}
+process:
+  read_logs: {points: 5, label: "Read the service log", any_of: ['journalctl', 'systemctl status']}

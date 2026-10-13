@@ -1,0 +1,14 @@
+name: "PM2 app does not come back after reboot"
+description: |
+  The Node.js app "pm2app" (behind pm2.example.test, port 3000, answers "PM2APP-OK") is managed with PM2 and runs
+  now as the user "appops". But after the last reboot it did not start on its own and someone had to start it by
+  hand. Make PM2 bring this app back automatically on boot, keep it running as appops, and leave it answering. Node,
+  npm and the `pm2` command are already installed.
+category: Cloud
+difficulty: advanced
+docker_image: linux-training-cloud
+time_limit: 35
+resource_weight: 2
+collect:
+  - "runuser -u appops -- pm2 jlist"
+  - "systemctl list-unit-files 'pm2-*'"

@@ -20,4 +20,17 @@ open('/tmp/modules.yaml', 'w').write(''.join('---' + d.rstrip().removesuffix('..
  && rm /tmp/modules.yaml \
  && sed -i 's/^enabled=1/enabled=0/' /etc/yum.repos.d/almalinux*.repo \
  && dnf clean all && rm -rf /var/cache/dnf \
- && dnf -y install --assumeno nodejs npm 2>&1 | grep -q 'nodejs.*20\.' 
+ && dnf -y install --assumeno nodejs npm 2>&1 | grep -q 'nodejs.*20\.'
+# PM2 (a Node process manager) vendored for offline labs: installed self-contained under /opt/pm2 so it survives
+# Node staying uninstalled by default (the "install Node.js" scenarios still work). A lab's setup installs nodejs
+# from the local repository and then `pm2` on PATH works. Node is installed only to build this, then removed.
+RUN sed -i 's/^enabled=0/enabled=1/' /etc/yum.repos.d/almalinux*.repo \
+ && dnf -y module enable nodejs:20 \
+ && dnf -y install --setopt=install_weak_deps=False nodejs npm \
+ && npm install -g --prefix /opt/pm2 pm2@5.4.3 \
+ && ln -s /opt/pm2/bin/pm2 /usr/local/bin/pm2 \
+ && npm cache clean --force \
+ && dnf -y remove nodejs npm && dnf -y module reset nodejs \
+ && sed -i 's/^enabled=1/enabled=0/' /etc/yum.repos.d/almalinux*.repo \
+ && dnf clean all && rm -rf /var/cache/dnf ~/.npm \
+ && test -f /opt/pm2/bin/pm2 && ! command -v node

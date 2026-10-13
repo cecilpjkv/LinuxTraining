@@ -1,0 +1,8 @@
+pass_score: 70
+items:
+  service_active: {points: 30, label: "The pyapp service is running"}
+  app_answers:    {points: 30, label: "It answers on port 8080 (/ and /health)", partial: true}
+  not_root:       {points: 20, label: "It runs as pyapp, not root"}
+  survives:       {points: 20, label: "It stays up after a restart"}
+process:
+  read_logs: {points: 5, label: "Read the service log", any_of: ['journalctl', 'systemctl status']}
