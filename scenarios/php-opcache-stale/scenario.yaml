@@ -1,0 +1,15 @@
+name: "Deployed code changes do not show up"
+description: |
+  The team deployed new code to shop2.example.test, but the site keeps serving the old version: the page still
+  prints the old release string even though the file on disk was updated. Confirm with the file in
+  /srv/www/shop2/index.php. Make the current code go live, and make sure future deploys show up too without anyone
+  having to restart services by hand. Do not delete the application's cache of compiled code wholesale as a habit;
+  fix the cause.
+category: PHP
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "php -i | grep -iE 'opcache.enable|validate_timestamps|revalidate_freq'"
+  - "head -n 3 /srv/www/shop2/index.php"

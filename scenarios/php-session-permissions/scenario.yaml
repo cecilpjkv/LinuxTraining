@@ -1,0 +1,14 @@
+name: "Logins do not stay logged in"
+description: |
+  On portal.example.test users are logged out on every click: the site cannot keep a PHP session. The page at / is a
+  visit counter that should go up by one on each reload for the same browser (it prints "COUNT=1", "COUNT=2", ...).
+  Right now it is stuck at 1. Find why PHP cannot store sessions and fix it so sessions persist. Do not disable
+  sessions or turn off error reporting to hide the problem.
+category: PHP
+difficulty: intermediate
+docker_image: linux-training-web
+time_limit: 25
+resource_weight: 2
+collect:
+  - "php -i | grep -i session.save_path"
+  - "ls -ld $(php -r 'echo session_save_path() ?: \"/var/lib/php/session\";')"

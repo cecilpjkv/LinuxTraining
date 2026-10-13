@@ -1,0 +1,13 @@
+name: "Application cannot write to the database"
+description: |
+  The application reports that every write fails with "The MariaDB server is running with the --read-only option".
+  Reads work, writes do not. The application connects as the MariaDB user "appuser" to the database "appdb". Make
+  writes work again and make sure they keep working after a MariaDB restart, without losing the existing data.
+category: MariaDB
+difficulty: intermediate
+docker_image: linux-training-lamp
+time_limit: 25
+resource_weight: 3
+collect:
+  - "mysql -N -B -e 'SELECT @@global.read_only'"
+  - "grep -rin read_only /etc/my.cnf /etc/my.cnf.d 2>/dev/null"

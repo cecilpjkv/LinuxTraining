@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  sessions_persist: {points: 50, label: "Sessions persist (the counter goes up)"}
+  no_warning:       {points: 25, label: "No PHP session warning on the page"}
+  site_works:       {points: 25, label: "The page still works"}
+process:
+  looked: {points: 5, label: "Looked at the session path or its permissions", any_of: ['session.save_path', 'save_path', 'appsess', 'ls -l.*php']}

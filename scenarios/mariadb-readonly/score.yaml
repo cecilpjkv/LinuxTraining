@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  writes_ok:    {points: 40, label: "The application user can write (INSERT) again"}
+  persistent:   {points: 30, label: "It is still writable after a MariaDB restart"}
+  data_intact:  {points: 30, label: "The existing data is still there"}
+process:
+  looked: {points: 5, label: "Investigated read-only", any_of: ['read_only', 'my.cnf', 'SHOW VARIABLES']}

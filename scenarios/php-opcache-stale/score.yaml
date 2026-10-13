@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  code_live:      {points: 45, label: "The current code is served (the deployed change shows)"}
+  future_deploys: {points: 40, label: "A later change also shows up without a manual restart"}
+  site_works:     {points: 15, label: "The site still works"}
+process:
+  looked: {points: 5, label: "Looked at opcache settings", any_of: ['opcache', 'validate_timestamps', 'revalidate']}

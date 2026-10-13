@@ -1,0 +1,7 @@
+pass_score: 70
+items:
+  shell_valid:  {points: 35, label: "deploy's login shell is an installed, interactive shell"}
+  login_works:  {points: 45, label: "Opening a login shell as deploy works"}
+  home_intact:  {points: 20, label: "The account and its home directory are unchanged"}
+process:
+  looked: {points: 5, label: "Looked at the account", any_of: ['getent', '/etc/passwd', 'chsh', 'usermod', 'lchsh']}
