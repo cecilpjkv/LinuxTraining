@@ -81,7 +81,9 @@ def main():
         if res["status"] not in ("verifying", "ready"):
             break
         time.sleep(2)
-    ok(res["status"] == "completed" and res["percent"] == 100, f"graded on both servers: {res.get('score')}/{res.get('max_score')} ({res.get('percent')}%)")
+    state = [b for b in res.get("breakdown", []) if b["kind"] == "state"]
+    ok(res["status"] == "completed" and state and all(b["points"] == b["max"] for b in state),
+       f"graded on both servers, every state check full: {res.get('score')}/{res.get('max_score')} (process points need log reading)")
     review = admin.get(f"/api/admin/attempts/{a['id']}").json()
     nodes = [c["node"] for c in review["commands"]]
     ok(nodes.count("app1") == 4 and nodes.count("lb") == 2, f"review: commands recorded per server ({nodes})")
